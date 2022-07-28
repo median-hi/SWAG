@@ -1,15 +1,13 @@
 package at.jku.dke.swag.analysis_graphs.init;
 
+import at.jku.dke.swag.analysis_graphs.asm_elements.Location;
+import at.jku.dke.swag.analysis_graphs.basic_elements.*;
 import at.jku.dke.swag.md_elements.Dimension;
 import at.jku.dke.swag.md_elements.Level;
 import at.jku.dke.swag.md_elements.LevelMember;
 import at.jku.dke.swag.md_elements.MDGraph;
 import at.jku.dke.swag.md_elements.init.MDGraphInit;
 import at.jku.dke.swag.analysis_graphs.*;
-import at.jku.dke.swag.analysis_graphs.basic_elements.BindableSet;
-import at.jku.dke.swag.analysis_graphs.basic_elements.ConstantOrUnknown;
-import at.jku.dke.swag.analysis_graphs.basic_elements.Pair;
-import at.jku.dke.swag.analysis_graphs.basic_elements.Parameter;
 import at.jku.dke.swag.analysis_graphs.operations.*;
 import at.jku.dke.swag.analysis_graphs.operations.operation_types.AddParamDimPredicate;
 import at.jku.dke.swag.analysis_graphs.operations.operation_types.AddParamResultPredicate;
@@ -17,7 +15,9 @@ import at.jku.dke.swag.analysis_graphs.operations.operation_types.DrillDownTo;
 import at.jku.dke.swag.analysis_graphs.operations.operation_types.MoveToLevelAndNode;
 import at.jku.dke.swag.analysis_graphs.utils.Utils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class SwagInit {
@@ -50,6 +50,45 @@ public class SwagInit {
 
         Set<Operation> operations2_5 = initOperations2_5();
         AnalysisSituation situation5 = Utils.fire(situation2, Utils.evaluate(situation1, operations2_5));
+
+        Set<SituationBinding> bindings2 = Set.of(SituationBinding
+                .create(Location.diceNodeOf(new Dimension("destinationDim")))
+                .setBindings(Map.of(new Parameter("continentNode"), new LevelMember("EU"))));
+
+        AnalysisSituation situation2_prime = Utils.bind(situation2, bindings2);
+
+        Step step2_3 = new Step(situation2, situation5, operations2_3);
+
+        Map<Operation, OperationBinding> stepBindings2_3 = new HashMap<>();
+
+        stepBindings2_3.put(new Operation(DrillDownTo.getInstance(),
+                List.of(new Dimension("timeDim"),
+                        new Level("year"))),
+                OperationBinding.create().setBindings(
+                        Map.of(3, new Constant("after2010")))
+                );
+
+        stepBindings2_3.put(new Operation(MoveToLevelAndNode.getInstance(),
+                List.of(new Dimension("destinationDim"),
+                        new Level("geo"),
+                        new Parameter("geoNode"),
+                        new LevelMember(ConstantOrUnknown.unknown.getUri()))),
+                OperationBinding.create().setBindings(
+                        Map.of(4, new Constant("DE")))
+        );
+
+
+        stepBindings2_3.put(new Operation(MoveToLevelAndNode.getInstance(),
+                        List.of(new Dimension("destinationDim"),
+                                new Level("geo"),
+                                new Parameter("geoNode"),
+                                new LevelMember(ConstantOrUnknown.unknown.getUri()))),
+                OperationBinding.create().setBindings(
+                        Map.of())
+        );
+
+        Step step2_3_prime = Utils.bind(step2_3, stepBindings2_3);
+        AnalysisSituation situation3_prime = Utils.fire(situation2_prime, Utils.evaluate(situation2_prime, step2_3_prime.getOperations()));
 
         System.out.println(Utils.actual(situation2.getGranularities().get(destinationDim)));
 

@@ -52,8 +52,7 @@ public class Operation implements Copiable {
 
     @Override
     public Operation copy() {
-        List<Object> args = new ArrayList<>();
-        Collections.copy(args, this.getParameters());
+        List<Object> args = new ArrayList<>(this.getParameters());
         return new Operation(this.getType(), args);
     }
 }

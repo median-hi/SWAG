@@ -7,10 +7,7 @@ import at.jku.dke.swag.analysis_graphs.AnalysisSituation;
 import at.jku.dke.swag.analysis_graphs.asm_elements.Update;
 import at.jku.dke.swag.analysis_graphs.operations.Operation;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class Utils {
 
@@ -77,12 +74,12 @@ public class Utils {
         return ((Pair) elem).getConstant();
     }
 
-    public static Step bind(Step step, Set<OperationBinding> bindings){
+    public static Step bind(Step step, Map<Operation, OperationBinding> bindings){
 
         Step newStep = new Step(null, null, Collections.emptySet());
 
         for(Operation op: step.getOperations()){
-            newStep.getOperations().add(bind(op));
+            newStep.getOperations().add(bind(op, bindings.get(op)));
         }
 
         return newStep;
@@ -121,19 +118,19 @@ public class Utils {
             String dimension = binding.getLocation().getDimensionOfUpdate();
 
             if(binding.getLocation().isGranLocation()){
-                applyBindingTo(resultSituation.getGranularities().get(dimension), binding);
+                applyBindingTo(resultSituation.getGranularities().get(new Dimension(dimension)), binding);
             }
 
             if(binding.getLocation().isDiceLevelLocation()){
-                applyBindingTo(resultSituation.getDiceLevels().get(dimension), binding);
+                applyBindingTo(resultSituation.getDiceLevels().get(new Dimension(dimension)), binding);
             }
 
             if(binding.getLocation().isDiceNodeLocation()){
-                applyBindingTo(resultSituation.getDiceNodes().get(dimension), binding);
+                applyBindingTo(resultSituation.getDiceNodes().get(new Dimension(dimension)), binding);
             }
 
             if(binding.getLocation().isDimensionSelectionLocation()){
-                applyBindingTo(resultSituation.getDimensionSelection().get(dimension), binding);
+                applyBindingTo(resultSituation.getDimensionSelection().get(new Dimension(dimension)), binding);
             }
         }
 

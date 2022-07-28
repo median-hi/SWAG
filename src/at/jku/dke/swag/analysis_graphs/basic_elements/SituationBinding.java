@@ -19,7 +19,7 @@ public class SituationBinding {
         this.bindings = bindings;
     }
 
-    public SituationBinding create(Location location){
+    public static SituationBinding create(Location location){
         return new SituationBinding(location);
     }
 
