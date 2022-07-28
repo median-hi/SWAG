@@ -1,8 +1,10 @@
 package at.jku.dke.swag.analysis_graphs;
 
-import at.jku.dke.swag.MDElems.Dimension;
-import at.jku.dke.swag.MDElems.LevelMember;
-import at.jku.dke.swag.MDElems.MDGraph;
+import at.jku.dke.swag.md_elements.Dimension;
+import at.jku.dke.swag.md_elements.LevelMember;
+import at.jku.dke.swag.md_elements.MDGraph;
+import at.jku.dke.swag.analysis_graphs.basic_elements.BindableSet;
+import at.jku.dke.swag.analysis_graphs.basic_elements.PairOrConstant;
 
 import java.util.HashMap;
 import java.util.Map;

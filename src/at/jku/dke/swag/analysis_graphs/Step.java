@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-public class Step {
+public class Step implements  Copiable{
     AnalysisSituation source;
     AnalysisSituation target;
     Set<Operation> operations = new HashSet<>();
@@ -52,5 +52,14 @@ public class Step {
     @Override
     public int hashCode() {
         return Objects.hash(source, target, operations);
+    }
+
+    @Override
+    public Copiable copy() {
+        Set<Operation> copiedOperations = new HashSet<>();
+        for (Operation op: this.getOperations()){
+            copiedOperations.add(op.copy());
+        }
+        return new Step(null, null, copiedOperations);
     }
 }

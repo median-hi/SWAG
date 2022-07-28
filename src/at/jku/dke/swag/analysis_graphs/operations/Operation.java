@@ -1,18 +1,15 @@
 package at.jku.dke.swag.analysis_graphs.operations;
 
 import at.jku.dke.swag.analysis_graphs.AnalysisSituation;
-import at.jku.dke.swag.analysis_graphs.Update;
+import at.jku.dke.swag.analysis_graphs.Copiable;
+import at.jku.dke.swag.analysis_graphs.asm_elements.Update;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
-public class Operation {
+public class Operation implements Copiable {
 
     private OperationTypes type;
     private List<Object> parameters;
-
-
 
     public Operation(OperationTypes type, List<Object> parameters) {
         this.type = type;
@@ -51,5 +48,12 @@ public class Operation {
     @Override
     public int hashCode() {
         return Objects.hash(type, parameters);
+    }
+
+    @Override
+    public Operation copy() {
+        List<Object> args = new ArrayList<>();
+        Collections.copy(args, this.getParameters());
+        return new Operation(this.getType(), args);
     }
 }

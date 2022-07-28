@@ -1,15 +1,13 @@
 package at.jku.dke.swag.analysis_graphs.operations;
 
-import at.jku.dke.swag.MDElems.MDGraph;
-import at.jku.dke.swag.MDElems.init.MDGraphInit;
+import at.jku.dke.swag.md_elements.MDGraph;
+import at.jku.dke.swag.md_elements.init.MDGraphInit;
 import at.jku.dke.swag.analysis_graphs.AnalysisSituation;
-import at.jku.dke.swag.analysis_graphs.Update;
-import at.jku.dke.swag.analysis_graphs.init.OperationsTypesInit;
+import at.jku.dke.swag.analysis_graphs.asm_elements.Update;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiFunction;
 
 public abstract class OperationTypes {
 
