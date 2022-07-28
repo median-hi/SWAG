@@ -23,6 +23,13 @@ public class MDGraphInit {
         Level govType = new Level("govType");
         Level destinationTop = new Level("destinationTop");
 
+        Dimension citizenshipDim = new Dimension("citizenshipDim");
+        Hierarchy citizenshipGeoHierarchy = new Hierarchy("citizenshipGeoHierarchy");
+        Hierarchy citizenshipGovHierarchy = new Hierarchy("citizenshipGovHierarchy");
+
+        Level citizen = new Level("citizen");
+        Level citizenshipTop = new Level("citizenshipTop");
+
         Dimension timeDim = new Dimension("timeDim");
         Hierarchy timeHierarchy = new Hierarchy("timeHierarchy");
 
@@ -37,17 +44,24 @@ public class MDGraphInit {
         LevelMember all_timeDim = new LevelMember("all_timeDim");
 
         mdGraph.getL().addAll(Set.of(geo, continent, govType, destinationTop, refPeriod, year, timeTop));
-        mdGraph.getD().addAll(Set.of(destinationDim, timeDim));
-        mdGraph.getH().addAll(Set.of(geoHierarchy, govHierarchy, timeHierarchy));
+        mdGraph.getD().addAll(Set.of(destinationDim, timeDim, citizenshipDim));
+        mdGraph.getH().addAll(Set.of(geoHierarchy, govHierarchy, timeHierarchy, citizenshipGeoHierarchy, citizenshipGovHierarchy));
         mdGraph.getHL().put(geoHierarchy, Set.of(geo, continent, destinationTop));
         mdGraph.getHL().put(govHierarchy, Set.of(geo, govType, destinationTop));
+        mdGraph.getHL().put(citizenshipGeoHierarchy, Set.of(citizen, continent, citizenshipTop));
+        mdGraph.getHL().put(citizenshipGovHierarchy, Set.of(citizen, govType, citizenshipTop));
         mdGraph.getHL().put(timeHierarchy, Set.of(refPeriod, year, timeTop));
         mdGraph.getDH().put(destinationDim, Set.of(geoHierarchy, govHierarchy));
+        mdGraph.getDH().put(citizenshipDim, Set.of(citizenshipGeoHierarchy, citizenshipGovHierarchy));
         mdGraph.getDH().put(timeDim, Set.of(timeHierarchy));
         mdGraph.getLL().add(new RollUpPair(geo, continent));
         mdGraph.getLL().add(new RollUpPair(geo, govType));
         mdGraph.getLL().add(new RollUpPair(continent, destinationTop));
         mdGraph.getLL().add(new RollUpPair(govType, destinationTop));
+        mdGraph.getLL().add(new RollUpPair(citizen, continent));
+        mdGraph.getLL().add(new RollUpPair(citizen, govType));
+        mdGraph.getLL().add(new RollUpPair(continent, citizenshipTop));
+        mdGraph.getLL().add(new RollUpPair(govType, citizenshipTop));
         mdGraph.getLL().add(new RollUpPair(refPeriod, year));
         mdGraph.getLL().add(new RollUpPair(year, timeTop));
         mdGraph.getM().add(numOfApps);

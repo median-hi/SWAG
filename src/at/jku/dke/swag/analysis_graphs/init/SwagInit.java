@@ -39,6 +39,9 @@ public class SwagInit {
         Set<Operation> operations3_4 = initOperations3_4();
         AnalysisSituation situation4 = Utils.fire(situation3, Utils.evaluate(situation1, operations3_4));
 
+        Set<Operation> operations2_5 = initOperations2_5();
+        AnalysisSituation situation5 = Utils.fire(situation2, Utils.evaluate(situation1, operations2_5));
+
         System.out.println(Utils.actual(situation2.getGranularities().get(destinationDim)));
 
     }
@@ -69,6 +72,21 @@ public class SwagInit {
                         Constant.unknown));
 
         return Set.of(op1, op2, op3);
+    }
+
+    public static Set<Operation> initOperations2_5(){
+
+        Operation op1 = new Operation(DrillDownTo.getInstance(),
+                List.of(new Dimension("citizenshipDim"),
+                        new Level("citizen")));
+
+        Operation op2 = new Operation(MoveToLevelAndNode.getInstance(),
+                List.of(new Dimension("destinationDim"),
+                        new Level("geo"),
+                        new Parameter("geoNode1"),
+                        new LevelMember(Constant.unknown.getUri())));
+
+        return Set.of(op1, op2);
     }
 
 
