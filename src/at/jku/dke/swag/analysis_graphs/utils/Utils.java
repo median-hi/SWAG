@@ -76,7 +76,7 @@ public class Utils {
 
     public static Step bind(Step step, Map<Operation, OperationBinding> bindings){
 
-        Step newStep = new Step(null, null, Collections.emptySet());
+        Step newStep = new Step(null, null, new HashSet<>());
 
         for(Operation op: step.getOperations()){
             newStep.getOperations().add(bind(op, bindings.get(op)));
@@ -161,8 +161,8 @@ public class Utils {
 
     private static void applyBindingTo(Operation operation, OperationBinding binding){
         for (Integer i : binding.getBindings().keySet()){
-            if(((int) i) <= operation.getParameters().size() + 1){
-                operation.getParameters().add(i-1, binding.getBindings().get(i));
+            if(((int) i) <= operation.getParameters().size()){
+                operation.getParameters().set(i-1, binding.getBindings().get(i));
             }
         }
     }

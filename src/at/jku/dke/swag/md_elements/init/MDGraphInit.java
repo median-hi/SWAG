@@ -39,7 +39,7 @@ public class MDGraphInit {
 
         Measure numOfApps = new Measure("numOfApps");
 
-        LevelMember germany = new LevelMember("germany");
+        LevelMember germany = new LevelMember("DE");
         LevelMember all_destinationDim = new LevelMember("all_destinationDim");
         LevelMember all_timeDim = new LevelMember("all_timeDim");
 

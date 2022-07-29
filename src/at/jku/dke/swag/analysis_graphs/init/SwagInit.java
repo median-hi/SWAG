@@ -61,9 +61,10 @@ public class SwagInit {
 
         Map<Operation, OperationBinding> stepBindings2_3 = new HashMap<>();
 
-        stepBindings2_3.put(new Operation(DrillDownTo.getInstance(),
-                List.of(new Dimension("timeDim"),
-                        new Level("year"))),
+        stepBindings2_3.put(new Operation(AddParamDimPredicate.getInstance(),
+                        List.of(new Dimension("timeDim"),
+                                new Parameter("dPred"),
+                                ConstantOrUnknown.unknown)),
                 OperationBinding.create().setBindings(
                         Map.of(3, new Constant("after2010")))
                 );
@@ -74,21 +75,41 @@ public class SwagInit {
                         new Parameter("geoNode"),
                         new LevelMember(ConstantOrUnknown.unknown.getUri()))),
                 OperationBinding.create().setBindings(
-                        Map.of(4, new Constant("DE")))
+                        Map.of(4, new LevelMember("DE")))
         );
 
 
-        stepBindings2_3.put(new Operation(MoveToLevelAndNode.getInstance(),
-                        List.of(new Dimension("destinationDim"),
-                                new Level("geo"),
-                                new Parameter("geoNode"),
-                                new LevelMember(ConstantOrUnknown.unknown.getUri()))),
+        stepBindings2_3.put(new Operation(DrillDownTo.getInstance(),
+                        List.of(new Dimension("timeDim"),
+                                new Level("year"))),
                 OperationBinding.create().setBindings(
                         Map.of())
         );
 
         Step step2_3_prime = Utils.bind(step2_3, stepBindings2_3);
         AnalysisSituation situation3_prime = Utils.fire(situation2_prime, Utils.evaluate(situation2_prime, step2_3_prime.getOperations()));
+
+
+        Step step3_4 = new Step(situation3, situation4, operations3_4);
+
+        Map<Operation, OperationBinding> stepBindings3_4 = new HashMap<>();
+
+        stepBindings3_4.put(new Operation(DrillDownTo.getInstance(),
+                        List.of(new Dimension("timeDim"),
+                                new Level("refPeriod"))),
+                OperationBinding.create().setBindings(
+                        Map.of())
+        );
+
+        stepBindings3_4.put(new Operation(AddParamResultPredicate.getInstance(),
+                        List.of(new Parameter("mPred"),
+                                ConstantOrUnknown.unknown)),
+                OperationBinding.create().setBindings(
+                        Map.of(2, new Constant(":highIntensity")))
+        );
+
+        Step step3_4_prime = Utils.bind(step3_4, stepBindings3_4);
+        AnalysisSituation situation4_prime = Utils.fire(situation3_prime, Utils.evaluate(situation3_prime, step3_4_prime.getOperations()));
 
         System.out.println(Utils.actual(situation2.getGranularities().get(destinationDim)));
 
