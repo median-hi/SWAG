@@ -38,7 +38,7 @@ public class DrillDownTo extends OperationTypes {
 
                     PairOrConstant actualGran = Utils.actual(situation.getGranularities().get(param0));
 
-                    System.out.println("BEFORE");
+                    //System.out.println("BEFORE");
 
                     if(!actualGran.equals(ConstantOrUnknown.unknown)
                             && !actualGran.equals(situation.getMdGraph().bot(param0))
@@ -51,7 +51,7 @@ public class DrillDownTo extends OperationTypes {
                         updates.add(
                                 new Update(
                                         Location.granularityOf(param0), newGranPair));
-                        System.out.println("producing update set");
+                        //System.out.println("producing update set");
                     }else{
                         if(!actualGran.equals(ConstantOrUnknown.unknown)
                                 && !actualGran.equals(situation.getMdGraph().bot(param0))
@@ -64,7 +64,7 @@ public class DrillDownTo extends OperationTypes {
                                             Location.granularityOf(param0),
                                             param1)
                             );
-                            System.out.println("producing empty set");
+                            //System.out.println("producing empty set");
                         }
                     }
 

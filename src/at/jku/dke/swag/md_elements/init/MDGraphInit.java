@@ -40,6 +40,11 @@ public class MDGraphInit {
         Measure numOfApps = new Measure("numOfApps");
 
         LevelMember germany = new LevelMember("DE");
+        LevelMember austria = new LevelMember("AT");
+
+        LevelMember asia = new LevelMember("AS");
+        LevelMember europe = new LevelMember("EU");
+
         LevelMember all_destinationDim = new LevelMember("all_destinationDim");
         LevelMember all_timeDim = new LevelMember("all_timeDim");
 
@@ -65,7 +70,8 @@ public class MDGraphInit {
         mdGraph.getLL().add(new RollUpPair(refPeriod, year));
         mdGraph.getLL().add(new RollUpPair(year, timeTop));
         mdGraph.getM().add(numOfApps);
-        mdGraph.getMembers().put(geo, Set.of(germany));
+        mdGraph.getMembers().put(geo, Set.of(germany, austria));
+        mdGraph.getMembers().put(continent, Set.of(asia, europe));
         mdGraph.getMembers().put(destinationTop, Set.of(all_destinationDim));
         mdGraph.getMembers().put(timeTop, Set.of(all_timeDim));
 

@@ -22,6 +22,20 @@ public class MDGraph {
 
     Map<Level, Set<LevelMember>> members = new HashMap<>();
 
+    public Set<Level> getLevelsOfDimension(Dimension d){
+        return DH.get(d).stream().flatMap(h -> HL.get(h).stream()).collect(Collectors.toSet());
+    }
+
+    public Set<LevelMember> getMembersOf(Level l){
+        if (members.get(l) == null)
+            return new HashSet<>();
+        return members.get(l);
+    }
+
+    public Set<LevelMember> getMembersOf(Dimension d){
+        return getLevelsOfDimension(d).stream().flatMap(l -> getMembersOf(l).stream()).collect(Collectors.toSet());
+    }
+
     public Optional<Level> nextLevel(Hierarchy h, Level l){
         Set<RollUpPair> pairsToInspect =  LL
                 .stream()
@@ -69,7 +83,6 @@ public class MDGraph {
         for (Hierarchy h : hierarchiesOfDim){
             Set<Level> levels= HL.get(h).stream().collect(Collectors.toSet());
             for(Level l : levels){
-                System.out.println("hierarchy:" + h.getUri());
                 if(LL.stream().noneMatch(pair -> l.equals(pair.getFrom()))){
                     return l;
                 }

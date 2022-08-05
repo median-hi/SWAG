@@ -58,6 +58,9 @@ public class Pair implements PairOrConstant, Copiable {
         this.constantOrUnknown = constantOrUnknown;
     }
 
+    public String toString(){
+        return "(" + this.getParameter() + "," + this.getConstant() + ")";
+    }
 
     @Override
     public Pair copy() {

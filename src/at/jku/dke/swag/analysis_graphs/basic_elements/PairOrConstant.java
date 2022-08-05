@@ -17,4 +17,5 @@ public interface PairOrConstant extends LocationValue, Copiable {
     public default boolean isBindableSet(){
         return false;
     }
+
 }

@@ -44,7 +44,7 @@ public class MoveToLevelAndNode extends OperationTypes {
         PairOrConstant actualDiceNode = Utils.actual(situation.getDiceLevels().get(param0));
         PairOrConstant actualDiceLevel = Utils.actual(situation.getDiceNodes().get(param0));
 
-        System.out.println("before");
+        //System.out.println("before");
 
         if((ConstantOrUnknown.isUnknown(param3)||mdGraph.isMemberOf(param3, param1))
                 && (!actualDiceLevel.equals(param1) || !actualDiceNode.equals(new Pair(param2, param3)))
@@ -76,7 +76,7 @@ public class MoveToLevelAndNode extends OperationTypes {
                         new Update(
                                 Location.diceLevelOf(param0), param1));
             }
-            System.out.println("producing empty");
+            //System.out.println("producing empty");
         }
 
         return updates;
