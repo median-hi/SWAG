@@ -9,10 +9,10 @@ import java.util.Set;
 public class MDGraphInit {
 
 
-    public static MDGraph initMDGraph(){
+    public static MDGraphAndMap initMDGraphAndMap(){
         MDGraph mdGraph = new MDGraph();
 
-        Fact fact = new Fact("films");
+        Fact fact = new Fact("film");
         mdGraph.setF(Set.of(fact));
 
         Dimension directiontDim = new Dimension("directionDim");
@@ -53,12 +53,16 @@ public class MDGraphInit {
         mdGraph.getLL().add(new RollUpPair(director, gender));
         mdGraph.getLL().add(new RollUpPair(date, year));
 
+        mdGraph.getHLL().put(originHier, Set.of(new RollUpPair(country, continent)));
+        mdGraph.getHLL().put(directionHier, Set.of(new RollUpPair(director, gender)));
+        mdGraph.getHLL().put(timeHierarchy, Set.of(new RollUpPair(date, year)));
+
         mdGraph.getM().add(boxOffice);
 
         MappedMDGraph graph = new MappedMDGraph();
 
         graph.add(fact, "SELECT  ?film\n" +
-                " {\n" +
+                "where {\n" +
                 "?film <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q11424>. ?film <http://www.wikidata.org/prop/direct/P2142> ?boxOffice1.\n" +
                 "}");
         graph.add(fact, boxOffice, "SELECT ?film ?boxOoffice WHERE {\n" +
@@ -70,25 +74,24 @@ public class MDGraphInit {
                 "?director <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q5>.\n" +
                 "}");
         graph.add(gender, "select ?gender\n" +
-                "{\n" +
+                "where {\n" +
                 "?gender <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q48264>.\n" +
                 "}");
         graph.add(country, "SELECT  ?country\n" +
-                "{?country <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q6256>}");
+                "where {?country <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q6256>}");
         graph.add(continent, "select ?continent\n" +
-                "{" +
-                " ?continent <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q5107> .");
+                "where {" +
+                " ?continent <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q5107> .}");
         graph.add(genre, "Select ?genre\n" +
-                "{\n" +
-                "\n" +
+                "where{\n" +
                 "?genre <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q201658> \n" +
                 "}");
         graph.add(date, "SELECT ?date where\n" +
                 "{   \n" +
                 " {SELECT ?film1 (MIN (?pubDate1) AS ?date) WHERE {?film1 <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q11424>.\n" +
-                "?film1 <http://www.wikidata.org/prop/direct/P2142> ?boxOffice3. ?film1 <http://www.wikidata.org/prop/direct/P577> ?pubDate1. } GROUP BY ?film1 }. \n" +
+                "?film1 <http://www.wikidata.org/prop/direct/P2142> ?boxOffice3. ?film1 <http://www.wikidata.org/prop/direct/P577> ?pubDate1. } GROUP BY ?film1 } \n" +
                 "}");
-        graph.add(year, "select ?year {\n" +
+        graph.add(year, "select ?year where{\n" +
                 "?year <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q3186692> \n" +
                 "}");
 
@@ -102,7 +105,7 @@ public class MDGraphInit {
         graph.add(fact, date, "SELECT ?date where\n" +
                 "{   \n" +
                 " {SELECT ?film1 (MIN (?pubDate1) AS ?date) WHERE {?film1 <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q11424>.\n" +
-                "?film1 <http://www.wikidata.org/prop/direct/P2142> ?boxOffice3. ?film1 <http://www.wikidata.org/prop/direct/P577> ?pubDate1. } GROUP BY ?film1 }. \n" +
+                "?film1 <http://www.wikidata.org/prop/direct/P2142> ?boxOffice3. ?film1 <http://www.wikidata.org/prop/direct/P577> ?pubDate1. } GROUP BY ?film1 } \n" +
                 "}");
         graph.add(fact, country, "SELECT  ?country where\n" +
                 "{?country <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q6256>}");
@@ -114,7 +117,6 @@ public class MDGraphInit {
         graph.add(country, continent, "select ?country ?continent where\n" +
                 "{\n" +
                 "?country <http://www.wikidata.org/prop/direct/P30> ?continent.\n" +
-                "}" +
                 "}");
         graph.add(date, year, "select ?date ?year\n" +
                 "where{      \n" +
@@ -124,7 +126,7 @@ public class MDGraphInit {
                 "      ?month <http://www.wikidata.org/prop/direct/P361> ?year. \n" +
                 "}");
 
-        return mdGraph;
+        return new MDGraphAndMap(mdGraph, graph);
     }
 
 }

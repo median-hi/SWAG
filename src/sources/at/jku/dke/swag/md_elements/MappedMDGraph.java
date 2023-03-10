@@ -21,6 +21,6 @@ public class MappedMDGraph {
     }
 
     public String get(MDElement from, MDElement to){
-        return mdElmsMappings.get(new MDPair(from, to));
+        return mdPairsMappings.get(new MDPair(from, to));
     }
 }

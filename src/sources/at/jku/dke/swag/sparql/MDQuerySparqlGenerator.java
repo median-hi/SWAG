@@ -53,9 +53,10 @@ public class MDQuerySparqlGenerator {
             if(mdGraph.getHL().get(hier).contains(level)) {
 
                 path.add(mdGraph.getF().stream().findAny().orElseThrow());
-                path.add(level);
+
 
                 if (level.equals(mdGraph.bot(dim))) {
+                    path.add(level);
                     return path;
                 }
 
@@ -63,9 +64,9 @@ public class MDQuerySparqlGenerator {
 
                 while (curLevel != null) {
                     Level next = mdGraph.getNextRollUpLevel(curLevel, hier);
-                    if (next != null) {
-                        path.add(next);
-                        if(next.equals(level)){
+                    if (curLevel != null) {
+                        path.add(curLevel);
+                        if(curLevel.equals(level)){
                             return path;
                         }
                         curLevel = next;
@@ -81,7 +82,7 @@ public class MDQuerySparqlGenerator {
     public String makeQuery(List<MDElement> path){
         StringBuilder builder = new StringBuilder();
 
-        String factQuery = mappedMDGraph.get(mdGraph.getF().stream().findFirst().orElseThrow());
+        String factQuery = "{" + mappedMDGraph.get(mdGraph.getF().stream().findFirst().orElseThrow()) + "}";
         builder.append(factQuery);
 
         MDElement prevElm = mdGraph.getF().stream().findFirst().orElseThrow();
@@ -89,12 +90,42 @@ public class MDQuerySparqlGenerator {
             if (!elm.equals(mdGraph.getF().stream().findFirst().orElseThrow())){
                 String tmpLink = mappedMDGraph.get(prevElm, elm);
                 String tmp = mappedMDGraph.get(elm);
-                builder.append(tmpLink);
-                builder.append(tmp);
+                builder.append("{" + tmpLink + "}");
+                builder.append("{" + tmp + "}");
                 prevElm = elm;
             }
         }
-        return builder.toString();
+        return "{SELECT ?" + path.get(0).getUri() + " ?" + path.get(path.size()-1) + " WHERE{" + builder.toString() + "}}";
+    }
+
+    public String makeGroupByQuery(List<Level> groupBy){
+
+        String finalQuery = "";
+
+
+        for (Level level : groupBy){
+            String q = makeQuery(makePath(level));
+            finalQuery = finalQuery + "\n" + q;
+        }
+
+
+
+        finalQuery = "SELECT %s WHERE{" + finalQuery + "} GROUP BY %s";
+        finalQuery = String.format(finalQuery, getSelectString(groupBy), getSelectString(groupBy));
+
+
+        return finalQuery;
+    }
+
+    private String getSelectString(List<Level> elms){
+        String res = "";
+
+        for (Level elm: elms){
+            res += "?" +
+                    elm.getUri().substring(elm.getUri().lastIndexOf("/") +1, elm.getUri().length()) +
+                    " ";
+        }
+        return res;
     }
 
 }
