@@ -114,6 +114,24 @@ public class MDGraph {
         return null;
     }
 
+    public Dimension findFirstDimensionOfLevel(Level level){
+        for (Dimension d : this.getD()){
+            if(this.getLevelsOfDimension(d).contains(level)){
+                return d;
+            }
+        }
+        return null;
+    }
+
+    public Level getNextRollUpLevel(Level level, Hierarchy hier){
+        for (RollUpPair ll : this.getHLL().get(hier)){
+            if(ll.getFrom().equals(level)){
+                return ll.getTo();
+            }
+        }
+        return null;
+    }
+
     public boolean isMemberOf(LevelMember member, Level level){
         return members.get(level).contains(member);
     }
