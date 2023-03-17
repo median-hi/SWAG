@@ -65,9 +65,11 @@ public class MDGraphInit {
                 "where {\n" +
                 "?film <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q11424>. ?film <http://www.wikidata.org/prop/direct/P2142> ?boxOffice1.\n" +
                 "}");
-        graph.add(fact, boxOffice, "SELECT ?film ?boxOoffice WHERE {\n" +
-                "?film <http://www.wikidata.org/prop/P2142> ?boxOfficeNode. ?boxOfficeNode <http://www.wikidata.org/prop/statement/value/P2142> ?value.\n" +
-                "?value <http://wikiba.se/ontology#quantityAmount> ?boxOffice. ?value <http://wikiba.se/ontology#quantityUnit> <http://www.wikidata.org/entity/Q4917>.\n" +
+        graph.add(fact, boxOffice, "SELECT ?film ?boxOffice WHERE {\n" +
+                "?film <http://www.wikidata.org/prop/P2142> ?boxOfficeNode." +
+                " ?boxOfficeNode <http://www.wikidata.org/prop/statement/value/P2142> ?value.\n" +
+                "?value <http://wikiba.se/ontology#quantityAmount> ?boxOffice. " +
+                "?value <http://wikiba.se/ontology#quantityUnit> <http://www.wikidata.org/entity/Q4917>.\n" +
                 "?boxOfficeNode <http://www.wikidata.org/prop/qualifier/P3005> <http://www.wikidata.org/entity/Q13780930>.}");
 
         graph.add(director, "select ?director where {\n" +
@@ -98,17 +100,17 @@ public class MDGraphInit {
         graph.add(fact, director, "select ?film ?director where {\n" +
                 "?film <http://www.wikidata.org/prop/direct/P57> ?director.\n" +
                 "}");
-        graph.add(fact, genre, "SELECT ?film ?genre where\n" +
-                "{\n" +
-                "    ?film <http://www.wikidata.org/prop/direct/P136> ?genre.\n" +
+        graph.add(fact, genre, "SELECT ?film ?genre where\\n\" +\n" +
+                "                \"{\\n\" +\n" +
+                "                \"    ?film <http://www.wikidata.org/prop/direct/P136> ?genre.\n" +
                 "}");
         graph.add(fact, date, "SELECT ?date where\n" +
                 "{   \n" +
                 " {SELECT ?film1 (MIN (?pubDate1) AS ?date) WHERE {?film1 <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q11424>.\n" +
                 "?film1 <http://www.wikidata.org/prop/direct/P2142> ?boxOffice3. ?film1 <http://www.wikidata.org/prop/direct/P577> ?pubDate1. } GROUP BY ?film1 } \n" +
                 "}");
-        graph.add(fact, country, "SELECT  ?country where\n" +
-                "{?country <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q6256>}");
+        graph.add(fact, country, "SELECT  ?film ?country where\n" +
+                "{?film <http://www.wikidata.org/prop/direct/P495> ?country}");
 
         graph.add(director, gender, "select ?director ?gender\n" +
                 "where{\n" +

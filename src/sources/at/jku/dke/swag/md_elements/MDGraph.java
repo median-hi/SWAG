@@ -160,6 +160,10 @@ public class MDGraph {
         return F;
     }
 
+    public Fact getFact(){
+        return F.stream().findAny().orElseThrow();
+    }
+
     public void setF(Set<Fact> f) {
         F = f;
     }
