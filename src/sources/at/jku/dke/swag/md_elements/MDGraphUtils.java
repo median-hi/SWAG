@@ -7,6 +7,7 @@ import com.google.common.collect.Sets;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MDGraphUtils {
 
@@ -62,9 +63,28 @@ public class MDGraphUtils {
         return all;
     }
 
-    public static Multiset getMultiSetOfMeasureVals(String fact){
+    public static Multiset getMultiSetOfMeasureVals(MDGraph graph, MDData data, String fact, Measure measure){
         Multiset multiset = HashMultiset.create();
 
+        Set<String[]> instances = data.get(graph.getFact(), measure);
+        Set<String[]> newInstances = new HashSet<>();
+
+        for (String [] array : instances){
+            if (array[0].equals(fact)){
+                multiset.add(array[1]);
+            }
+        }
+        return multiset;
+    }
+
+    public static Multiset getMultiSetOfMeasureValsForMultipleFacts(MDGraph graph, MDData data, Set<String> facts, Measure measure){
+        Multiset multiset = HashMultiset.create();
+
+        for (String fact : facts) {
+            multiset.addAll(getMultiSetOfMeasureVals(graph, data, fact, measure));
+        }
+
+        return multiset;
     }
 
     public static Map<List<String>, Set<String>> getFactAndCoordinatesAsSet(MDData data, MDGraph graph, List<Level> groupBy){
@@ -78,6 +98,59 @@ public class MDGraphUtils {
         }
         return all;
     }
+
+    public static void eliminate(Map<List<String>, Set<String>> map){
+
+        List<List<String>> list = new ArrayList<>();
+        list = new ArrayList<>(map.keySet());
+
+        List<List<String>> sortedList = list.stream().sorted((o1,o2) -> {
+            for (int i = 0; i < Math.min(o1.size(), o2.size()); i++) {
+                int c = o1.get(i).compareTo(o2.get(i));
+                if (c != 0) {
+                    return c;
+                }
+            }
+            return Integer.compare(o1.size(), o2.size());
+        }).collect(Collectors.toList());
+
+        List<String> vals = map.values().stream().flatMap(set -> set.stream()).collect(Collectors.toList());
+
+        for (String fact : vals){
+            List<List<String>> coordsOfFact = new ArrayList<>();
+            for (Map.Entry<List<String>, Set<String>> entry : map.entrySet()){
+                if(entry.getValue().contains(fact)){
+                    coordsOfFact.add(entry.getKey());
+                }
+            }
+            if(coordsOfFact.size() > 1){
+                List<Integer> indices = new ArrayList<>();
+                sortedList.stream().filter(lst -> coordsOfFact.contains(lst))
+                        .forEach(x -> {indices.add(sortedList.indexOf(x));});
+                indices.remove(0);
+                for (int i : indices){
+                    map.get(sortedList.get(i)).remove(fact);
+                }
+            }
+        }
+
+    }
+
+
+
+    public static Map<List<String>, Set<String>> getFactAndCoordinatesAsSetTakeOne(MDData data, MDGraph graph, List<Level> groupBy){
+        Map<List<String>, Set<String>> all = new HashMap<>();
+
+        for (List<String> coordinate : getCoordinatesOfGroupBy(data, groupBy)){
+            all.put(coordinate, new HashSet<>());
+            for (String factInstance : getFactsInCoordinate(data, graph, groupBy, coordinate)){
+                    all.get(coordinate).add(factInstance);
+            }
+        }
+        eliminate(all);
+        return all;
+    }
+
 
     public static Set<List<String>> getCoordinatesOfGroupBy(MDData data, List<Level> groupBy){
 

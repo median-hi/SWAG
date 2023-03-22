@@ -57,5 +57,73 @@ public class Test {
 
     }
 
+    @org.junit.Test
+    public void test4(){
+
+        MDGraphAndMap mappedGraph = MDGraphInit.initMDGraphAndMap();
+        MDGraph mdGraph = mappedGraph.getGraph();
+        MappedMDGraph mdMap = mappedGraph.getMap();
+        MDData data = mappedGraph.getData();
+
+        Map<List<String>, Set<String>> factsAndCoordinates = MDGraphUtils.getFactAndCoordinatesAsSet(
+                data, mdGraph,
+                List.of(new Level("genre")));
+
+        PrintUtils.printMapAndMultiSet(factsAndCoordinates, mdGraph, data, new Measure("boxOffice"));
+
+    }
+
+    @org.junit.Test
+    public void test5(){
+
+        MDGraphAndMap mappedGraph = MDGraphInit.initMDGraphAndMap();
+        MDGraph mdGraph = mappedGraph.getGraph();
+        MappedMDGraph mdMap = mappedGraph.getMap();
+        MDData data = mappedGraph.getData();
+
+        Map<List<String>, Set<String>> factsAndCoordinates = MDGraphUtils.getFactAndCoordinatesAsSet(
+                data, mdGraph,
+                List.of(new Level("genre")));
+
+        SummarizabilityOptions summ = new SummarizabilityOptions(mdGraph, data);
+        Map<String, Double> factsAndWeights = summ.getSplitWeightPerGroup(factsAndCoordinates);
+        PrintUtils.printMap1(factsAndWeights);
+    }
+
+    @org.junit.Test
+    public void test6(){
+
+        MDGraphAndMap mappedGraph = MDGraphInit.initMDGraphAndMap();
+        MDGraph mdGraph = mappedGraph.getGraph();
+        MappedMDGraph mdMap = mappedGraph.getMap();
+        MDData data = mappedGraph.getData();
+
+        Map<List<String>, Set<String>> factsAndCoordinates = MDGraphUtils.getFactAndCoordinatesAsSet(
+                data, mdGraph,
+                List.of(new Level("genre")));
+
+        SummarizabilityOptions summ = new SummarizabilityOptions(mdGraph, data);
+        Map<String, Double> factsAndWeights = summ.getSplitWeightPerGroup(factsAndCoordinates);
+        Map<List<String>, Double> aggs = summ.aggregateSplit(
+                factsAndCoordinates,
+                factsAndWeights,
+                new Measure("boxOffice"));
+        PrintUtils.printMap2(aggs);
+    }
+
+    @org.junit.Test
+    public void test7(){
+
+        MDGraphAndMap mappedGraph = MDGraphInit.initMDGraphAndMap();
+        MDGraph mdGraph = mappedGraph.getGraph();
+        MappedMDGraph mdMap = mappedGraph.getMap();
+        MDData data = mappedGraph.getData();
+
+        Map<List<String>, Set<String>> factsAndCoordinates = MDGraphUtils.getFactAndCoordinatesAsSetTakeOne(
+                data, mdGraph,
+                List.of(new Level("genre")));
+
+        PrintUtils.printMapAndMultiSet(factsAndCoordinates, mdGraph, data, new Measure("boxOffice"));
+    }
 
 }
