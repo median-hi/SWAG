@@ -99,6 +99,32 @@ public class MDGraphUtils {
         return all;
     }
 
+    public static Map<List<String>, Set<String>> getFactAndCoordinatesAsSetDefaultValue(MDData data,
+                                                                                        MDGraph graph,
+                                                                                        List<Level> groupBy){
+        Map<List<String>, Set<String>> all = new HashMap<>();
+
+        for (List<String> coordinate : getCoordinatesOfGroupBy(data, groupBy)){
+            all.put(coordinate, new HashSet<>());
+            for (String factInstance : getFactsInCoordinate(data, graph, groupBy, coordinate)){
+                all.get(coordinate).add(factInstance);
+            }
+        }
+
+        Set<String> allConsideredFacts =  all.values().stream().flatMap(Set::stream).collect(Collectors.toSet());
+        Set<String> allFacts =  data.get(graph.getFact());
+
+        all.put(List.of("Default"), new HashSet<>());
+
+        for(String fact : allFacts){
+            if(!allConsideredFacts.contains(fact)){
+                all.get(List.of("Default")).add(fact);
+            }
+        }
+        return all;
+    }
+
+
     public static void eliminate(Map<List<String>, Set<String>> map){
 
         List<List<String>> list = new ArrayList<>();

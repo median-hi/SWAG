@@ -126,4 +126,34 @@ public class Test {
         PrintUtils.printMapAndMultiSet(factsAndCoordinates, mdGraph, data, new Measure("boxOffice"));
     }
 
+    @org.junit.Test
+    public void testDimDiscardMissing(){
+
+        MDGraphAndMap mappedGraph = MDGraphInit.initMDGraphAndMap();
+        MDGraph mdGraph = mappedGraph.getGraph();
+        MappedMDGraph mdMap = mappedGraph.getMap();
+        MDData data = mappedGraph.getData();
+
+        Map<List<String>, Set<String>> factsAndCoordinates = MDGraphUtils.getFactAndCoordinatesAsSet(
+                data, mdGraph,
+                List.of(new Level("date")));
+
+        PrintUtils.printMapAndMultiSet(factsAndCoordinates, mdGraph, data, new Measure("boxOffice"));
+    }
+
+    @org.junit.Test
+    public void testDimDefaultValue(){
+
+        MDGraphAndMap mappedGraph = MDGraphInit.initMDGraphAndMap();
+        MDGraph mdGraph = mappedGraph.getGraph();
+        MappedMDGraph mdMap = mappedGraph.getMap();
+        MDData data = mappedGraph.getData();
+
+        Map<List<String>, Set<String>> factsAndCoordinates = MDGraphUtils.getFactAndCoordinatesAsSetDefaultValue(
+                data, mdGraph,
+                List.of(new Level("date")));
+
+        PrintUtils.printMapAndMultiSet(factsAndCoordinates, mdGraph, data, new Measure("boxOffice"));
+    }
+
 }

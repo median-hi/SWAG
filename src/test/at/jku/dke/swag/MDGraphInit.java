@@ -155,6 +155,10 @@ public class MDGraphInit {
         data.get(fact, date).add(new String [] {"rushHour", "18-09-1998"});
         data.get(fact, date).add(new String [] {"theWolfOfWallStreet", "17-12-2013"});
 
+        data.get(date).add("22-05-2013");
+        data.get(date).add("18-09-1998");
+        data.get(date).add("17-12-2013");
+
         data.get(fact, genre).add(new String [] {"fastAndFurious6", "heist"});
         data.get(fact, genre).add(new String [] {"fastAndFurious6", "action"});
         data.get(fact, genre).add(new String [] {"fastAndFurious6", "thriller"});
