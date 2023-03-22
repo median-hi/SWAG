@@ -1,6 +1,7 @@
 package at.jku.dke.swag;
 
 import at.jku.dke.swag.analysis_graphs.basic_elements.Parameter;
+import at.jku.dke.swag.md_data.MDData;
 import at.jku.dke.swag.md_elements.*;
 
 import java.util.HashSet;
@@ -128,7 +129,48 @@ public class MDGraphInit {
                 "      ?month <http://www.wikidata.org/prop/direct/P361> ?year. \n" +
                 "}");
 
-        return new MDGraphAndMap(mdGraph, graph);
+        MDData data = new MDData();
+
+        data.get(fact).add("theWolfOfWallStreet");
+        data.get(fact).add("fastAndFurious6");
+        data.get(fact).add("rushHour");
+        data.get(fact).add("taken");
+
+        data.get(genre).add("heist");
+        data.get(genre).add("action");
+        data.get(genre).add("thriller");
+        data.get(genre).add("comedy");
+        data.get(genre).add("biographical");
+        data.get(genre).add("drama");
+        data.get(genre).add("crime");
+        data.get(genre).add("literature");
+        data.get(genre).add("martialArts");
+
+        data.get(fact, boxOffice).add(new String [] {"fastAndFurious6", "789"});
+        data.get(fact, boxOffice).add(new String [] {"rushHour", "244"});
+        data.get(fact, boxOffice).add(new String [] {"rushHour", "245"});
+        data.get(fact, boxOffice).add(new String [] {"taken", "227"});
+
+        data.get(fact, date).add(new String [] {"fastAndFurious6", "22-05-2013"});
+        data.get(fact, date).add(new String [] {"rushHour", "18-09-1998"});
+        data.get(fact, date).add(new String [] {"theWolfOfWallStreet", "17-12-2013"});
+
+        data.get(fact, genre).add(new String [] {"fastAndFurious6", "heist"});
+        data.get(fact, genre).add(new String [] {"fastAndFurious6", "action"});
+        data.get(fact, genre).add(new String [] {"fastAndFurious6", "thriller"});
+
+        data.get(fact, genre).add(new String [] {"theWolfOfWallStreet", "comedy"});
+        data.get(fact, genre).add(new String [] {"theWolfOfWallStreet", "biographical"});
+        data.get(fact, genre).add(new String [] {"theWolfOfWallStreet", "drama"});
+        data.get(fact, genre).add(new String [] {"theWolfOfWallStreet", "crime"});
+        data.get(fact, genre).add(new String [] {"theWolfOfWallStreet", "literature"});
+
+        data.get(fact, genre).add(new String [] {"rushHour", "martialArts"});
+        data.get(fact, genre).add(new String [] {"rushHour", "action"});
+
+        data.get(fact, genre).add(new String [] {"taken", "action"});
+
+        return new MDGraphAndMap(mdGraph, graph, data);
     }
 
 }

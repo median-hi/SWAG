@@ -41,43 +41,6 @@ public class MDQuerySparqlGenerator {
         return QueryFactory.create(queryString);
     }
 
-    public  List<MDElement> makePath(Level level){
-
-        List<MDElement> path = new LinkedList<>();
-
-        Dimension dim = mdGraph.findFirstDimensionOfLevel(level);
-        Set<Hierarchy> hiers = mdGraph.getDH().get(dim);
-
-        for (Hierarchy hier : hiers) {
-
-            if(mdGraph.getHL().get(hier).contains(level)) {
-
-                path.add(mdGraph.getF().stream().findAny().orElseThrow());
-
-
-                if (level.equals(mdGraph.bot(dim))) {
-                    path.add(level);
-                    return path;
-                }
-
-                Level curLevel = mdGraph.bot(dim);
-
-                while (curLevel != null) {
-                    Level next = mdGraph.getNextRollUpLevel(curLevel, hier);
-                    if (curLevel != null) {
-                        path.add(curLevel);
-                        if(curLevel.equals(level)){
-                            return path;
-                        }
-                        curLevel = next;
-                    } else {
-                        break;
-                    }
-                }
-            }
-        }
-        return null;
-    }
 
     public String makeQuery(List<MDElement> path){
         StringBuilder builder = new StringBuilder();
@@ -104,7 +67,7 @@ public class MDQuerySparqlGenerator {
 
 
         for (Level level : groupBy){
-            String q = makeQuery(makePath(level));
+            String q = makeQuery(MDGraphUtils.makePath(mdGraph, level));
             finalQuery = finalQuery + "\n" + q;
         }
 
@@ -130,7 +93,7 @@ public class MDQuerySparqlGenerator {
         String finalQuery = "";
 
         for (Level level : groupBy){
-            String q = makeQuery(makePath(level));
+            String q = makeQuery(MDGraphUtils.makePath(mdGraph, level));
             finalQuery = finalQuery + "\n" + q;
         }
 
