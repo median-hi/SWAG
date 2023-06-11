@@ -107,8 +107,8 @@ public class MDGraphInit {
                 " {SELECT ?film1 (MIN (?pubDate1) AS ?date) WHERE {?film1 <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q11424>.\n" +
                 "?film1 <http://www.wikidata.org/prop/direct/P2142> ?boxOffice3. ?film1 <http://www.wikidata.org/prop/direct/P577> ?pubDate1. } GROUP BY ?film1 } \n" +
                 "}");
-        graph.add(fact, country, "SELECT  ?country where\n" +
-                "{?country <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q6256>}");
+        graph.add(fact, country, "SELECT  ?film ?country where\n" +
+                "{?film <http://www.wikidata.org/prop/direct/P495> ?country>}");
 
         graph.add(director, gender, "select ?director ?gender\n" +
                 "where{\n" +

@@ -4,8 +4,6 @@ import at.jku.dke.swag.analysis_graphs.ElementWithUri;
 
 public class ConstantOrUnknown extends ElementWithUri implements PairOrConstant{
 
-
-
     public ConstantOrUnknown(String uri) {
         super(uri);
     }

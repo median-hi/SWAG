@@ -1,6 +1,7 @@
 package at.jku.dke.swag.analysis_graphs.utils;
 
 import at.jku.dke.swag.analysis_graphs.Step;
+import at.jku.dke.swag.analysis_graphs.Trace;
 import at.jku.dke.swag.analysis_graphs.basic_elements.*;
 import at.jku.dke.swag.md_elements.Dimension;
 import at.jku.dke.swag.analysis_graphs.AnalysisSituation;
@@ -19,6 +20,10 @@ public class Utils {
         }
 
         return updateSet;
+    }
+
+    public static AnalysisSituation evaluateAndFire(AnalysisSituation source, Set<Operation> operations){
+        return fire (source, evaluate(source, operations));
     }
 
     public static  AnalysisSituation fire(AnalysisSituation source, Set<Update> updateSet){
@@ -165,5 +170,21 @@ public class Utils {
                 operation.getParameters().set(i-1, binding.getBindings().get(i));
             }
         }
+    }
+
+    public static List<AnalysisSituation> executeTrace(Trace trace){
+        List<AnalysisSituation> situations = new ArrayList<>();
+
+        AnalysisSituation initialAsPrime = Utils.bind(trace.getInitialAs(), trace.getInitialAsBindings());
+        situations.add(initialAsPrime);
+
+        for (int i = 0; i < trace.getSteps().size(); i++){
+            Step stepPrime = Utils.bind(trace.getSteps().get(i), trace.getStepBindings().get(i));
+            Set<Update> updates = Utils.evaluate(initialAsPrime, stepPrime.getOperations());
+            initialAsPrime = Utils.fire(initialAsPrime, updates);
+            situations.add(initialAsPrime);
+        }
+
+        return situations;
     }
 }

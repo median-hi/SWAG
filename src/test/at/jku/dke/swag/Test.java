@@ -12,13 +12,13 @@ import java.util.List;
 
 public class Test {
 
-    @org.junit.Test
+    @org.junit.jupiter.api.Test
     public void test(){
         MDGraphAndMap mappedGraph = MDGraphInit.initMDGraphAndMap();
         MDGraph mdGraph = mappedGraph.getGraph();
         MappedMDGraph mdMap = mappedGraph.getMap();
 
-        List<Level> groupBy = List.of(new Level("continent"), new Level("director"));
+        List<Level> groupBy = List.of(new Level("director"), new Level("continent"));
         MDQuerySparqlGenerator sparqlGen = new MDQuerySparqlGenerator(mdGraph, mdMap);
         String queryStr = sparqlGen.makeGroupByQuery(groupBy);
         System.out.println(queryStr);

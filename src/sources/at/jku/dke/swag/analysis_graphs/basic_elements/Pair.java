@@ -2,6 +2,8 @@ package at.jku.dke.swag.analysis_graphs.basic_elements;
 
 import at.jku.dke.swag.analysis_graphs.Copiable;
 
+import java.util.Objects;
+
 public class Pair implements PairOrConstant, Copiable {
 
     private Parameter parameter;
@@ -58,8 +60,21 @@ public class Pair implements PairOrConstant, Copiable {
         this.constantOrUnknown = constantOrUnknown;
     }
 
-    public String toString(){
+    public String toString() {
         return "(" + this.getParameter() + "," + this.getConstant() + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pair pair = (Pair) o;
+        return Objects.equals(parameter, pair.parameter) && Objects.equals(constantOrUnknown, pair.constantOrUnknown);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(parameter, constantOrUnknown);
     }
 
     @Override

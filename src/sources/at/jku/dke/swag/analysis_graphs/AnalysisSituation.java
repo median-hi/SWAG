@@ -1,89 +1,80 @@
 package at.jku.dke.swag.analysis_graphs;
 
+import at.jku.dke.swag.analysis_graphs.basic_elements.BindableSet;
+import at.jku.dke.swag.analysis_graphs.basic_elements.PairOrConstant;
 import at.jku.dke.swag.md_elements.Dimension;
 import at.jku.dke.swag.md_elements.LevelMember;
 import at.jku.dke.swag.md_elements.MDGraph;
-import at.jku.dke.swag.analysis_graphs.basic_elements.BindableSet;
-import at.jku.dke.swag.analysis_graphs.basic_elements.PairOrConstant;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
-public class AnalysisSituation implements Copiable{
+public class AnalysisSituation implements Copiable {
 
 
+    BindableSet measures = new BindableSet();
+    BindableSet resultFilters = new BindableSet();
+    Map<Dimension, BindableSet> dimensionSelection = new HashMap<>();
+    Map<Dimension, PairOrConstant> granularities = new HashMap<>();
+    Map<Dimension, PairOrConstant> diceLevels = new HashMap<>();
+    Map<Dimension, PairOrConstant> diceNodes = new HashMap<>();
     private MDGraph mdGraph;
 
     public AnalysisSituation(MDGraph mdGraph) {
         this.mdGraph = mdGraph;
 
-        for (Dimension d : mdGraph.getD()){
+        for (Dimension d : mdGraph.getD()) {
             this.getGranularities().put(d, mdGraph.top(d));
             this.getDiceLevels().put(d, mdGraph.top(d));
-            this.getDiceNodes().put(d, new LevelMember("all_"+d.getUri()));
+            this.getDiceNodes().put(d, new LevelMember("all_" + d.getUri()));
             this.getDimensionSelection().put(d, BindableSet.empty());
         }
 
     }
 
-    BindableSet measures = new BindableSet();
-    BindableSet resultFilters = new BindableSet();
-
-    Map<Dimension, BindableSet > dimensionSelection = new HashMap<>();
-    Map<Dimension, PairOrConstant> granularities  = new HashMap<>();
-    Map<Dimension, PairOrConstant> diceLevels  = new HashMap<>();
-    Map<Dimension, PairOrConstant> diceNodes  = new HashMap<>();
-
-    public AnalysisSituation setMeasures (BindableSet measures){
-        this.measures = measures;
-        return this;
-    }
-
-    public AnalysisSituation setResultFilter (BindableSet resultFilters){
+    public AnalysisSituation setResultFilter(BindableSet resultFilters) {
         this.resultFilters = resultFilters;
         return this;
     }
 
-    public AnalysisSituation setDimensionSelection(Dimension d, BindableSet conds){
+    public AnalysisSituation setDimensionSelection(Dimension d, BindableSet conds) {
         dimensionSelection.put(d, conds);
         return this;
     }
 
-    public AnalysisSituation setGran(Dimension d, PairOrConstant gran){
+    public AnalysisSituation setGran(Dimension d, PairOrConstant gran) {
         granularities.put(d, gran);
         return this;
     }
 
-    public AnalysisSituation setDiceLevel(Dimension d, PairOrConstant level){
+    public AnalysisSituation setDiceLevel(Dimension d, PairOrConstant level) {
         diceLevels.put(d, level);
         return this;
     }
 
-    public AnalysisSituation setDiceNode(Dimension d, PairOrConstant node){
+    public AnalysisSituation setDiceNode(Dimension d, PairOrConstant node) {
         diceNodes.put(d, node);
         return this;
     }
 
-
     @Override
     public AnalysisSituation copy() {
 
-       AnalysisSituation newSituation = new AnalysisSituation(this.getMdGraph());
+        AnalysisSituation newSituation = new AnalysisSituation(this.getMdGraph());
 
-       newSituation.setMeasures(measures.copy());
-       newSituation.setResultFilter(resultFilters.copy());
+        newSituation.setMeasures(measures.copy());
+        newSituation.setResultFilter(resultFilters.copy());
 
-       for(Dimension d : mdGraph.getD()){
-           newSituation.dimensionSelection.put(d, this.dimensionSelection.get(d));
-           newSituation.granularities.put(d, this.granularities.get(d));
-           newSituation.diceLevels.put(d, this.diceLevels.get(d));
-           newSituation.diceNodes.put(d, this.diceNodes.get(d));
-       }
+        for (Dimension d : mdGraph.getD()) {
+            newSituation.dimensionSelection.put(d, this.dimensionSelection.get(d));
+            newSituation.granularities.put(d, this.granularities.get(d));
+            newSituation.diceLevels.put(d, this.diceLevels.get(d));
+            newSituation.diceNodes.put(d, this.diceNodes.get(d));
+        }
 
-       return newSituation;
+        return newSituation;
     }
-
-
 
     public MDGraph getMdGraph() {
         return mdGraph;
@@ -95,6 +86,11 @@ public class AnalysisSituation implements Copiable{
 
     public BindableSet getMeasures() {
         return measures;
+    }
+
+    public AnalysisSituation setMeasures(BindableSet measures) {
+        this.measures = measures;
+        return this;
     }
 
     public BindableSet getResultFilters() {
@@ -137,6 +133,22 @@ public class AnalysisSituation implements Copiable{
         this.diceNodes = diceNodes;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AnalysisSituation that = (AnalysisSituation) o;
+        return Objects.equals(measures, that.measures)
+                && Objects.equals(resultFilters, that.resultFilters)
+                && Objects.equals(dimensionSelection, that.dimensionSelection)
+                && Objects.equals(granularities, that.granularities)
+                && Objects.equals(diceLevels, that.diceLevels)
+                && Objects.equals(diceNodes, that.diceNodes);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(measures, resultFilters, dimensionSelection, granularities, diceLevels, diceNodes);
+    }
 }
 
