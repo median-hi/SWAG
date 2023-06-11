@@ -203,7 +203,7 @@ public class SwagInit {
         as.setGran(AppConstants.TIME_DIM, AppConstants.YEAR);
 
         as.setDiceLevel(AppConstants.DESTINATION_DIM, AppConstants.GEO);
-        as.setDiceNode(AppConstants.DESTINATION_DIM, new Pair(AppConstants.GEO_NODE, ConstantOrUnknown.unknown));
+        as.setDiceNode(AppConstants.DESTINATION_DIM, new Pair(AppConstants.GEO_NODE, Level.unknown()));
 
         BindableSet selections = new BindableSet();
         selections.union(new Pair(AppConstants.D_PRED, ConstantOrUnknown.unknown));
@@ -271,7 +271,7 @@ public class SwagInit {
                 List.of(new Dimension("destinationDim"),
                         new Level("geo"),
                         new Parameter("geoNode"),
-                        new LevelMember(ConstantOrUnknown.unknown.getUri())));
+                        ConstantOrUnknown.unknown.getUri()));
 
         Operation op3 = new Operation(AddParamDimPredicate.getInstance(),
                 List.of(new Dimension("timeDim"),

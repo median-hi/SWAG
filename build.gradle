@@ -23,9 +23,11 @@ sourceSets {
 }
 dependencies {
     implementation("org.apache.jena:jena-core:4.7.0")
-    implementation("org.apache.jena:jena-arq:4.7.0")    //implementation("junit:junit:4.13.2")
+    implementation("org.apache.jena:jena-arq:4.7.0")
+    //implementation("junit:junit:4.13.2")
     implementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    implementation("com.google.guava:guava:31.1-jre")
 }
 
 test {

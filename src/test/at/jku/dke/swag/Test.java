@@ -12,8 +12,8 @@ import java.util.Set;
 
 public class Test {
 
-    @org.junit.Test
-    public void test1(){
+    @org.junit.jupiter.api.Test
+    public void test1() {
         MDGraphAndMap mappedGraph = MDGraphInit.initMDGraphAndMap();
         MDGraph mdGraph = mappedGraph.getGraph();
         MappedMDGraph mdMap = mappedGraph.getMap();
@@ -27,8 +27,8 @@ public class Test {
         System.out.println(query.toString());
     }
 
-    @org.junit.Test
-    public void test2(){
+    @org.junit.jupiter.api.Test
+    public void test2() {
         MDGraphAndMap mappedGraph = MDGraphInit.initMDGraphAndMap();
         MDGraph mdGraph = mappedGraph.getGraph();
         MappedMDGraph mdMap = mappedGraph.getMap();
@@ -41,8 +41,8 @@ public class Test {
         System.out.println(query.toString());
     }
 
-    @org.junit.Test
-    public void test3(){
+    @org.junit.jupiter.api.Test
+    public void test3() {
 
         MDGraphAndMap mappedGraph = MDGraphInit.initMDGraphAndMap();
         MDGraph mdGraph = mappedGraph.getGraph();
@@ -57,8 +57,8 @@ public class Test {
 
     }
 
-    @org.junit.Test
-    public void test4(){
+    @org.junit.jupiter.api.Test
+    public void test4() {
 
         MDGraphAndMap mappedGraph = MDGraphInit.initMDGraphAndMap();
         MDGraph mdGraph = mappedGraph.getGraph();
@@ -73,8 +73,8 @@ public class Test {
 
     }
 
-    @org.junit.Test
-    public void test5(){
+    @org.junit.jupiter.api.Test
+    public void test5() {
 
         MDGraphAndMap mappedGraph = MDGraphInit.initMDGraphAndMap();
         MDGraph mdGraph = mappedGraph.getGraph();
@@ -90,8 +90,8 @@ public class Test {
         PrintUtils.printMap1(factsAndWeights);
     }
 
-    @org.junit.Test
-    public void test6(){
+    @org.junit.jupiter.api.Test
+    public void test6() {
 
         MDGraphAndMap mappedGraph = MDGraphInit.initMDGraphAndMap();
         MDGraph mdGraph = mappedGraph.getGraph();
@@ -111,8 +111,8 @@ public class Test {
         PrintUtils.printMap2(aggs);
     }
 
-    @org.junit.Test
-    public void test7(){
+    @org.junit.jupiter.api.Test
+    public void test7() {
 
         MDGraphAndMap mappedGraph = MDGraphInit.initMDGraphAndMap();
         MDGraph mdGraph = mappedGraph.getGraph();
@@ -126,8 +126,8 @@ public class Test {
         PrintUtils.printMapAndMultiSet(factsAndCoordinates, mdGraph, data, new Measure("boxOffice"));
     }
 
-    @org.junit.Test
-    public void testDimDiscardMissing(){
+    @org.junit.jupiter.api.Test
+    public void testDimDiscardMissing() {
 
         MDGraphAndMap mappedGraph = MDGraphInit.initMDGraphAndMap();
         MDGraph mdGraph = mappedGraph.getGraph();
@@ -141,8 +141,8 @@ public class Test {
         PrintUtils.printMapAndMultiSet(factsAndCoordinates, mdGraph, data, new Measure("boxOffice"));
     }
 
-    @org.junit.Test
-    public void testDimDefaultValue(){
+    @org.junit.jupiter.api.Test
+    public void testDimDefaultValue() {
 
         MDGraphAndMap mappedGraph = MDGraphInit.initMDGraphAndMap();
         MDGraph mdGraph = mappedGraph.getGraph();
