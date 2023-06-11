@@ -1,6 +1,7 @@
 package at.jku.dke.swag;
 
 import at.jku.dke.swag.analysis_graphs.basic_elements.Parameter;
+import at.jku.dke.swag.md_data.MDData;
 import at.jku.dke.swag.md_elements.*;
 
 import java.util.HashSet;
@@ -65,9 +66,11 @@ public class MDGraphInit {
                 "where {\n" +
                 "?film <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q11424>. ?film <http://www.wikidata.org/prop/direct/P2142> ?boxOffice1.\n" +
                 "}");
-        graph.add(fact, boxOffice, "SELECT ?film ?boxOoffice WHERE {\n" +
-                "?film <http://www.wikidata.org/prop/P2142> ?boxOfficeNode. ?boxOfficeNode <http://www.wikidata.org/prop/statement/value/P2142> ?value.\n" +
-                "?value <http://wikiba.se/ontology#quantityAmount> ?boxOffice. ?value <http://wikiba.se/ontology#quantityUnit> <http://www.wikidata.org/entity/Q4917>.\n" +
+        graph.add(fact, boxOffice, "SELECT ?film ?boxOffice WHERE {\n" +
+                "?film <http://www.wikidata.org/prop/P2142> ?boxOfficeNode." +
+                " ?boxOfficeNode <http://www.wikidata.org/prop/statement/value/P2142> ?value.\n" +
+                "?value <http://wikiba.se/ontology#quantityAmount> ?boxOffice. " +
+                "?value <http://wikiba.se/ontology#quantityUnit> <http://www.wikidata.org/entity/Q4917>.\n" +
                 "?boxOfficeNode <http://www.wikidata.org/prop/qualifier/P3005> <http://www.wikidata.org/entity/Q13780930>.}");
 
         graph.add(director, "select ?director where {\n" +
@@ -98,9 +101,9 @@ public class MDGraphInit {
         graph.add(fact, director, "select ?film ?director where {\n" +
                 "?film <http://www.wikidata.org/prop/direct/P57> ?director.\n" +
                 "}");
-        graph.add(fact, genre, "SELECT ?film ?genre where\n" +
-                "{\n" +
-                "    ?film <http://www.wikidata.org/prop/direct/P136> ?genre.\n" +
+        graph.add(fact, genre, "SELECT ?film ?genre where\\n\" +\n" +
+                "                \"{\\n\" +\n" +
+                "                \"    ?film <http://www.wikidata.org/prop/direct/P136> ?genre.\n" +
                 "}");
         graph.add(fact, date, "SELECT ?date where\n" +
                 "{   \n" +
@@ -108,7 +111,7 @@ public class MDGraphInit {
                 "?film1 <http://www.wikidata.org/prop/direct/P2142> ?boxOffice3. ?film1 <http://www.wikidata.org/prop/direct/P577> ?pubDate1. } GROUP BY ?film1 } \n" +
                 "}");
         graph.add(fact, country, "SELECT  ?film ?country where\n" +
-                "{?film <http://www.wikidata.org/prop/direct/P495> ?country>}");
+                "{?film <http://www.wikidata.org/prop/direct/P495> ?country}");
 
         graph.add(director, gender, "select ?director ?gender\n" +
                 "where{\n" +
@@ -126,7 +129,52 @@ public class MDGraphInit {
                 "      ?month <http://www.wikidata.org/prop/direct/P361> ?year. \n" +
                 "}");
 
-        return new MDGraphAndMap(mdGraph, graph);
+        MDData data = new MDData();
+
+        data.get(fact).add("theWolfOfWallStreet");
+        data.get(fact).add("fastAndFurious6");
+        data.get(fact).add("rushHour");
+        data.get(fact).add("taken");
+
+        data.get(genre).add("heist");
+        data.get(genre).add("action");
+        data.get(genre).add("thriller");
+        data.get(genre).add("comedy");
+        data.get(genre).add("biographical");
+        data.get(genre).add("drama");
+        data.get(genre).add("crime");
+        data.get(genre).add("literature");
+        data.get(genre).add("martialArts");
+
+        data.get(fact, boxOffice).add(new String [] {"fastAndFurious6", "789"});
+        data.get(fact, boxOffice).add(new String [] {"rushHour", "244"});
+        data.get(fact, boxOffice).add(new String [] {"rushHour", "245"});
+        data.get(fact, boxOffice).add(new String [] {"taken", "227"});
+
+        data.get(fact, date).add(new String [] {"fastAndFurious6", "22-05-2013"});
+        data.get(fact, date).add(new String [] {"rushHour", "18-09-1998"});
+        data.get(fact, date).add(new String [] {"theWolfOfWallStreet", "17-12-2013"});
+
+        data.get(date).add("22-05-2013");
+        data.get(date).add("18-09-1998");
+        data.get(date).add("17-12-2013");
+
+        data.get(fact, genre).add(new String [] {"fastAndFurious6", "heist"});
+        data.get(fact, genre).add(new String [] {"fastAndFurious6", "action"});
+        data.get(fact, genre).add(new String [] {"fastAndFurious6", "thriller"});
+
+        data.get(fact, genre).add(new String [] {"theWolfOfWallStreet", "comedy"});
+        data.get(fact, genre).add(new String [] {"theWolfOfWallStreet", "biographical"});
+        data.get(fact, genre).add(new String [] {"theWolfOfWallStreet", "drama"});
+        data.get(fact, genre).add(new String [] {"theWolfOfWallStreet", "crime"});
+        data.get(fact, genre).add(new String [] {"theWolfOfWallStreet", "literature"});
+
+        data.get(fact, genre).add(new String [] {"rushHour", "martialArts"});
+        data.get(fact, genre).add(new String [] {"rushHour", "action"});
+
+        data.get(fact, genre).add(new String [] {"taken", "action"});
+
+        return new MDGraphAndMap(mdGraph, graph, data);
     }
 
 }

@@ -41,43 +41,6 @@ public class MDQuerySparqlGenerator {
         return QueryFactory.create(queryString);
     }
 
-    public  List<MDElement> makePath(Level level){
-
-        List<MDElement> path = new LinkedList<>();
-
-        Dimension dim = mdGraph.findFirstDimensionOfLevel(level);
-        Set<Hierarchy> hiers = mdGraph.getDH().get(dim);
-
-        for (Hierarchy hier : hiers) {
-
-            if(mdGraph.getHL().get(hier).contains(level)) {
-
-                path.add(mdGraph.getF().stream().findAny().orElseThrow());
-
-
-                if (level.equals(mdGraph.bot(dim))) {
-                    path.add(level);
-                    return path;
-                }
-
-                Level curLevel = mdGraph.bot(dim);
-
-                while (curLevel != null) {
-                    Level next = mdGraph.getNextRollUpLevel(curLevel, hier);
-                    if (curLevel != null) {
-                        path.add(curLevel);
-                        if(curLevel.equals(level)){
-                            return path;
-                        }
-                        curLevel = next;
-                    } else {
-                        break;
-                    }
-                }
-            }
-        }
-        return null;
-    }
 
     public String makeQuery(List<MDElement> path){
         StringBuilder builder = new StringBuilder();
@@ -104,15 +67,50 @@ public class MDQuerySparqlGenerator {
 
 
         for (Level level : groupBy){
-            String q = makeQuery(makePath(level));
+            String q = makeQuery(MDGraphUtils.makePath(mdGraph, level));
             finalQuery = finalQuery + "\n" + q;
         }
-
-
 
         finalQuery = "SELECT %s WHERE{" + finalQuery + "} GROUP BY %s";
         finalQuery = String.format(finalQuery, getSelectString(groupBy), getSelectString(groupBy));
 
+        return finalQuery;
+    }
+
+    public String makeAggregationQuery(Fact fact, Measure m, List<Level> groupBy){
+
+            String finalQuery = "{" + makeMsrQuery(fact, m) + "}" + "{" + makeDimensionsQuery(fact, groupBy) + "}" ;
+
+            finalQuery = "SELECT %s %s WHERE{" + finalQuery + "} GROUP BY %s";
+            finalQuery = String.format(finalQuery, String.format("(SUM(%s) AS ?sum) ", getElmVarName(m)),
+                    getSelectString(groupBy), getSelectString(groupBy));
+
+            return finalQuery;
+    }
+
+    public String makeDimensionsQuery(Fact fact, List<Level> groupBy){
+
+        String finalQuery = "";
+
+        for (Level level : groupBy){
+            String q = makeQuery(MDGraphUtils.makePath(mdGraph, level));
+            finalQuery = finalQuery + "\n" + q;
+        }
+
+        finalQuery = "SELECT DISTINCT %s WHERE{" + finalQuery + "}";
+        finalQuery = String.format(finalQuery, getSelectStringOfDimensionQuery(fact, groupBy));
+
+
+        return finalQuery;
+    }
+
+    public String makeMsrQuery(Fact fact, Measure m){
+
+        String finalQuery = "{" + mappedMDGraph.get(fact) + "} \n";
+        finalQuery += "{" + mappedMDGraph.get(fact, m) + "}";
+
+        finalQuery = "SELECT DISTINCT %s WHERE{" + finalQuery + "}";
+        finalQuery = String.format(finalQuery, getSelectStringOfMeasureQuery(fact, m));
 
         return finalQuery;
     }
@@ -121,11 +119,31 @@ public class MDQuerySparqlGenerator {
         String res = "";
 
         for (Level elm: elms){
-            res += "?" +
-                    elm.getUri().substring(elm.getUri().lastIndexOf("/") +1, elm.getUri().length()) +
-                    " ";
+            res += getElmVarName(elm) + " ";
         }
         return res;
+    }
+
+    private String getSelectStringOfDimensionQuery(Fact fact, List<Level> elms){
+        String res = "";
+
+        res += getElmVarName(fact) + " ";
+
+        for (Level elm: elms){
+            res += getElmVarName(elm) + " ";
+        }
+        return res;
+    }
+
+    private String getSelectStringOfMeasureQuery(Fact fact, Measure m){
+        String res = "";
+        res += getElmVarName(fact) + " ";
+        res += getElmVarName(m) + " ";
+        return res;
+    }
+
+    private String getElmVarName(MDElement elm){
+        return "?" + elm.getUri().substring(elm.getUri().lastIndexOf("/") +1, elm.getUri().length());
     }
 
 }

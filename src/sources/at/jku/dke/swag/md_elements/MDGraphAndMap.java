@@ -1,13 +1,19 @@
 package at.jku.dke.swag.md_elements;
 
+import at.jku.dke.swag.md_data.MDData;
+
 public class MDGraphAndMap {
 
     MDGraph graph;
     MappedMDGraph map;
 
-    public MDGraphAndMap(MDGraph graph, MappedMDGraph map) {
+    MDData data;
+
+
+    public MDGraphAndMap(MDGraph graph, MappedMDGraph map, MDData data) {
         this.graph = graph;
         this.map = map;
+        this.data = data;
     }
 
     public void setGraph(MDGraph graph) {
@@ -24,5 +30,14 @@ public class MDGraphAndMap {
 
     public MappedMDGraph getMap() {
         return map;
+    }
+
+
+    public MDData getData() {
+        return data;
+    }
+
+    public void setData(MDData data) {
+        this.data = data;
     }
 }
