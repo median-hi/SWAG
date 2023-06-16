@@ -34,8 +34,7 @@ public class AddParamResultPredicate extends OperationTypes {
         Parameter param1 = (Parameter) params.get(0);
         ConstantOrUnknown param2 = (ConstantOrUnknown) params.get(1);
 
-        if(!situation.getResultFilters().paras().contains(param1)
-                && !situation.getResultFilters().consts().contains(param2)){
+        if(!situation.getResultFilters().paras().contains(param1)){
 
             BindableSet newSelection = situation.getResultFilters()
                     .copy();

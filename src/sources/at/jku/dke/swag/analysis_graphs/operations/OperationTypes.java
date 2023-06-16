@@ -29,5 +29,5 @@ public abstract class OperationTypes {
     public static final MDGraph mdGraph = MDGraphInit.initMDGraph();
 
 
-    abstract public Set<Update> updSet(AnalysisSituation situation, List<Object> params);
+    public abstract  Set<Update> updSet(AnalysisSituation situation, List<Object> params);
 }

@@ -223,14 +223,14 @@ public class SwagInit {
         as.setGran(AppConstants.TIME_DIM, AppConstants.REF_PERIOD);
 
         as.setDiceLevel(AppConstants.DESTINATION_DIM, AppConstants.GEO);
-        as.setDiceNode(AppConstants.DESTINATION_DIM, new Pair(AppConstants.GEO_NODE, ConstantOrUnknown.unknown));
+        as.setDiceNode(AppConstants.DESTINATION_DIM, new Pair(AppConstants.GEO_NODE, LevelMember.unknown()));
 
         BindableSet selections = new BindableSet();
         selections.union(new Pair(AppConstants.D_PRED, ConstantOrUnknown.unknown));
         as.setDimensionSelection(AppConstants.TIME_DIM, selections);
 
         BindableSet filters = new BindableSet();
-        selections.union(new Pair(AppConstants.M_PRED, ConstantOrUnknown.unknown));
+        filters.union(new Pair(AppConstants.M_PRED, ConstantOrUnknown.unknown));
         as.setResultFilter(filters);
 
         return as;
@@ -246,9 +246,8 @@ public class SwagInit {
         as.setGran(AppConstants.DESTINATION_DIM, AppConstants.GEO);
         as.setGran(AppConstants.CITIZENSHIP_DIM, AppConstants.CITIZEN);
 
-
         as.setDiceLevel(AppConstants.DESTINATION_DIM, AppConstants.GEO);
-        as.setDiceNode(AppConstants.DESTINATION_DIM, new Pair(AppConstants.GEO_NODE_1, ConstantOrUnknown.unknown));
+        as.setDiceNode(AppConstants.DESTINATION_DIM, new Pair(AppConstants.GEO_NODE_1, LevelMember.unknown()));
 
         return as;
     }
@@ -291,7 +290,7 @@ public class SwagInit {
                 List.of(new Dimension("destinationDim"),
                         new Level("geo"),
                         new Parameter("geoNode1"),
-                        new LevelMember(ConstantOrUnknown.unknown.getUri())));
+                        LevelMember.unknown()));
 
         return Set.of(op1, op2);
     }

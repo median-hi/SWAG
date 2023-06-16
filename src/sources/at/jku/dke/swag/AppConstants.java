@@ -14,7 +14,7 @@ public class AppConstants {
 
     public static final Dimension CITIZENSHIP_DIM = new Dimension("citizenshipDim");
 
-    public static final Dimension CITIZEN = new Dimension("citizen");
+    public static final Level CITIZEN = new Level("citizen");
 
     public static final Level YEAR = new Level("year");
 

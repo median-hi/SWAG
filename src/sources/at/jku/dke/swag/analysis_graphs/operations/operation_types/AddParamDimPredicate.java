@@ -36,8 +36,7 @@ public class AddParamDimPredicate extends OperationTypes {
         Parameter param1 = (Parameter) params.get(1);
         ConstantOrUnknown param2 = (ConstantOrUnknown) params.get(2);
 
-        if(!situation.getDimensionSelection().get(param0).paras().contains(param1)
-                && !situation.getDimensionSelection().get(param0).consts().contains(param2)){
+        if(!situation.getDimensionSelection().get(param0).paras().contains(param1)){
 
             BindableSet newSelection = situation.getDimensionSelection()
                     .get(param0).copy();

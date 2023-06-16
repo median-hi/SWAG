@@ -40,7 +40,7 @@ public class DrillDownTo extends OperationTypes {
 
                     //System.out.println("BEFORE");
 
-                    if(!actualGran.equals(ConstantOrUnknown.unknown)
+                    if(!actualGran.isStrictlyUnknown()
                             && !actualGran.equals(situation.getMdGraph().bot(param0))
                             && !actualGran.equals(param1)
                             && actualGran.isPair()){
