@@ -7,11 +7,10 @@ public class MDGraph {
 
     Set<Measure> M = new HashSet<>();
     Set<RollUpPair> LL = new HashSet<>();
-    Set<Level>L = new HashSet<>();
+    Set<Level> L = new HashSet<>();
     Set<Fact> F = new HashSet<>();
-    Set<Dimension>D = new HashSet<>();
+    Set<Dimension> D = new HashSet<>();
     Set<Hierarchy> H = new HashSet<>();
-
 
     Map<Dimension, Set<Hierarchy>> DH = new HashMap<>();
 
@@ -20,24 +19,24 @@ public class MDGraph {
 
     Map<Hierarchy, Set<Level>> HL = new HashMap<>();
 
-    Map<Level, Set<LevelMember>> members = new HashMap<>();
+    Map<Level, TreeSet<LevelMember>> members = new HashMap<>();
 
-    public Set<Level> getLevelsOfDimension(Dimension d){
+    public Set<Level> getLevelsOfDimension(Dimension d) {
         return DH.get(d).stream().flatMap(h -> HL.get(h).stream()).collect(Collectors.toSet());
     }
 
-    public Set<LevelMember> getMembersOf(Level l){
+    public Set<LevelMember> getMembersOf(Level l) {
         if (members.get(l) == null)
             return new HashSet<>();
         return members.get(l);
     }
 
-    public Set<LevelMember> getMembersOf(Dimension d){
+    public Set<LevelMember> getMembersOf(Dimension d) {
         return getLevelsOfDimension(d).stream().flatMap(l -> getMembersOf(l).stream()).collect(Collectors.toSet());
     }
 
-    public Optional<Level> nextLevel(Hierarchy h, Level l){
-        Set<RollUpPair> pairsToInspect =  LL
+    public Optional<Level> nextLevel(Hierarchy h, Level l) {
+        Set<RollUpPair> pairsToInspect = LL
                 .stream()
                 .filter(pair -> pair.getFrom().equals(l))
                 .collect(Collectors.toSet());
@@ -49,16 +48,71 @@ public class MDGraph {
                 .findAny();
     }
 
-    public boolean rollsUpTo(Level l1, Level l2){
+    public LevelMember lastMember(Level l) {
+        return members.get(l).last();
+    }
+
+    public LevelMember prevMember(Level l, LevelMember m) {
+        return members.get(l).lower(m);
+    }
+
+    public LevelMember firstMember(Level l) {
+        return members.get(l).first();
+    }
+
+    public LevelMember nextMember(Level l, LevelMember m) {
+        return members.get(l).higher(m);
+    }
+
+    public boolean drillsDownTo(Hierarchy h, Level l1, Level l2) {
+        Set<Level> preLevels = new HashSet<>();
+
+        Level currLevel = l1;
+
+        while (previousLevel(h, l1).isPresent()) {
+            preLevels.add(previousLevel(h, l1).get());
+            currLevel = previousLevel(h, l1).get();
+        }
+
+        return preLevels.contains(l2);
+    }
+
+    public boolean isLevelInHierarchy(Hierarchy h, Level l) {
+        return getHL().get(h).contains(l);
+    }
+
+
+    public boolean drillsDownToInDimension(Dimension d, Level l1, Level l2) {
+
+        for (Hierarchy h : getDH().get(d)) {
+
+            Set<Level> preLevels = new HashSet<>();
+
+            Level currLevel = l1;
+
+            while (previousLevel(h, l1).isPresent()) {
+                preLevels.add(previousLevel(h, l1).get());
+                currLevel = previousLevel(h, l1).get();
+            }
+
+            if (preLevels.contains(l2)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean rollsUpTo(Level l1, Level l2) {
         return LL.contains(new RollUpPair(l1, l2));
     }
 
-    public boolean drillsDownTo(Level l1, Level l2){
+    public boolean drillsDownTo(Level l1, Level l2) {
         return rollsUpTo(l2, l1);
     }
 
-    public Optional<Level> previousLevel(Hierarchy h, Level l){
-        Set<RollUpPair> pairsToInspect =  LL
+    public Optional<Level> previousLevel(Hierarchy h, Level l) {
+        Set<RollUpPair> pairsToInspect = LL
                 .stream()
                 .filter(pair -> pair.getTo().equals(l))
                 .collect(Collectors.toSet());
@@ -70,7 +124,7 @@ public class MDGraph {
                 .findAny();
     }
 
-    public Level top(Dimension d){
+    public Level top(Dimension d) {
 
         Set<Hierarchy> hierarchiesOfDim = getDH()
                 .entrySet()
@@ -80,10 +134,10 @@ public class MDGraph {
                 .findAny()
                 .orElse(Collections.emptySet());
 
-        for (Hierarchy h : hierarchiesOfDim){
-            Set<Level> levels= HL.get(h).stream().collect(Collectors.toSet());
-            for(Level l : levels){
-                if(LL.stream().noneMatch(pair -> l.equals(pair.getFrom()))){
+        for (Hierarchy h : hierarchiesOfDim) {
+            Set<Level> levels = HL.get(h).stream().collect(Collectors.toSet());
+            for (Level l : levels) {
+                if (LL.stream().noneMatch(pair -> l.equals(pair.getFrom()))) {
                     return l;
                 }
             }
@@ -92,7 +146,7 @@ public class MDGraph {
         return null;
     }
 
-    public Level bot(Dimension d){
+    public Level bot(Dimension d) {
 
         Set<Hierarchy> hierarchiesOfDim = getDH()
                 .entrySet()
@@ -102,10 +156,10 @@ public class MDGraph {
                 .findAny()
                 .orElse(Collections.emptySet());
 
-        for (Hierarchy h : hierarchiesOfDim){
-            Set<Level> levels= HL.get(h).stream().collect(Collectors.toSet());
-            for(Level l : levels){
-                if(LL.stream().noneMatch(pair -> l.equals(pair.getTo()))){
+        for (Hierarchy h : hierarchiesOfDim) {
+            Set<Level> levels = HL.get(h).stream().collect(Collectors.toSet());
+            for (Level l : levels) {
+                if (LL.stream().noneMatch(pair -> l.equals(pair.getTo()))) {
                     return l;
                 }
             }
@@ -114,29 +168,29 @@ public class MDGraph {
         return null;
     }
 
-    public Dimension findFirstDimensionOfLevel(Level level){
-        for (Dimension d : this.getD()){
-            if(this.getLevelsOfDimension(d).contains(level)){
+    public Dimension findFirstDimensionOfLevel(Level level) {
+        for (Dimension d : this.getD()) {
+            if (this.getLevelsOfDimension(d).contains(level)) {
                 return d;
             }
         }
         return null;
     }
 
-    public Level getNextRollUpLevel(Level level, Hierarchy hier){
-        for (RollUpPair ll : this.getHLL().get(hier)){
-            if(ll.getFrom().equals(level)){
+    public Level getNextRollUpLevel(Level level, Hierarchy hier) {
+        for (RollUpPair ll : this.getHLL().get(hier)) {
+            if (ll.getFrom().equals(level)) {
                 return ll.getTo();
             }
         }
         return null;
     }
 
-    public boolean isMemberOf(LevelMember member, Level level){
+    public boolean isMemberOf(LevelMember member, Level level) {
         return members.get(level).contains(member);
     }
 
-    public boolean isRollUpInHierarchy(Hierarchy h, RollUpPair pair){
+    public boolean isRollUpInHierarchy(Hierarchy h, RollUpPair pair) {
         return HLL.get(h).contains(pair);
     }
 
@@ -160,12 +214,12 @@ public class MDGraph {
         return F;
     }
 
-    public Fact getFact(){
-        return F.stream().findAny().orElseThrow();
-    }
-
     public void setF(Set<Fact> f) {
         F = f;
+    }
+
+    public Fact getFact() {
+        return F.stream().findAny().orElseThrow();
     }
 
     public Set<Dimension> getD() {
@@ -219,11 +273,11 @@ public class MDGraph {
         M = m;
     }
 
-    public Map<Level, Set<LevelMember>> getMembers() {
+    public Map<Level, TreeSet<LevelMember>> getMembers() {
         return members;
     }
 
-    public void setMembers(Map<Level, Set<LevelMember>> members) {
+    public void setMembers(Map<Level, TreeSet<LevelMember>> members) {
         this.members = members;
     }
 

@@ -8,6 +8,7 @@ import at.jku.dke.swag.analysis_graphs.basic_elements.Pair;
 import at.jku.dke.swag.analysis_graphs.operations.OperationTypes;
 import at.jku.dke.swag.analysis_graphs.utils.Utils;
 import at.jku.dke.swag.md_elements.Dimension;
+import at.jku.dke.swag.md_elements.Hierarchy;
 import at.jku.dke.swag.md_elements.Level;
 
 import java.util.Collections;
@@ -15,11 +16,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class DrillDownTo extends OperationTypes {
+public class DrillDown extends OperationTypes {
 
-    private static final DrillDownTo instance = new DrillDownTo(Collections.emptyList());
+    private static final DrillDown instance = new DrillDown(Collections.emptyList());
 
-    public DrillDownTo(List<Object> params) {
+    public DrillDown(List<Object> params) {
         super(params);
     }
 
@@ -33,36 +34,47 @@ public class DrillDownTo extends OperationTypes {
         Set<Update> updates = new HashSet<>();
 
         Dimension param0 = (Dimension) params.get(0);
-        Level param1 = (Level) params.get(1);
+        Hierarchy param1 = (Hierarchy) params.get(1);
 
         ConstantOrUnknown actualGran = Utils.actual(situation.getGranularities().get(param0));
 
         //System.out.println("BEFORE");
 
         if (!actualGran.isStrictlyUnknown()
-                && mdGraph.drillsDownToInDimension(param0, (Level) actualGran, param1)
+                && mdGraph.isLevelInHierarchy(param1, (Level) actualGran)
+                && !actualGran.equals(situation.getMdGraph().bot(param0))
                 && actualGran.isPair()) {
 
             Pair newGranPair = ((Pair) situation.getGranularities()
                     .get(param0)).copy();
-            newGranPair.setConstant(param1);
+            newGranPair.setConstant(mdGraph.previousLevel(param1, (Level) actualGran).get());
             updates.add(
                     new Update(
                             Location.granularityOf(param0), newGranPair));
             //System.out.println("producing update set");
         } else {
             if (!actualGran.isStrictlyUnknown()
-                    && mdGraph.drillsDownToInDimension(param0, (Level) actualGran, param1)
-                    && !actualGran.equals(param1)
+                    && mdGraph.isLevelInHierarchy(param1, (Level) actualGran)
+                    && !actualGran.equals(situation.getMdGraph().bot(param0))
+                    && !actualGran.equals(mdGraph.previousLevel(param1, (Level) actualGran).get())
                     && actualGran.isConstantOrUnknown()) {
 
-                ConstantOrUnknown newGranPair = param1;
+                Level newGranPair = mdGraph.previousLevel(param1, (Level) actualGran).get();
                 updates.add(
                         new Update(
                                 Location.granularityOf(param0),
-                                param1)
+                                newGranPair)
                 );
                 //System.out.println("producing empty set");
+            } else {
+                if (actualGran.isStrictlyUnknown()) {
+                    updates.add(
+                            new Update(
+                                    Location.granularityOf(param0),
+                                    Level.unknown())
+                    );
+                }
+
             }
         }
 
