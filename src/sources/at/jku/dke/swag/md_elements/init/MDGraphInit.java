@@ -6,6 +6,7 @@ import at.jku.dke.swag.md_elements.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.BiFunction;
 
 public class MDGraphInit {
 
@@ -70,6 +71,24 @@ public class MDGraphInit {
         mdGraph.getLL().add(new RollUpPair(govType, citizenshipTop));
         mdGraph.getLL().add(new RollUpPair(refPeriod, year));
         mdGraph.getLL().add(new RollUpPair(year, timeTop));
+
+        BiFunction<Set<RollUpPair>, Set<RollUpPair>, Set<RollUpPair>> f = (x, y) -> {
+            Set<RollUpPair> z = new HashSet<>(x);
+            z.addAll(y);
+            return z;
+        };
+
+        mdGraph.getHLL().merge(geoHierarchy, Set.of(new RollUpPair(geo, continent)), f);
+        mdGraph.getHLL().merge(geoHierarchy, Set.of(new RollUpPair(continent, destinationTop)), f);
+        mdGraph.getHLL().merge(govHierarchy, Set.of(new RollUpPair(geo, govType)), f);
+        mdGraph.getHLL().merge(govHierarchy, Set.of(new RollUpPair(govType, destinationTop)), f);
+        mdGraph.getHLL().merge(citizenshipGeoHierarchy, Set.of(new RollUpPair(citizen, continent)), f);
+        mdGraph.getHLL().merge(citizenshipGovHierarchy, Set.of(new RollUpPair(citizen, govType)), f);
+        mdGraph.getHLL().merge(citizenshipGovHierarchy, Set.of(new RollUpPair(continent, citizenshipTop)), f);
+        mdGraph.getHLL().merge(citizenshipGovHierarchy, Set.of(new RollUpPair(govType, citizenshipTop)), f);
+        mdGraph.getHLL().merge(timeHierarchy, Set.of(new RollUpPair(refPeriod, year)), f);
+        mdGraph.getHLL().merge(timeHierarchy, Set.of(new RollUpPair(year, timeTop)), f);
+
         mdGraph.getM().add(numOfApps);
         mdGraph.getMembers().put(geo, new TreeSet<>(Set.of(germany, austria)));
         mdGraph.getMembers().put(continent, new TreeSet<>(Set.of(asia, europe)));

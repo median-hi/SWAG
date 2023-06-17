@@ -17,12 +17,11 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Set;
 
-public class ReplaceConstantDimPredicateTest {
+public class ReplacePairDimPredicateTest {
 
     MDGraph mdGraph;
     AnalysisSituation source;
     AnalysisSituation target;
-
     AnalysisSituation opTarget;
     Set<Operation> ops;
 
@@ -32,10 +31,10 @@ public class ReplaceConstantDimPredicateTest {
     }
 
     @Nested
-    class AddedConstantDoesNotExistInSelections {
+    class AddedPairDoesNotExistInSelections {
 
         @Nested
-        class RemovedConstantExistInSelections {
+        class RemovedPairExistInSelections {
 
             @Test
             void added() {
@@ -48,10 +47,10 @@ public class ReplaceConstantDimPredicateTest {
             }
 
             public Set<Operation> initOperations() {
-                Operation op3 = new Operation(ReplaceConstantDimPredicate.getInstance(),
+                Operation op3 = new Operation(ReplaceParamDimPredicate.getInstance(),
                         List.of(AppConstants.TIME_DIM,
-                                AppConstants.YEAR_AFTER_2013,
-                                AppConstants.YEAR_AFTER_2015));
+                                AppConstants.D_PRED_1,
+                                AppConstants.D_PRED_2, AppConstants.YEAR_AFTER_2015));
                 return Set.of(op3);
             }
 
@@ -59,7 +58,7 @@ public class ReplaceConstantDimPredicateTest {
                 AnalysisSituation as = new AnalysisSituation(mdGraph);
 
                 BindableSet selections = new BindableSet();
-                selections.union(AppConstants.YEAR_AFTER_2013);
+                selections.union(AppConstants.YEAR_AFTER_2015);
                 selections.union(new Pair(AppConstants.D_PRED, ConstantOrUnknown.unknown));
                 selections.union(new Pair(AppConstants.D_PRED_1, AppConstants.YEAR_AFTER_2013));
                 as.setDimensionSelection(AppConstants.TIME_DIM, selections);
@@ -73,7 +72,7 @@ public class ReplaceConstantDimPredicateTest {
                 BindableSet selections = new BindableSet();
                 selections.union(AppConstants.YEAR_AFTER_2015);
                 selections.union(new Pair(AppConstants.D_PRED, ConstantOrUnknown.unknown));
-                selections.union(new Pair(AppConstants.D_PRED_1, AppConstants.YEAR_AFTER_2013));
+                selections.union(new Pair(AppConstants.D_PRED_2, AppConstants.YEAR_AFTER_2015));
 
                 as.setDimensionSelection(AppConstants.TIME_DIM, selections);
 
@@ -82,7 +81,7 @@ public class ReplaceConstantDimPredicateTest {
         }
 
         @Nested
-        class RemovedConstantDoesNotExistInSelections {
+        class RemovedPairDoesNotExistInSelections {
 
             @Test
             void added() {
@@ -95,10 +94,10 @@ public class ReplaceConstantDimPredicateTest {
             }
 
             public Set<Operation> initOperations() {
-                Operation op3 = new Operation(ReplaceConstantDimPredicate.getInstance(),
+                Operation op3 = new Operation(ReplaceParamDimPredicate.getInstance(),
                         List.of(AppConstants.TIME_DIM,
-                                AppConstants.YEAR_AFTER_2013,
-                                AppConstants.YEAR_AFTER_2015));
+                                AppConstants.D_PRED_1,
+                                AppConstants.D_PRED_2, AppConstants.YEAR_AFTER_2015));
                 return Set.of(op3);
             }
 
@@ -106,8 +105,8 @@ public class ReplaceConstantDimPredicateTest {
                 AnalysisSituation as = new AnalysisSituation(mdGraph);
 
                 BindableSet selections = new BindableSet();
+                selections.union(AppConstants.YEAR_AFTER_2015);
                 selections.union(new Pair(AppConstants.D_PRED, ConstantOrUnknown.unknown));
-                selections.union(new Pair(AppConstants.D_PRED_1, AppConstants.YEAR_AFTER_2013));
                 as.setDimensionSelection(AppConstants.TIME_DIM, selections);
 
                 return as;
@@ -116,10 +115,10 @@ public class ReplaceConstantDimPredicateTest {
     }
 
     @Nested
-    class AddedConstantExistInSelections {
+    class AddedPairExistInSelections {
 
         @Nested
-        class RemovedConstantExistInSelections {
+        class RemovedPairExistInSelections {
 
             @Test
             void added() {
@@ -132,10 +131,10 @@ public class ReplaceConstantDimPredicateTest {
             }
 
             public Set<Operation> initOperations() {
-                Operation op3 = new Operation(ReplaceConstantDimPredicate.getInstance(),
+                Operation op3 = new Operation(ReplaceParamDimPredicate.getInstance(),
                         List.of(AppConstants.TIME_DIM,
-                                AppConstants.YEAR_AFTER_2013,
-                                AppConstants.YEAR_AFTER_2015));
+                                AppConstants.D_PRED_1,
+                                AppConstants.D_PRED_2, AppConstants.YEAR_AFTER_2015));
                 return Set.of(op3);
             }
 
@@ -143,10 +142,10 @@ public class ReplaceConstantDimPredicateTest {
                 AnalysisSituation as = new AnalysisSituation(mdGraph);
 
                 BindableSet selections = new BindableSet();
-                selections.union(AppConstants.YEAR_AFTER_2013);
                 selections.union(AppConstants.YEAR_AFTER_2015);
                 selections.union(new Pair(AppConstants.D_PRED, ConstantOrUnknown.unknown));
                 selections.union(new Pair(AppConstants.D_PRED_1, AppConstants.YEAR_AFTER_2013));
+                selections.union(new Pair(AppConstants.D_PRED_2, AppConstants.YEAR_AFTER_2015));
                 as.setDimensionSelection(AppConstants.TIME_DIM, selections);
 
                 return as;
@@ -154,7 +153,7 @@ public class ReplaceConstantDimPredicateTest {
         }
 
         @Nested
-        class RemovedConstantDoesNotExistInSelections {
+        class RemovedPairDoesNotExistInSelections {
 
             @Test
             void added() {
@@ -167,10 +166,10 @@ public class ReplaceConstantDimPredicateTest {
             }
 
             public Set<Operation> initOperations() {
-                Operation op3 = new Operation(ReplaceConstantDimPredicate.getInstance(),
+                Operation op3 = new Operation(ReplaceParamDimPredicate.getInstance(),
                         List.of(AppConstants.TIME_DIM,
-                                AppConstants.YEAR_AFTER_2013,
-                                AppConstants.YEAR_AFTER_2015));
+                                AppConstants.D_PRED_1,
+                                AppConstants.D_PRED_2, AppConstants.YEAR_AFTER_2015));
                 return Set.of(op3);
             }
 
@@ -180,7 +179,7 @@ public class ReplaceConstantDimPredicateTest {
                 BindableSet selections = new BindableSet();
                 selections.union(AppConstants.YEAR_AFTER_2015);
                 selections.union(new Pair(AppConstants.D_PRED, ConstantOrUnknown.unknown));
-                selections.union(new Pair(AppConstants.D_PRED_1, AppConstants.YEAR_AFTER_2013));
+                selections.union(new Pair(AppConstants.D_PRED_2, AppConstants.YEAR_AFTER_2015));
                 as.setDimensionSelection(AppConstants.TIME_DIM, selections);
 
                 return as;
