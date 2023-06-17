@@ -120,7 +120,7 @@ public class MDGraph {
         return pairsToInspect
                 .stream()
                 .filter(pair -> isRollUpInHierarchy(h, pair))
-                .map(pair -> pair.getTo())
+                .map(RollUpPair::getFrom)
                 .findAny();
     }
 
