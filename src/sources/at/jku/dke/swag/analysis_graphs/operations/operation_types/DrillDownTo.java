@@ -41,7 +41,7 @@ public class DrillDownTo extends OperationTypes {
 
         if (!actualGran.isUnknown()
                 && mdGraph.drillsDownToInDimension(param0, (Level) actualGran, param1)
-                && actualGran.isPair()) {
+                && situation.getGranularities().get(param0).isPair()) {
 
             Pair newGranPair = ((Pair) situation.getGranularities()
                     .get(param0)).copy();
@@ -54,7 +54,7 @@ public class DrillDownTo extends OperationTypes {
             if (!actualGran.isUnknown()
                     && mdGraph.drillsDownToInDimension(param0, (Level) actualGran, param1)
                     && !actualGran.equals(param1)
-                    && actualGran.isConstantOrUnknown()) {
+                    && situation.getGranularities().get(param0).isConstantOrUnknown()) {
 
                 ConstantOrUnknown newGranPair = param1;
                 updates.add(

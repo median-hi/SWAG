@@ -90,9 +90,9 @@ public class MDGraph {
 
             Level currLevel = l1;
 
-            while (previousLevel(h, l1).isPresent()) {
-                preLevels.add(previousLevel(h, l1).get());
-                currLevel = previousLevel(h, l1).get();
+            while (previousLevel(h, currLevel).isPresent()) {
+                preLevels.add(previousLevel(h, currLevel).get());
+                currLevel = previousLevel(h, currLevel).get();
             }
 
             if (preLevels.contains(l2)) {

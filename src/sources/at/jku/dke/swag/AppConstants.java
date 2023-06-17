@@ -3,12 +3,18 @@ package at.jku.dke.swag;
 import at.jku.dke.swag.analysis_graphs.basic_elements.Constant;
 import at.jku.dke.swag.analysis_graphs.basic_elements.Parameter;
 import at.jku.dke.swag.md_elements.Dimension;
+import at.jku.dke.swag.md_elements.Hierarchy;
 import at.jku.dke.swag.md_elements.Level;
 
 public class AppConstants {
 
     public static final Dimension DESTINATION_DIM = new Dimension("destinationDim");
+    public static final Hierarchy GEO_HIER = new Hierarchy("geoHierarchy");
     public static final Level CONTINENT = new Level("continent");
+
+    public static final Level TOP_DESTINATION_DIM = new Level("destinationTop");
+
+    public static final Parameter GRAN_PARAM = new Parameter("granParam");
     public static final Level GEO = new Level("geo");
 
     public static final Dimension TIME_DIM = new Dimension("timeDim");

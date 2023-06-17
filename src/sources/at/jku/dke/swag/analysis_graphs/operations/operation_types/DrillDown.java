@@ -43,7 +43,7 @@ public class DrillDown extends OperationTypes {
         if (!actualGran.isUnknown()
                 && mdGraph.isLevelInHierarchy(param1, (Level) actualGran)
                 && !actualGran.equals(situation.getMdGraph().bot(param0))
-                && actualGran.isPair()) {
+                && situation.getGranularities().get(param0).isPair()) {
 
             Pair newGranPair = ((Pair) situation.getGranularities()
                     .get(param0)).copy();
@@ -57,7 +57,7 @@ public class DrillDown extends OperationTypes {
                     && mdGraph.isLevelInHierarchy(param1, (Level) actualGran)
                     && !actualGran.equals(situation.getMdGraph().bot(param0))
                     && !actualGran.equals(mdGraph.previousLevel(param1, (Level) actualGran).get())
-                    && actualGran.isConstantOrUnknown()) {
+                    && situation.getGranularities().get(param0).isConstantOrUnknown()) {
 
                 Level newGranPair = mdGraph.previousLevel(param1, (Level) actualGran).get();
                 updates.add(
@@ -71,7 +71,7 @@ public class DrillDown extends OperationTypes {
                     updates.add(
                             new Update(
                                     Location.granularityOf(param0),
-                                    Level.unknown())
+                                    situation.getGranularities().get(param0))
                     );
                 }
 

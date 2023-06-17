@@ -40,7 +40,7 @@ public class MoveToNextNode extends OperationTypes {
         if (!actualDiceLevel.isUnknown()
                 && !actualDiceNode.isUnknown()
                 && !actualDiceNode.equals(situation.getMdGraph().lastMember((Level) actualDiceLevel))
-                && actualDiceNode.isPair()
+                && situation.getDiceNodes().get(param0).isPair()
                 && DiceUtils.isLegalDiceNodePair(situation,
                 param0,
                 mdGraph.nextMember((Level) actualDiceNode,
@@ -56,7 +56,7 @@ public class MoveToNextNode extends OperationTypes {
             if (!actualDiceLevel.isUnknown()
                     && !actualDiceNode.isUnknown()
                     && !actualDiceNode.equals(situation.getMdGraph().lastMember((Level) actualDiceLevel))
-                    && actualDiceNode.isConstant()
+                    && situation.getDiceNodes().get(param0).isConstant()
                     && !actualDiceNode.equals(mdGraph.nextMember((Level) actualDiceLevel,
                     (LevelMember) actualDiceNode))
                     && DiceUtils.isLegalDiceNode(situation,
