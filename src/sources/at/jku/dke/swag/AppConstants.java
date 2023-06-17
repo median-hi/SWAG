@@ -5,6 +5,7 @@ import at.jku.dke.swag.analysis_graphs.basic_elements.Parameter;
 import at.jku.dke.swag.md_elements.Dimension;
 import at.jku.dke.swag.md_elements.Hierarchy;
 import at.jku.dke.swag.md_elements.Level;
+import at.jku.dke.swag.md_elements.LevelMember;
 
 public class AppConstants {
 
@@ -12,11 +13,22 @@ public class AppConstants {
     public static final Hierarchy GEO_HIER = new Hierarchy("geoHierarchy");
     public static final Level CONTINENT = new Level("continent");
 
+    public static final LevelMember UK = new LevelMember("UK");
+    public static final LevelMember GERMANY = new LevelMember("DE");
+    public static final LevelMember AUSTRIA = new LevelMember("AT");
+
+    public static final LevelMember FAKE = new LevelMember("FAKE");
+
     public static final Level TOP_DESTINATION_DIM = new Level("destinationTop");
 
     public static final Parameter GRAN_PARAM = new Parameter("granParam");
 
     public static final Parameter GRAN_PARAM_1 = new Parameter("granParam1");
+
+    public static final Parameter DICE_PARAM = new Parameter("diceParam");
+
+    public static final Parameter DICE_PARAM_1 = new Parameter("diceParam1");
+
     public static final Level GEO = new Level("geo");
 
     public static final Dimension TIME_DIM = new Dimension("timeDim");

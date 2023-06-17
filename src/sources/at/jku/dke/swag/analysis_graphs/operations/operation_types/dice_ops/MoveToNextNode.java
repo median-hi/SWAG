@@ -2,6 +2,7 @@ package at.jku.dke.swag.analysis_graphs.operations.operation_types.dice_ops;
 
 import at.jku.dke.swag.analysis_graphs.AnalysisSituation;
 import at.jku.dke.swag.analysis_graphs.asm_elements.Location;
+import at.jku.dke.swag.analysis_graphs.asm_elements.LocationValue;
 import at.jku.dke.swag.analysis_graphs.asm_elements.Update;
 import at.jku.dke.swag.analysis_graphs.basic_elements.ConstantOrUnknown;
 import at.jku.dke.swag.analysis_graphs.basic_elements.Pair;
@@ -34,43 +35,45 @@ public class MoveToNextNode extends OperationTypes {
         Set<Update> updates = new HashSet<>();
 
         Dimension param0 = (Dimension) params.get(0);
-        ConstantOrUnknown actualDiceNode = Utils.actual(situation.getDiceLevels().get(param0));
-        ConstantOrUnknown actualDiceLevel = Utils.actual(situation.getDiceNodes().get(param0));
+        ConstantOrUnknown actualDiceLevel = Utils.actual(situation.getDiceLevels().get(param0));
+        ConstantOrUnknown actualDiceNode = Utils.actual(situation.getDiceNodes().get(param0));
 
-        if (!actualDiceLevel.isUnknown()
-                && !actualDiceNode.isUnknown()
+        LevelMember nextMember = null;
+
+        if (!actualDiceLevel.isUnknown()) {
+            nextMember = mdGraph.nextMember((Level) actualDiceLevel, (LevelMember) actualDiceNode);
+        }
+
+        if (nextMember == null) {
+            nextMember = new LevelMember("fake");
+        }
+
+        if (!actualDiceNode.isUnknown()
+                && !actualDiceLevel.isUnknown()
                 && !actualDiceNode.equals(situation.getMdGraph().lastMember((Level) actualDiceLevel))
                 && situation.getDiceNodes().get(param0).isPair()
-                && DiceUtils.isLegalDiceNodePair(situation,
-                param0,
-                mdGraph.nextMember((Level) actualDiceNode,
-                        (LevelMember) actualDiceLevel))) {
+                && DiceUtils.isLegalDiceNodePair(situation, param0, nextMember)) {
 
             Pair newPair = (Pair) situation.getDiceNodes().get(param0).copy();
-            newPair.setConstant(mdGraph.nextMember((Level) actualDiceLevel,
-                    (LevelMember) actualDiceNode));
-            updates.add(
-                    new Update(
-                            Location.diceNodeOf(param0), newPair));
+            newPair.setConstant(nextMember);
+            updates.add(new Update(Location.diceNodeOf(param0), newPair));
+
         } else {
-            if (!actualDiceLevel.isUnknown()
-                    && !actualDiceNode.isUnknown()
+            if (!actualDiceNode.isUnknown()
+                    && !actualDiceLevel.isUnknown()
                     && !actualDiceNode.equals(situation.getMdGraph().lastMember((Level) actualDiceLevel))
                     && situation.getDiceNodes().get(param0).isConstant()
-                    && !actualDiceNode.equals(mdGraph.nextMember((Level) actualDiceLevel,
-                    (LevelMember) actualDiceNode))
-                    && DiceUtils.isLegalDiceNode(situation,
-                    param0,
-                    mdGraph.nextMember((Level) actualDiceNode,
-                            (LevelMember) actualDiceLevel))) {
+                    && !actualDiceNode.equals(nextMember)
+                    && DiceUtils.isLegalDiceNode(situation, param0, nextMember)) {
 
-                Pair newPair = (Pair) situation.getDiceNodes().get(param0).copy();
-                newPair.setConstant(mdGraph.nextMember((Level) actualDiceLevel,
-                        (LevelMember) actualDiceNode));
-                updates.add(
-                        new Update(
-                                Location.diceNodeOf(param0), newPair));
+                updates.add(new Update(Location.diceNodeOf(param0), nextMember));
             }
+        }
+
+        if (actualDiceNode.isUnknown() || actualDiceLevel.isUnknown()) {
+            updates.add(new Update(
+                    Location.diceNodeOf(param0),
+                    (LocationValue) situation.getDiceNodes().get(param0).copy()));
         }
 
         return updates;

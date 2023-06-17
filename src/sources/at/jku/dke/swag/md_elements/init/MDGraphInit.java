@@ -41,6 +41,7 @@ public class MDGraphInit {
 
         Measure numOfApps = new Measure("numOfApps");
 
+        LevelMember uk = new LevelMember("UK");
         LevelMember germany = new LevelMember("DE");
         LevelMember austria = new LevelMember("AT");
 
@@ -90,7 +91,7 @@ public class MDGraphInit {
         mdGraph.getHLL().merge(timeHierarchy, Set.of(new RollUpPair(year, timeTop)), f);
 
         mdGraph.getM().add(numOfApps);
-        mdGraph.getMembers().put(geo, new TreeSet<>(Set.of(germany, austria)));
+        mdGraph.getMembers().put(geo, new TreeSet<>(Set.of(germany, austria, uk)));
         mdGraph.getMembers().put(continent, new TreeSet<>(Set.of(asia, europe)));
         mdGraph.getMembers().put(destinationTop, new TreeSet<>(Set.of(all_destinationDim)));
         mdGraph.getMembers().put(timeTop, new TreeSet<>(Set.of(all_timeDim)));

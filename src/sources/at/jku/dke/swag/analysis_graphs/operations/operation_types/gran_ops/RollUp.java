@@ -65,17 +65,14 @@ public class RollUp extends OperationTypes {
                                 Location.granularityOf(param0),
                                 newGranPair)
                 );
-                //System.out.println("producing empty set");
-            } else {
-                if (actualGran.isUnknown()) {
-                    updates.add(
-                            new Update(
-                                    Location.granularityOf(param0),
-                                    situation.getGranularities().get(param0))
-                    );
-                }
-
             }
+        }
+
+        if (actualGran.isUnknown()) {
+            updates.add(new Update(
+                    Location.granularityOf(param0),
+                    situation.getGranularities().get(param0))
+            );
         }
 
         return updates;

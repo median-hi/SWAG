@@ -61,7 +61,7 @@ public class MDGraph {
     }
 
     public LevelMember nextMember(Level l, LevelMember m) {
-        return members.get(l).higher(m);
+        return members.get(l).contains(m) ? members.get(l).higher(m) : null;
     }
 
     public boolean drillsDownTo(Hierarchy h, Level l1, Level l2) {
