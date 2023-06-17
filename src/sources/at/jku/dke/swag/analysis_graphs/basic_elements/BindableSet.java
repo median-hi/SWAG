@@ -68,7 +68,7 @@ public class BindableSet implements LocationValue, Copiable {
     public void setDifference(Parameter elem) {
         Optional<Pair> pair = getPairOfParameter(elem);
         if (!pair.isEmpty()) {
-            elements.remove(pair);
+            elements.remove(pair.get());
         }
         throwInValidExceptionIfInvalid();
     }

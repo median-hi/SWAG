@@ -37,7 +37,7 @@ public class RollUpTo extends OperationTypes {
 
         ConstantOrUnknown actualGran = Utils.actual(situation.getGranularities().get(param0));
 
-        if (!actualGran.isStrictlyUnknown()
+        if (!actualGran.isUnknown()
                 && mdGraph.drillsDownToInDimension(param0, param1, (Level) actualGran)
                 && actualGran.isPair()) {
 
@@ -48,7 +48,7 @@ public class RollUpTo extends OperationTypes {
                     new Update(
                             Location.granularityOf(param0), newGranPair));
         } else {
-            if (!actualGran.isStrictlyUnknown()
+            if (!actualGran.isUnknown()
                     && mdGraph.drillsDownToInDimension(param0, param1, (Level) actualGran)
                     && actualGran.equals(param1)
                     && actualGran.isConstantOrUnknown()) {

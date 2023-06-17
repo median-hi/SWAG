@@ -5,17 +5,19 @@ import at.jku.dke.swag.analysis_graphs.asm_elements.LocationValue;
 
 public interface PairOrConstant extends LocationValue, Copiable {
 
-    public boolean isStrictlyUnknown();
-    public boolean isStrictlyConstant();
+    public boolean isUnknown();
+
+    public boolean isConstant();
+
     public boolean isConstantOrUnknown();
+
     public boolean isPair();
 
-    public default boolean isPairOrConstant(){
+    public default boolean isPairOrConstant() {
         return true;
     }
 
-    public default boolean isBindableSet(){
+    public default boolean isBindableSet() {
         return false;
     }
-
 }

@@ -1,5 +1,6 @@
 package at.jku.dke.swag;
 
+import at.jku.dke.swag.analysis_graphs.basic_elements.Constant;
 import at.jku.dke.swag.analysis_graphs.basic_elements.Parameter;
 import at.jku.dke.swag.md_elements.Dimension;
 import at.jku.dke.swag.md_elements.Level;
@@ -26,6 +27,14 @@ public class AppConstants {
     public static final Parameter GEO_NODE_1 = new Parameter("geoNode1");
 
     public static final Parameter D_PRED = new Parameter("dPred");
+
+    public static final Constant YEAR_AFTER_2015 = new Constant("yearAfter2015");
+
+    public static final Constant YEAR_AFTER_2013 = new Constant("yearAfter2013");
+
+    public static final Parameter D_PRED_1 = new Parameter("dPred1");
+
+    public static final Parameter D_PRED_2 = new Parameter("dPred2");
 
     public static final Parameter M_PRED = new Parameter("mPred");
 

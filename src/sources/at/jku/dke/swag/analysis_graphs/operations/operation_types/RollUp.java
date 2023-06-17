@@ -40,7 +40,7 @@ public class RollUp extends OperationTypes {
 
         //System.out.println("BEFORE");
 
-        if (!actualGran.isStrictlyUnknown()
+        if (!actualGran.isUnknown()
                 && mdGraph.isLevelInHierarchy(param1, (Level) actualGran)
                 && !actualGran.equals(situation.getMdGraph().top(param0))
                 && actualGran.isPair()) {
@@ -53,7 +53,7 @@ public class RollUp extends OperationTypes {
                             Location.granularityOf(param0), newGranPair));
             //System.out.println("producing update set");
         } else {
-            if (!actualGran.isStrictlyUnknown()
+            if (!actualGran.isUnknown()
                     && mdGraph.isLevelInHierarchy(param1, (Level) actualGran)
                     && !actualGran.equals(situation.getMdGraph().top(param0))
                     && !actualGran.equals(mdGraph.nextLevel(param1, (Level) actualGran).get())
@@ -67,7 +67,7 @@ public class RollUp extends OperationTypes {
                 );
                 //System.out.println("producing empty set");
             } else {
-                if (actualGran.isStrictlyUnknown()) {
+                if (actualGran.isUnknown()) {
                     updates.add(
                             new Update(
                                     Location.granularityOf(param0),

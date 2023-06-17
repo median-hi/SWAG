@@ -147,7 +147,7 @@ public class Utils {
 
             Optional<Pair> pairOfParameter = set.getPairOfParameter(param);
 
-            if (set.paras().contains(param) && pairOfParameter.isPresent() && pairOfParameter.get().getConstant().isStrictlyUnknown()) {
+            if (set.paras().contains(param) && pairOfParameter.isPresent() && pairOfParameter.get().getConstant().isUnknown()) {
                 pairOfParameter.ifPresent(x -> x.setConstant(binding.getBindings().get(param)));
             }
         }
@@ -157,7 +157,7 @@ public class Utils {
         for (Parameter param : binding.getBindings().keySet()) {
             if (elem.isPair()) {
                 Pair newElm = (Pair) elem;
-                if (newElm.getConstant().isStrictlyUnknown()) {
+                if (newElm.getConstant().isUnknown()) {
                     newElm.setConstant(binding.getBindings().get(param));
                 }
             }

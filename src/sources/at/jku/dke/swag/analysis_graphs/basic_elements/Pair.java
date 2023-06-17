@@ -27,10 +27,6 @@ public class Pair implements PairOrConstant, Copiable {
         return constantOrUnknown;
     }
 
-    public void setConstant(ConstantOrUnknown constantOrUnknown) {
-        this.constantOrUnknown = constantOrUnknown;
-    }
-
     @Override
     public boolean isConstantOrUnknown() {
         return false;
@@ -42,15 +38,18 @@ public class Pair implements PairOrConstant, Copiable {
     }
 
     @Override
-    public boolean isStrictlyUnknown() {
+    public boolean isUnknown() {
         return false;
     }
 
     @Override
-    public boolean isStrictlyConstant() {
+    public boolean isConstant() {
         return false;
     }
 
+    public void setConstant(ConstantOrUnknown constantOrUnknown) {
+        this.constantOrUnknown = constantOrUnknown;
+    }
 
     public ConstantOrUnknown getConstantOrUnknown() {
         return constantOrUnknown;

@@ -1,14 +1,15 @@
 package at.jku.dke.swag.md_elements.init;
 
-import at.jku.dke.swag.md_elements.*;
 import at.jku.dke.swag.analysis_graphs.basic_elements.Parameter;
+import at.jku.dke.swag.md_elements.*;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class MDGraphInit {
 
-    public static MDGraph initMDGraph(){
+    public static MDGraph initMDGraph() {
         MDGraph mdGraph = new MDGraph();
 
         Fact fact = new Fact("migrAsylumApps");
@@ -70,15 +71,15 @@ public class MDGraphInit {
         mdGraph.getLL().add(new RollUpPair(refPeriod, year));
         mdGraph.getLL().add(new RollUpPair(year, timeTop));
         mdGraph.getM().add(numOfApps);
-        mdGraph.getMembers().put(geo, Set.of(germany, austria));
-        mdGraph.getMembers().put(continent, Set.of(asia, europe));
-        mdGraph.getMembers().put(destinationTop, Set.of(all_destinationDim));
-        mdGraph.getMembers().put(timeTop, Set.of(all_timeDim));
+        mdGraph.getMembers().put(geo, new TreeSet<>(Set.of(germany, austria)));
+        mdGraph.getMembers().put(continent, new TreeSet<>(Set.of(asia, europe)));
+        mdGraph.getMembers().put(destinationTop, new TreeSet<>(Set.of(all_destinationDim)));
+        mdGraph.getMembers().put(timeTop, new TreeSet<>(Set.of(all_timeDim)));
 
         return mdGraph;
     }
 
-    public Set<Parameter> initParameters(){
+    public Set<Parameter> initParameters() {
         Set<Parameter> parameters = new HashSet<>();
         parameters.add(new Parameter("dPred"));
         parameters.add(new Parameter("mPred"));

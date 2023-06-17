@@ -10,13 +10,13 @@ public class Constant extends ConstantOrUnknown {
     }
 
     @Override
-    public boolean isStrictlyConstant() {
+    public boolean isConstant() {
         return true;
     }
 
     @Override
-    public boolean isStrictlyUnknown() {
-        return false;
+    public boolean isUnknown() {
+        return this.getUri().equals(ConstantOrUnknown.unknown.getUri());
     }
 
 }

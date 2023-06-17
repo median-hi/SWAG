@@ -9,6 +9,7 @@ import at.jku.dke.swag.analysis_graphs.operations.OperationTypes;
 import at.jku.dke.swag.analysis_graphs.utils.Utils;
 import at.jku.dke.swag.md_elements.Dimension;
 import at.jku.dke.swag.md_elements.Level;
+import at.jku.dke.swag.md_elements.LevelMember;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -36,43 +37,40 @@ public class MoveToNextNode extends OperationTypes {
         ConstantOrUnknown actualDiceNode = Utils.actual(situation.getDiceLevels().get(param0));
         ConstantOrUnknown actualDiceLevel = Utils.actual(situation.getDiceNodes().get(param0));
 
-        if (!actualDiceLevel.isStrictlyUnknown()
-                && !actualDiceNode.isStrictlyUnknown()
-                && actualDiceNode.equals(situation.getMdGraph().lastMember((Level) actualDiceLevel))) {
+        if (!actualDiceLevel.isUnknown()
+                && !actualDiceNode.isUnknown()
+                && !actualDiceNode.equals(situation.getMdGraph().lastMember((Level) actualDiceLevel))
+                && actualDiceNode.isPair()
+                && DiceUtils.isLegalDiceNodePair(situation,
+                param0,
+                mdGraph.nextMember((Level) actualDiceNode,
+                        (LevelMember) actualDiceLevel))) {
 
-        }
-
-        if ((ConstantOrUnknown.isUnknown(param3) || mdGraph.isMemberOf(param3, param1))
-                && (!actualDiceLevel.equals(param1) || !actualDiceNode.equals(new Pair(param2, param3)))
-                && actualDiceLevel.isPair()
-                && !actualDiceLevel.equals(param1)) {
-
-            Pair newPair = new Pair(param2, param3);
-
-            Pair diceLevelPair = ((Pair) actualDiceLevel).copy();
-            diceLevelPair.setConstant(param1);
-
+            Pair newPair = (Pair) situation.getDiceNodes().get(param0).copy();
+            newPair.setConstant(mdGraph.nextMember((Level) actualDiceLevel,
+                    (LevelMember) actualDiceNode));
             updates.add(
                     new Update(
                             Location.diceNodeOf(param0), newPair));
-            updates.add(
-                    new Update(
-                            Location.diceLevelOf(param0), diceLevelPair));
-
         } else {
-            if ((ConstantOrUnknown.isUnknown(param3) || mdGraph.isMemberOf(param3, param1))
-                    && (!actualDiceLevel.equals(param1) || !actualDiceNode.equals(new Pair(param2, param3)))
-                    && actualDiceLevel.isConstantOrUnknown()) {
+            if (!actualDiceLevel.isUnknown()
+                    && !actualDiceNode.isUnknown()
+                    && !actualDiceNode.equals(situation.getMdGraph().lastMember((Level) actualDiceLevel))
+                    && actualDiceNode.isConstant()
+                    && !actualDiceNode.equals(mdGraph.nextMember((Level) actualDiceLevel,
+                    (LevelMember) actualDiceNode))
+                    && DiceUtils.isLegalDiceNode(situation,
+                    param0,
+                    mdGraph.nextMember((Level) actualDiceNode,
+                            (LevelMember) actualDiceLevel))) {
 
-                Pair newPair = new Pair(param2, param3);
+                Pair newPair = (Pair) situation.getDiceNodes().get(param0).copy();
+                newPair.setConstant(mdGraph.nextMember((Level) actualDiceLevel,
+                        (LevelMember) actualDiceNode));
                 updates.add(
                         new Update(
                                 Location.diceNodeOf(param0), newPair));
-                updates.add(
-                        new Update(
-                                Location.diceLevelOf(param0), param1));
             }
-            //System.out.println("producing empty");
         }
 
         return updates;

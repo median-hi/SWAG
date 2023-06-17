@@ -39,7 +39,7 @@ public class DrillDownTo extends OperationTypes {
 
         //System.out.println("BEFORE");
 
-        if (!actualGran.isStrictlyUnknown()
+        if (!actualGran.isUnknown()
                 && mdGraph.drillsDownToInDimension(param0, (Level) actualGran, param1)
                 && actualGran.isPair()) {
 
@@ -51,7 +51,7 @@ public class DrillDownTo extends OperationTypes {
                             Location.granularityOf(param0), newGranPair));
             //System.out.println("producing update set");
         } else {
-            if (!actualGran.isStrictlyUnknown()
+            if (!actualGran.isUnknown()
                     && mdGraph.drillsDownToInDimension(param0, (Level) actualGran, param1)
                     && !actualGran.equals(param1)
                     && actualGran.isConstantOrUnknown()) {
