@@ -1,4 +1,4 @@
-package at.jku.dke.swag.analysis_graphs.operations.operation_types;
+package at.jku.dke.swag.analysis_graphs.operations.operation_types.gran_ops;
 
 
 import at.jku.dke.swag.AppConstants;
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.*;
 import java.util.List;
 import java.util.Set;
 
-public class RollUpTest {
+public class DrillDownTest {
 
     MDGraph mdGraph;
     AnalysisSituation source;
@@ -29,11 +29,11 @@ public class RollUpTest {
     }
 
     @Nested
-    @DisplayName("When actual hierarchy is constant not top")
-    class ActualHierIsConstantAndNotTop {
+    @DisplayName("When actual granularity is constant not bottom")
+    class ActualGranIsConstantAndNotBottom {
 
         @Test
-        @DisplayName("When actual hierarchy is constant not top")
+        @DisplayName("When actual granularity is constant not bottom")
         void added1() {
             source = createSource();
             target = createTarget();
@@ -44,30 +44,30 @@ public class RollUpTest {
         }
 
         public Set<Operation> initOperations() {
-            Operation op3 = new Operation(RollUp.getInstance(),
+            Operation op3 = new Operation(DrillDown.getInstance(),
                     List.of(AppConstants.DESTINATION_DIM, AppConstants.GEO_HIER));
             return Set.of(op3);
         }
 
         public AnalysisSituation createSource() {
             AnalysisSituation as = new AnalysisSituation(mdGraph);
-            as.setGran(AppConstants.DESTINATION_DIM, AppConstants.GEO);
+            as.setGran(AppConstants.DESTINATION_DIM, AppConstants.CONTINENT);
             return as;
         }
 
         public AnalysisSituation createTarget() {
             AnalysisSituation as = new AnalysisSituation(mdGraph);
-            as.setGran(AppConstants.DESTINATION_DIM, AppConstants.CONTINENT);
+            as.setGran(AppConstants.DESTINATION_DIM, AppConstants.GEO);
             return as;
         }
     }
 
     @Nested
-    @DisplayName("When actual hierarchy is constant and top")
-    class ActualHierIsConstantAndTop {
+    @DisplayName("When actual granularity is constant and bottom")
+    class ActualGranIsConstantAndBottom {
 
         @Test
-        @DisplayName("When actual hierarchy is constant and top")
+        @DisplayName("When actual granularity is constant and bottom")
         void added1() {
             source = createSource();
             target = createSource();
@@ -78,24 +78,24 @@ public class RollUpTest {
         }
 
         public Set<Operation> initOperations() {
-            Operation op3 = new Operation(RollUp.getInstance(),
+            Operation op3 = new Operation(DrillDown.getInstance(),
                     List.of(AppConstants.DESTINATION_DIM, AppConstants.GEO_HIER));
             return Set.of(op3);
         }
 
         public AnalysisSituation createSource() {
             AnalysisSituation as = new AnalysisSituation(mdGraph);
-            as.setGran(AppConstants.DESTINATION_DIM, AppConstants.TOP_DESTINATION_DIM);
+            as.setGran(AppConstants.DESTINATION_DIM, AppConstants.GEO);
             return as;
         }
     }
 
     @Nested
-    @DisplayName("When actual hierarchy is bound pair and not top")
-    class ActualHierIsBoundParAndNotTop {
+    @DisplayName("When actual granularity is bound pair and not bottom")
+    class ActualGranIsBoundPairAndNotBottom {
 
         @Test
-        @DisplayName("When actual hierarchy is bound pair and not top")
+        @DisplayName("When actual granularity is bound pair and not bottom")
         void added1() {
             source = createSource();
             target = createTarget();
@@ -106,7 +106,41 @@ public class RollUpTest {
         }
 
         public Set<Operation> initOperations() {
-            Operation op3 = new Operation(RollUp.getInstance(),
+            Operation op3 = new Operation(DrillDown.getInstance(),
+                    List.of(AppConstants.DESTINATION_DIM, AppConstants.GEO_HIER));
+            return Set.of(op3);
+        }
+
+        public AnalysisSituation createSource() {
+            AnalysisSituation as = new AnalysisSituation(mdGraph);
+            as.setGran(AppConstants.DESTINATION_DIM, new Pair(AppConstants.GRAN_PARAM, AppConstants.CONTINENT));
+            return as;
+        }
+
+        public AnalysisSituation createTarget() {
+            AnalysisSituation as = new AnalysisSituation(mdGraph);
+            as.setGran(AppConstants.DESTINATION_DIM, new Pair(AppConstants.GRAN_PARAM, AppConstants.GEO));
+            return as;
+        }
+    }
+
+    @Nested
+    @DisplayName("When actual granularity is bound pair and bottom")
+    class ActualGranIsBoundPairAndBottom {
+
+        @Test
+        @DisplayName("When actual granularity is bound pair and bottom")
+        void added1() {
+            source = createSource();
+            target = createSource();
+            ops = initOperations();
+            opTarget = Utils.evaluateAndFire(source, ops);
+            Assertions.assertTrue(Utils.evaluate(source, ops).isEmpty());
+            Assertions.assertEquals(opTarget, target);
+        }
+
+        public Set<Operation> initOperations() {
+            Operation op3 = new Operation(DrillDown.getInstance(),
                     List.of(AppConstants.DESTINATION_DIM, AppConstants.GEO_HIER));
             return Set.of(op3);
         }
@@ -117,48 +151,14 @@ public class RollUpTest {
             return as;
         }
 
-        public AnalysisSituation createTarget() {
-            AnalysisSituation as = new AnalysisSituation(mdGraph);
-            as.setGran(AppConstants.DESTINATION_DIM, new Pair(AppConstants.GRAN_PARAM, AppConstants.CONTINENT));
-            return as;
-        }
     }
 
     @Nested
-    @DisplayName("When actual hierarchy is bound pair and top")
-    class ActualHierIsBoundParAndTop {
+    @DisplayName("When actual granularity is unbound pair")
+    class ActualGranIsUnBoundPair {
 
         @Test
-        @DisplayName("When actual hierarchy is bound pair and top")
-        void added1() {
-            source = createSource();
-            target = createSource();
-            ops = initOperations();
-            opTarget = Utils.evaluateAndFire(source, ops);
-            Assertions.assertTrue(Utils.evaluate(source, ops).isEmpty());
-            Assertions.assertEquals(opTarget, target);
-        }
-
-        public Set<Operation> initOperations() {
-            Operation op3 = new Operation(RollUp.getInstance(),
-                    List.of(AppConstants.DESTINATION_DIM, AppConstants.GEO_HIER));
-            return Set.of(op3);
-        }
-
-        public AnalysisSituation createSource() {
-            AnalysisSituation as = new AnalysisSituation(mdGraph);
-            as.setGran(AppConstants.DESTINATION_DIM, new Pair(AppConstants.GRAN_PARAM, AppConstants.TOP_DESTINATION_DIM));
-            return as;
-        }
-
-    }
-
-    @Nested
-    @DisplayName("When actual hierarchy is unbound pair")
-    class ActualHierIsUnBoundParAndNotTop {
-
-        @Test
-        @DisplayName("When actual hierarchy is unbound pair")
+        @DisplayName("When actual granularity is unbound pair")
         void added1() {
             source = createSource();
             target = createSource();
@@ -169,7 +169,7 @@ public class RollUpTest {
         }
 
         public Set<Operation> initOperations() {
-            Operation op3 = new Operation(RollUp.getInstance(),
+            Operation op3 = new Operation(DrillDown.getInstance(),
                     List.of(AppConstants.DESTINATION_DIM, AppConstants.GEO_HIER));
             return Set.of(op3);
         }

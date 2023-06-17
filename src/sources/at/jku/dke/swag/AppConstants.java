@@ -15,6 +15,8 @@ public class AppConstants {
     public static final Level TOP_DESTINATION_DIM = new Level("destinationTop");
 
     public static final Parameter GRAN_PARAM = new Parameter("granParam");
+
+    public static final Parameter GRAN_PARAM_1 = new Parameter("granParam1");
     public static final Level GEO = new Level("geo");
 
     public static final Dimension TIME_DIM = new Dimension("timeDim");

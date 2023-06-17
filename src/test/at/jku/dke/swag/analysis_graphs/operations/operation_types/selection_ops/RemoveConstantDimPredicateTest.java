@@ -1,4 +1,4 @@
-package at.jku.dke.swag.analysis_graphs.operations.operation_types;
+package at.jku.dke.swag.analysis_graphs.operations.operation_types.selection_ops;
 
 import at.jku.dke.swag.AppConstants;
 import at.jku.dke.swag.analysis_graphs.AnalysisSituation;

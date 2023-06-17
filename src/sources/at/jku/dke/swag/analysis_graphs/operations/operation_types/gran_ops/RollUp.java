@@ -1,4 +1,4 @@
-package at.jku.dke.swag.analysis_graphs.operations.operation_types;
+package at.jku.dke.swag.analysis_graphs.operations.operation_types.gran_ops;
 
 import at.jku.dke.swag.analysis_graphs.AnalysisSituation;
 import at.jku.dke.swag.analysis_graphs.asm_elements.Location;
@@ -16,11 +16,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class DrillDown extends OperationTypes {
+public class RollUp extends OperationTypes {
 
-    private static final DrillDown instance = new DrillDown(Collections.emptyList());
+    private static final RollUp instance = new RollUp(Collections.emptyList());
 
-    public DrillDown(List<Object> params) {
+    public RollUp(List<Object> params) {
         super(params);
     }
 
@@ -42,12 +42,12 @@ public class DrillDown extends OperationTypes {
 
         if (!actualGran.isUnknown()
                 && mdGraph.isLevelInHierarchy(param1, (Level) actualGran)
-                && !actualGran.equals(situation.getMdGraph().bot(param0))
+                && !actualGran.equals(situation.getMdGraph().top(param0))
                 && situation.getGranularities().get(param0).isPair()) {
 
             Pair newGranPair = ((Pair) situation.getGranularities()
                     .get(param0)).copy();
-            newGranPair.setConstant(mdGraph.previousLevel(param1, (Level) actualGran).get());
+            newGranPair.setConstant(mdGraph.nextLevel(param1, (Level) actualGran).get());
             updates.add(
                     new Update(
                             Location.granularityOf(param0), newGranPair));
@@ -55,11 +55,11 @@ public class DrillDown extends OperationTypes {
         } else {
             if (!actualGran.isUnknown()
                     && mdGraph.isLevelInHierarchy(param1, (Level) actualGran)
-                    && !actualGran.equals(situation.getMdGraph().bot(param0))
-                    && !actualGran.equals(mdGraph.previousLevel(param1, (Level) actualGran).get())
-                    && situation.getGranularities().get(param0).isConstantOrUnknown()) {
+                    && !actualGran.equals(situation.getMdGraph().top(param0))
+                    && !actualGran.equals(mdGraph.nextLevel(param1, (Level) actualGran).get())
+                    && situation.getGranularities().get(param0).isConstant()) {
 
-                Level newGranPair = mdGraph.previousLevel(param1, (Level) actualGran).get();
+                Level newGranPair = mdGraph.nextLevel(param1, (Level) actualGran).get();
                 updates.add(
                         new Update(
                                 Location.granularityOf(param0),

@@ -1,4 +1,4 @@
-package at.jku.dke.swag.analysis_graphs.operations.operation_types;
+package at.jku.dke.swag.analysis_graphs.operations.operation_types.selection_ops;
 
 import at.jku.dke.swag.analysis_graphs.AnalysisSituation;
 import at.jku.dke.swag.analysis_graphs.asm_elements.Location;
@@ -15,11 +15,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class RebindParamDimPredicate extends OperationTypes {
+public class ReplaceParamDimPredicate extends OperationTypes {
 
-    private static final RebindParamDimPredicate instance = new RebindParamDimPredicate(Collections.emptyList());
+    private static final ReplaceParamDimPredicate instance = new ReplaceParamDimPredicate(Collections.emptyList());
 
-    public RebindParamDimPredicate(List<Object> params) {
+    public ReplaceParamDimPredicate(List<Object> params) {
         super(params);
     }
 
@@ -33,15 +33,17 @@ public class RebindParamDimPredicate extends OperationTypes {
         Set<Update> updates = new HashSet<>();
 
         Dimension param0 = (Dimension) params.get(0);
-        Parameter paramToRebind = (Parameter) params.get(1);
-        ConstantOrUnknown constantToBind = (ConstantOrUnknown) params.get(2);
+        Parameter paramToRemove = (Parameter) params.get(1);
+        Parameter param2 = (Parameter) params.get(2);
+        ConstantOrUnknown param3 = (ConstantOrUnknown) params.get(3);
 
-        if (situation.getDimensionSelection().get(param0).paras().contains(paramToRebind)) {
+        if (situation.getDimensionSelection().get(param0).paras().contains(paramToRemove)
+                && !situation.getDimensionSelection().get(param0).paras().contains(param2)) {
 
             BindableSet newSelection = situation.getDimensionSelection()
                     .get(param0).copy();
-            newSelection.setDifference(paramToRebind);
-            newSelection.union(new Pair(paramToRebind, constantToBind));
+            newSelection.setDifference(paramToRemove);
+            newSelection.union(new Pair(param2, param3));
 
             updates.add(
                     new Update(

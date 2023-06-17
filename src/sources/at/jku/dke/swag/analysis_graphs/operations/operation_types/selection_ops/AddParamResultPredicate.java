@@ -1,6 +1,6 @@
-package at.jku.dke.swag.analysis_graphs.operations.operation_types;
+package at.jku.dke.swag.analysis_graphs.operations.operation_types.selection_ops;
 
-import at.jku.dke.swag.analysis_graphs.*;
+import at.jku.dke.swag.analysis_graphs.AnalysisSituation;
 import at.jku.dke.swag.analysis_graphs.asm_elements.Location;
 import at.jku.dke.swag.analysis_graphs.asm_elements.Update;
 import at.jku.dke.swag.analysis_graphs.basic_elements.BindableSet;
@@ -34,7 +34,7 @@ public class AddParamResultPredicate extends OperationTypes {
         Parameter param1 = (Parameter) params.get(0);
         ConstantOrUnknown param2 = (ConstantOrUnknown) params.get(1);
 
-        if(!situation.getResultFilters().paras().contains(param1)){
+        if (!situation.getResultFilters().paras().contains(param1)) {
 
             BindableSet newSelection = situation.getResultFilters()
                     .copy();

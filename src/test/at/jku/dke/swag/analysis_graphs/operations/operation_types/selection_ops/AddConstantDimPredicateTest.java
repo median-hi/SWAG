@@ -1,4 +1,4 @@
-package at.jku.dke.swag.analysis_graphs.operations.operation_types;
+package at.jku.dke.swag.analysis_graphs.operations.operation_types.selection_ops;
 
 import at.jku.dke.swag.AppConstants;
 import at.jku.dke.swag.analysis_graphs.AnalysisSituation;
@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Set;
 
-public class RemoveParamDimPredicateTest {
+public class AddConstantDimPredicateTest {
 
     MDGraph mdGraph;
     AnalysisSituation source;
@@ -32,22 +32,12 @@ public class RemoveParamDimPredicateTest {
     }
 
     @Nested
-    class PairExistInSelections {
+    class ConstantDoesNotExistInSelections {
 
         @Test
-        void removedWhenUnbound() {
-            source = createSource1();
-            target = createTarget1();
-            ops = initOperations();
-            opTarget = Utils.evaluateAndFire(source, ops);
-            Assertions.assertFalse(Utils.evaluate(source, ops).isEmpty());
-            Assertions.assertEquals(opTarget, target);
-        }
-
-        @Test
-        void removedWhenBound() {
-            source = createSource2();
-            target = createTarget2();
+        void added() {
+            source = createSource();
+            target = createTarget();
             ops = initOperations();
             opTarget = Utils.evaluateAndFire(source, ops);
             Assertions.assertFalse(Utils.evaluate(source, ops).isEmpty());
@@ -55,57 +45,33 @@ public class RemoveParamDimPredicateTest {
         }
 
         public Set<Operation> initOperations() {
-            Operation op3 = new Operation(RemoveParamDimPredicate.getInstance(),
+            Operation op3 = new Operation(AddConstantDimPredicate.getInstance(),
                     List.of(AppConstants.TIME_DIM,
-                            AppConstants.D_PRED_2));
+                            AppConstants.YEAR_AFTER_2013));
             return Set.of(op3);
         }
 
-        public AnalysisSituation createSource1() {
+        public AnalysisSituation createSource() {
             AnalysisSituation as = new AnalysisSituation(mdGraph);
 
             BindableSet selections = new BindableSet();
-            selections.union(AppConstants.YEAR_AFTER_2013);
+            selections.union(AppConstants.YEAR_AFTER_2015);
             selections.union(new Pair(AppConstants.D_PRED, ConstantOrUnknown.unknown));
-            selections.union(new Pair(AppConstants.D_PRED_1, AppConstants.YEAR_AFTER_2015));
-            selections.union(new Pair(AppConstants.D_PRED_2, ConstantOrUnknown.unknown));
+            selections.union(new Pair(AppConstants.D_PRED_1, AppConstants.YEAR_AFTER_2013));
             as.setDimensionSelection(AppConstants.TIME_DIM, selections);
 
             return as;
         }
 
-        public AnalysisSituation createTarget1() {
+        public AnalysisSituation createTarget() {
             AnalysisSituation as = new AnalysisSituation(mdGraph);
 
             BindableSet selections = new BindableSet();
             selections.union(AppConstants.YEAR_AFTER_2013);
+            selections.union(AppConstants.YEAR_AFTER_2015);
             selections.union(new Pair(AppConstants.D_PRED, ConstantOrUnknown.unknown));
-            selections.union(new Pair(AppConstants.D_PRED_1, AppConstants.YEAR_AFTER_2015));
-            as.setDimensionSelection(AppConstants.TIME_DIM, selections);
+            selections.union(new Pair(AppConstants.D_PRED_1, AppConstants.YEAR_AFTER_2013));
 
-            return as;
-        }
-
-        public AnalysisSituation createSource2() {
-            AnalysisSituation as = new AnalysisSituation(mdGraph);
-
-            BindableSet selections = new BindableSet();
-            selections.union(AppConstants.YEAR_AFTER_2013);
-            selections.union(new Pair(AppConstants.D_PRED, ConstantOrUnknown.unknown));
-            selections.union(new Pair(AppConstants.D_PRED_1, AppConstants.YEAR_AFTER_2015));
-            selections.union(new Pair(AppConstants.D_PRED_2, AppConstants.YEAR_AFTER_2015));
-            as.setDimensionSelection(AppConstants.TIME_DIM, selections);
-
-            return as;
-        }
-
-        public AnalysisSituation createTarget2() {
-            AnalysisSituation as = new AnalysisSituation(mdGraph);
-
-            BindableSet selections = new BindableSet();
-            selections.union(AppConstants.YEAR_AFTER_2013);
-            selections.union(new Pair(AppConstants.D_PRED, ConstantOrUnknown.unknown));
-            selections.union(new Pair(AppConstants.D_PRED_1, AppConstants.YEAR_AFTER_2015));
             as.setDimensionSelection(AppConstants.TIME_DIM, selections);
 
             return as;
@@ -113,10 +79,10 @@ public class RemoveParamDimPredicateTest {
     }
 
     @Nested
-    class PairDoesNotExistInSelections {
+    class ConstantExistInSelections {
 
         @Test
-        void notRemoved() {
+        void added() {
             source = createSource();
             target = createSource();
             ops = initOperations();
@@ -126,9 +92,9 @@ public class RemoveParamDimPredicateTest {
         }
 
         public Set<Operation> initOperations() {
-            Operation op3 = new Operation(RemoveParamDimPredicate.getInstance(),
+            Operation op3 = new Operation(AddConstantDimPredicate.getInstance(),
                     List.of(AppConstants.TIME_DIM,
-                            AppConstants.D_PRED_2));
+                            AppConstants.YEAR_AFTER_2015));
             return Set.of(op3);
         }
 
@@ -136,9 +102,9 @@ public class RemoveParamDimPredicateTest {
             AnalysisSituation as = new AnalysisSituation(mdGraph);
 
             BindableSet selections = new BindableSet();
-            selections.union(AppConstants.YEAR_AFTER_2013);
+            selections.union(AppConstants.YEAR_AFTER_2015);
             selections.union(new Pair(AppConstants.D_PRED, ConstantOrUnknown.unknown));
-            selections.union(new Pair(AppConstants.D_PRED_1, AppConstants.YEAR_AFTER_2015));
+            selections.union(new Pair(AppConstants.D_PRED_1, AppConstants.YEAR_AFTER_2013));
             as.setDimensionSelection(AppConstants.TIME_DIM, selections);
 
             return as;

@@ -1,9 +1,6 @@
-package at.jku.dke.swag.analysis_graphs.operations.operation_types;
+package at.jku.dke.swag.analysis_graphs.operations.operation_types.dice_ops;
 
-import at.jku.dke.swag.md_elements.Dimension;
-import at.jku.dke.swag.md_elements.Level;
-import at.jku.dke.swag.md_elements.LevelMember;
-import at.jku.dke.swag.analysis_graphs.*;
+import at.jku.dke.swag.analysis_graphs.AnalysisSituation;
 import at.jku.dke.swag.analysis_graphs.asm_elements.Location;
 import at.jku.dke.swag.analysis_graphs.asm_elements.Update;
 import at.jku.dke.swag.analysis_graphs.basic_elements.ConstantOrUnknown;
@@ -12,6 +9,9 @@ import at.jku.dke.swag.analysis_graphs.basic_elements.PairOrConstant;
 import at.jku.dke.swag.analysis_graphs.basic_elements.Parameter;
 import at.jku.dke.swag.analysis_graphs.operations.OperationTypes;
 import at.jku.dke.swag.analysis_graphs.utils.Utils;
+import at.jku.dke.swag.md_elements.Dimension;
+import at.jku.dke.swag.md_elements.Level;
+import at.jku.dke.swag.md_elements.LevelMember;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -23,13 +23,12 @@ public class MoveToLevelAndNode extends OperationTypes {
     private static final MoveToLevelAndNode instance = new MoveToLevelAndNode(Collections.emptyList());
 
 
-    public static OperationTypes getInstance() {
-        return instance;
-    }
-
-
     public MoveToLevelAndNode(List<Object> params) {
         super(params);
+    }
+
+    public static OperationTypes getInstance() {
+        return instance;
     }
 
     @Override
@@ -46,14 +45,14 @@ public class MoveToLevelAndNode extends OperationTypes {
 
         //System.out.println("before");
 
-        if((ConstantOrUnknown.isUnknown(param3)||mdGraph.isMemberOf(param3, param1))
+        if ((ConstantOrUnknown.isUnknown(param3) || mdGraph.isMemberOf(param3, param1))
                 && (!actualDiceLevel.equals(param1) || !actualDiceNode.equals(new Pair(param2, param3)))
                 && actualDiceLevel.isPair()
-                && !actualDiceLevel.equals(param1)){
+                && !actualDiceLevel.equals(param1)) {
 
             Pair newPair = new Pair(param2, param3);
 
-            Pair diceLevelPair = ((Pair)actualDiceLevel).copy();
+            Pair diceLevelPair = ((Pair) actualDiceLevel).copy();
             diceLevelPair.setConstant(param1);
 
             updates.add(
@@ -63,10 +62,10 @@ public class MoveToLevelAndNode extends OperationTypes {
                     new Update(
                             Location.diceLevelOf(param0), diceLevelPair));
 
-        }else{
-            if((ConstantOrUnknown.isUnknown(param3)||mdGraph.isMemberOf(param3, param1))
+        } else {
+            if ((ConstantOrUnknown.isUnknown(param3) || mdGraph.isMemberOf(param3, param1))
                     && (!actualDiceLevel.equals(param1) || !actualDiceNode.equals(new Pair(param2, param3)))
-                    && actualDiceLevel.isConstantOrUnknown()){
+                    && actualDiceLevel.isConstantOrUnknown()) {
 
                 Pair newPair = new Pair(param2, param3);
                 updates.add(

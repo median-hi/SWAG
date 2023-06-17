@@ -1,4 +1,4 @@
-package at.jku.dke.swag.analysis_graphs.operations.operation_types;
+package at.jku.dke.swag.analysis_graphs.operations.operation_types.selection_ops;
 
 import at.jku.dke.swag.analysis_graphs.AnalysisSituation;
 import at.jku.dke.swag.analysis_graphs.asm_elements.Location;
@@ -13,11 +13,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ReplaceConstantDimPredicate extends OperationTypes {
+public class AddConstantDimPredicate extends OperationTypes {
 
-    private static final ReplaceConstantDimPredicate instance = new ReplaceConstantDimPredicate(Collections.emptyList());
+    private static final AddConstantDimPredicate instance = new AddConstantDimPredicate(Collections.emptyList());
 
-    public ReplaceConstantDimPredicate(List<Object> params) {
+    public AddConstantDimPredicate(List<Object> params) {
         super(params);
     }
 
@@ -32,15 +32,12 @@ public class ReplaceConstantDimPredicate extends OperationTypes {
 
         Dimension param0 = (Dimension) params.get(0);
         Constant param1 = (Constant) params.get(1);
-        Constant param2 = (Constant) params.get(2);
 
-        if (situation.getDimensionSelection().get(param0).nbConsts().contains(param1)
-                && !situation.getDimensionSelection().get(param0).nbConsts().contains(param2)) {
+        if (!situation.getDimensionSelection().get(param0).nbConsts().contains(param1)) {
 
             BindableSet newSelection = situation.getDimensionSelection()
                     .get(param0).copy();
-            newSelection.setDifference(param1);
-            newSelection.union(param2);
+            newSelection.union(param1);
 
             updates.add(
                     new Update(

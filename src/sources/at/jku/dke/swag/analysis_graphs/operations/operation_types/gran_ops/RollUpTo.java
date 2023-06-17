@@ -1,4 +1,4 @@
-package at.jku.dke.swag.analysis_graphs.operations.operation_types;
+package at.jku.dke.swag.analysis_graphs.operations.operation_types.gran_ops;
 
 import at.jku.dke.swag.analysis_graphs.AnalysisSituation;
 import at.jku.dke.swag.analysis_graphs.asm_elements.Location;
@@ -15,13 +15,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class DrillDownTo extends OperationTypes {
+public class RollUpTo extends OperationTypes {
 
-    private static final DrillDownTo instance = new DrillDownTo(Collections.emptyList());
+    private static final RollUpTo instance = new RollUpTo(Collections.emptyList());
 
-    public DrillDownTo(List<Object> params) {
+    public RollUpTo(List<Object> params) {
         super(params);
     }
+
 
     public static OperationTypes getInstance() {
         return instance;
@@ -29,7 +30,6 @@ public class DrillDownTo extends OperationTypes {
 
     @Override
     public Set<Update> updSet(AnalysisSituation situation, List<Object> params) {
-
         Set<Update> updates = new HashSet<>();
 
         Dimension param0 = (Dimension) params.get(0);
@@ -37,10 +37,8 @@ public class DrillDownTo extends OperationTypes {
 
         ConstantOrUnknown actualGran = Utils.actual(situation.getGranularities().get(param0));
 
-        //System.out.println("BEFORE");
-
         if (!actualGran.isUnknown()
-                && mdGraph.drillsDownToInDimension(param0, (Level) actualGran, param1)
+                && mdGraph.drillsDownToInDimension(param0, param1, (Level) actualGran)
                 && situation.getGranularities().get(param0).isPair()) {
 
             Pair newGranPair = ((Pair) situation.getGranularities()
@@ -49,12 +47,11 @@ public class DrillDownTo extends OperationTypes {
             updates.add(
                     new Update(
                             Location.granularityOf(param0), newGranPair));
-            //System.out.println("producing update set");
         } else {
             if (!actualGran.isUnknown()
-                    && mdGraph.drillsDownToInDimension(param0, (Level) actualGran, param1)
+                    && mdGraph.drillsDownToInDimension(param0, param1, (Level) actualGran)
                     && !actualGran.equals(param1)
-                    && situation.getGranularities().get(param0).isConstantOrUnknown()) {
+                    && situation.getGranularities().get(param0).isConstant()) {
 
                 ConstantOrUnknown newGranPair = param1;
                 updates.add(
@@ -62,7 +59,6 @@ public class DrillDownTo extends OperationTypes {
                                 Location.granularityOf(param0),
                                 param1)
                 );
-                //System.out.println("producing empty set");
             }
         }
 
