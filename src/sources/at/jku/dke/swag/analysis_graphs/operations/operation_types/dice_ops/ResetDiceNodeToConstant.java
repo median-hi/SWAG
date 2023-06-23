@@ -33,7 +33,7 @@ public class ResetDiceNodeToConstant extends OperationTypes {
 
         if (DiceUtils.isLegalDiceNode(situation, param0, member)) {
             updates.add(new Update(
-                    Location.granularityOf(param0),
+                    Location.diceNodeOf(param0),
                     member)
             );
         }

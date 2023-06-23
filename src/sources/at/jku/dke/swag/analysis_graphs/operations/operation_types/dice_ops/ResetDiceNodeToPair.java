@@ -22,6 +22,10 @@ public class ResetDiceNodeToPair extends OperationTypes {
         super(params);
     }
 
+    public static OperationTypes getInstance() {
+        return instance;
+    }
+
     public Set<Update> updSet(AnalysisSituation situation, List<Object> params) {
         Set<Update> updates = new HashSet<>();
 
@@ -31,7 +35,7 @@ public class ResetDiceNodeToPair extends OperationTypes {
 
         if (DiceUtils.isLegalDiceNodePair(situation, param0, param1, member)) {
             updates.add(new Update(
-                    Location.granularityOf(param0),
+                    Location.diceNodeOf(param0),
                     new Pair(param1, member))
             );
         }
