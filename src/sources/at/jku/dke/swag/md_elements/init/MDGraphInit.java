@@ -49,7 +49,9 @@ public class MDGraphInit {
         LevelMember europe = new LevelMember("EU");
 
         LevelMember all_destinationDim = new LevelMember("all_destinationDim");
+        LevelMember all_citizenshipDim = new LevelMember("all_citizenshipDim");
         LevelMember all_timeDim = new LevelMember("all_timeDim");
+
 
         mdGraph.getL().addAll(Set.of(geo, continent, govType, destinationTop, refPeriod, year, timeTop));
         mdGraph.getD().addAll(Set.of(destinationDim, timeDim, citizenshipDim));
@@ -95,6 +97,7 @@ public class MDGraphInit {
         mdGraph.getMembers().put(continent, new TreeSet<>(Set.of(asia, europe)));
         mdGraph.getMembers().put(destinationTop, new TreeSet<>(Set.of(all_destinationDim)));
         mdGraph.getMembers().put(timeTop, new TreeSet<>(Set.of(all_timeDim)));
+        mdGraph.getMembers().put(citizenshipTop, new TreeSet<>(Set.of(all_citizenshipDim)));
 
         return mdGraph;
     }

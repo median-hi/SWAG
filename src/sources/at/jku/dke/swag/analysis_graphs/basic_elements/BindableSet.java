@@ -84,7 +84,7 @@ public class BindableSet implements LocationValue, Copiable {
         return !hasDuplicates(constsList()) && !hasDuplicates(parasList());
     }
 
-    private void throwInValidExceptionIfInvalid() {
+    public void throwInValidExceptionIfInvalid() {
         if (!verifyValid()) {
             throw new RuntimeException("Invalid bindable set");
         }
