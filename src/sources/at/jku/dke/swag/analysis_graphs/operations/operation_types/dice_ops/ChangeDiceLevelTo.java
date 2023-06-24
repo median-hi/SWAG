@@ -49,7 +49,7 @@ public class ChangeDiceLevelTo extends OperationTypes {
         if (situation.getDiceLevels().get(param0).isConstant()
                 && !actualDiceLevel.equals(newDiceLevel)) {
 
-            updates.add(new Update(Location.diceNodeOf(param0), newDiceLevel));
+            updates.add(new Update(Location.diceLevelOf(param0), newDiceLevel));
         }
 
         return updates;

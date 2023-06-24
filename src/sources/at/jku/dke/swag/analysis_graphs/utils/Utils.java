@@ -26,6 +26,26 @@ public class Utils {
         return fire(source, evaluate(source, operations));
     }
 
+    public static AnalysisSituation compose(AnalysisSituation source, Set<Operation> operations1, Set<Operation> operations2) {
+        return evaluateAndFire(evaluateAndFire(source, operations1), operations2);
+    }
+
+    public static Set<Update> conditionalUnion(AnalysisSituation source, Set<Operation> operations1, Set<Operation> operations2) {
+        AnalysisSituation intermediate = evaluateAndFire(source, operations1);
+
+        Set<Update> updates1 = evaluate(source, operations1);
+        Set<Update> updates2 = evaluate(intermediate, operations2);
+
+        if (updates1.isEmpty() || updates2.isEmpty()) {
+            return new HashSet<Update>();
+        }
+
+        Set<Update> updatesUnion = new HashSet<Update>();
+        updatesUnion.addAll(updates1);
+        updatesUnion.addAll(updates2);
+        return updatesUnion;
+    }
+
     public static AnalysisSituation fire(AnalysisSituation source, Set<Update> updateSet) {
 
         AnalysisSituation resultSituation = source.copy();

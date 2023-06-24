@@ -53,7 +53,7 @@ public class MoveAsideToNode extends OperationTypes {
 
             updates.add(new Update(Location.diceNodeOf(param0), member));
         }
-        
+
         return updates;
     }
 }

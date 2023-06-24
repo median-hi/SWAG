@@ -5,6 +5,7 @@ import at.jku.dke.swag.analysis_graphs.asm_elements.Location;
 import at.jku.dke.swag.analysis_graphs.basic_elements.*;
 import at.jku.dke.swag.analysis_graphs.operations.Operation;
 import at.jku.dke.swag.analysis_graphs.operations.operation_types.dice_ops.MoveToLevelAndNode;
+import at.jku.dke.swag.analysis_graphs.operations.operation_types.dice_ops.MoveToLevelAndNode_1;
 import at.jku.dke.swag.analysis_graphs.operations.operation_types.gran_ops.DrillDownTo;
 import at.jku.dke.swag.analysis_graphs.operations.operation_types.selection_ops.AddParamDimPredicate;
 import at.jku.dke.swag.analysis_graphs.operations.operation_types.selection_ops.AddParamResultPredicate;
@@ -34,7 +35,7 @@ public class SwagInit {
 
         situation1.setGran(AppConstants.DESTINATION_DIM, AppConstants.CONTINENT);
         situation1.setDiceLevel(AppConstants.DESTINATION_DIM, AppConstants.CONTINENT);
-        situation1.setDiceNode(AppConstants.DESTINATION_DIM, new Pair(AppConstants.CONTINENT_NODE, ConstantOrUnknown.unknown));
+        situation1.setDiceNode(AppConstants.DESTINATION_DIM, new Pair(AppConstants.CONTINENT_NODE, LevelMember.unknown()));
 
         Set<Operation> operations1_2 = initOperations1_2();
         AnalysisSituation situation2 = Utils.fire(situation1, Utils.evaluate(situation1, operations1_2));
@@ -72,7 +73,7 @@ public class SwagInit {
                         List.of(new Dimension("destinationDim"),
                                 new Level("geo"),
                                 new Parameter("geoNode"),
-                                new LevelMember(ConstantOrUnknown.unknown.getUri()))),
+                                LevelMember.unknown())),
                 OperationBinding.create().setBindings(
                         Map.of(4, new LevelMember("DE")))
         );
@@ -145,7 +146,7 @@ public class SwagInit {
 
         situation1.setGran(AppConstants.DESTINATION_DIM, AppConstants.CONTINENT);
         situation1.setDiceLevel(AppConstants.DESTINATION_DIM, AppConstants.CONTINENT);
-        situation1.setDiceNode(AppConstants.DESTINATION_DIM, new Pair(AppConstants.CONTINENT_NODE, ConstantOrUnknown.unknown));
+        situation1.setDiceNode(AppConstants.DESTINATION_DIM, new Pair(AppConstants.CONTINENT_NODE, LevelMember.unknown()));
 
         Set<Operation> operations1_2 = initOperations1_2();
         AnalysisSituation situation2 = Utils.evaluateAndFire(situation1, operations1_2);
@@ -177,7 +178,7 @@ public class SwagInit {
         as.setMeasures(measures);
         as.setGran(AppConstants.DESTINATION_DIM, AppConstants.CONTINENT);
         as.setDiceLevel(AppConstants.DESTINATION_DIM, AppConstants.CONTINENT);
-        as.setDiceNode(AppConstants.DESTINATION_DIM, new Pair(AppConstants.CONTINENT_NODE, ConstantOrUnknown.unknown));
+        as.setDiceNode(AppConstants.DESTINATION_DIM, new Pair(AppConstants.CONTINENT_NODE, LevelMember.unknown()));
         return as;
     }
 
@@ -188,7 +189,7 @@ public class SwagInit {
         as.setMeasures(measures);
         as.setGran(AppConstants.DESTINATION_DIM, AppConstants.GEO);
         as.setDiceLevel(AppConstants.DESTINATION_DIM, AppConstants.CONTINENT);
-        as.setDiceNode(AppConstants.DESTINATION_DIM, new Pair(AppConstants.CONTINENT_NODE, ConstantOrUnknown.unknown));
+        as.setDiceNode(AppConstants.DESTINATION_DIM, new Pair(AppConstants.CONTINENT_NODE, LevelMember.unknown()));
         return as;
     }
 
@@ -266,7 +267,7 @@ public class SwagInit {
                 List.of(new Dimension("timeDim"),
                         new Level("year")));
 
-        Operation op2 = new Operation(MoveToLevelAndNode.getInstance(),
+        Operation op2 = new Operation(MoveToLevelAndNode_1.getInstance(),
                 List.of(new Dimension("destinationDim"),
                         new Level("geo"),
                         new Parameter("geoNode"),
