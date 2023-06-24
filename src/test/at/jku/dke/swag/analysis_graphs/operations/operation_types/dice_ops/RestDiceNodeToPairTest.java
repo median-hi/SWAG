@@ -28,18 +28,119 @@ public class RestDiceNodeToPairTest {
     MDGraph mdGraph;
     AnalysisSituation source;
     AnalysisSituation target;
-
     AnalysisSituation opTarget;
     Set<Operation> ops;
 
-    private static Stream<Arguments> provideStringsForIsBlank() {
+    private static Stream<Arguments> provideNonEmptyUpdateSetParams() {
         return Stream.of(
+
+                //Dice level constant
+                //  Dice node constant
+                //      new value constant
+                Arguments.of(AppConstants.DICE_PARAM, AppConstants.GERMANY,
+                        AppConstants.AUSTRIA,
+                        AppConstants.GEO),
+                //      new value unknown
                 Arguments.of(AppConstants.DICE_PARAM, LevelMember.unknown(),
-                        new Pair(AppConstants.GRAN_PARAM, Level.unknown()),
-                        new Pair(AppConstants.DICE_PARAM, LevelMember.unknown())),
+                        AppConstants.AUSTRIA,
+                        AppConstants.GEO),
+
+                //  Dice Node bound parameter
+                //      new value constant
+                Arguments.of(AppConstants.DICE_PARAM, AppConstants.GERMANY,
+                        new Pair(AppConstants.DICE_PARAM, AppConstants.AUSTRIA),
+                        AppConstants.GEO),
+                //      new value unknown
+                Arguments.of(AppConstants.DICE_PARAM, LevelMember.unknown(),
+                        new Pair(AppConstants.DICE_PARAM, AppConstants.AUSTRIA),
+                        AppConstants.GEO),
+
+                //  Dice Node unbound parameter
+                //      new value constant
+                Arguments.of(AppConstants.DICE_PARAM, AppConstants.GERMANY,
+                        new Pair(AppConstants.DICE_PARAM, LevelMember.unknown()),
+                        AppConstants.GEO),
+                //      new value unknown
+                Arguments.of(AppConstants.DICE_PARAM, LevelMember.unknown(),
+                        new Pair(AppConstants.DICE_PARAM, LevelMember.unknown()),
+                        AppConstants.GEO),
+
+                //Dice level bound parameter
+
+                //  Dice node constant
+                //      new value constant
+                Arguments.of(AppConstants.DICE_PARAM, AppConstants.GERMANY,
+                        AppConstants.AUSTRIA,
+                        new Pair(AppConstants.GRAN_PARAM, AppConstants.GEO)),
+                //      new value unknown
+                Arguments.of(AppConstants.DICE_PARAM, LevelMember.unknown(),
+                        AppConstants.AUSTRIA,
+                        new Pair(AppConstants.GRAN_PARAM, AppConstants.GEO)),
+
+                //  Dice Node bound parameter
+                //      new value constant
+                Arguments.of(AppConstants.DICE_PARAM, AppConstants.GERMANY,
+                        new Pair(AppConstants.DICE_PARAM, AppConstants.AUSTRIA),
+                        new Pair(AppConstants.GRAN_PARAM, AppConstants.GEO)),
+                //      new value unknown
+                Arguments.of(AppConstants.DICE_PARAM, LevelMember.unknown(),
+                        new Pair(AppConstants.DICE_PARAM, AppConstants.AUSTRIA),
+                        new Pair(AppConstants.GRAN_PARAM, AppConstants.GEO)),
+
+                //  Dice Node unbound parameter
+                //      new value constant
+                Arguments.of(AppConstants.DICE_PARAM, AppConstants.GERMANY,
+                        new Pair(AppConstants.DICE_PARAM, LevelMember.unknown()),
+                        new Pair(AppConstants.GRAN_PARAM, AppConstants.GEO)),
+                //      new value unknown
+                Arguments.of(AppConstants.DICE_PARAM, LevelMember.unknown(),
+                        new Pair(AppConstants.DICE_PARAM, LevelMember.unknown()),
+                        new Pair(AppConstants.GRAN_PARAM, AppConstants.GEO)),
+
+
+                //Dice level unbound parameter
+
+                //  Dice node constant
+                //      new value constant
+                Arguments.of(AppConstants.DICE_PARAM, AppConstants.GERMANY,
+                        AppConstants.AUSTRIA,
+                        new Pair(AppConstants.GRAN_PARAM, AppConstants.GEO)),
+                //      new value unknown
+
+
+                //  Dice Node bound parameter
+                //      new value constant
+                Arguments.of(AppConstants.DICE_PARAM, LevelMember.unknown(),
+                        new Pair(AppConstants.DICE_PARAM, AppConstants.AUSTRIA),
+                        new Pair(AppConstants.GRAN_PARAM, Level.unknown())),
+
+                //      new value unknown
+                Arguments.of(AppConstants.DICE_PARAM, LevelMember.unknown(),
+                        new Pair(AppConstants.DICE_PARAM, LevelMember.unknown()),
+                        new Pair(AppConstants.GRAN_PARAM, Level.unknown()))
+        );
+    }
+
+    private static Stream<Arguments> provideEmptyUpdateSetParams() {
+        return Stream.of(
                 Arguments.of(AppConstants.DICE_PARAM, AppConstants.AUSTRIA,
                         new Pair(AppConstants.GRAN_PARAM, Level.unknown()),
-                        new Pair(AppConstants.DICE_PARAM, LevelMember.unknown()))
+                        new Pair(AppConstants.DICE_PARAM, LevelMember.unknown())),
+
+                //  Dice Node unbound parameter
+                //      new value constant
+                Arguments.of(AppConstants.DICE_PARAM, AppConstants.GERMANY,
+                        new Pair(AppConstants.DICE_PARAM, LevelMember.unknown()),
+                        new Pair(AppConstants.GRAN_PARAM, Level.unknown())),
+
+                Arguments.of(AppConstants.DICE_PARAM, AppConstants.GERMANY,
+                        new Pair(AppConstants.DICE_PARAM, AppConstants.AUSTRIA),
+                        new Pair(AppConstants.GRAN_PARAM, Level.unknown())),
+
+                //      new value constant
+                Arguments.of(AppConstants.DICE_PARAM, AppConstants.FAKE,
+                        AppConstants.AUSTRIA,
+                        AppConstants.GEO)
         );
     }
 
@@ -49,17 +150,32 @@ public class RestDiceNodeToPairTest {
     }
 
     @ParameterizedTest
-    @MethodSource("provideStringsForIsBlank")
-    @DisplayName("When actual dice node is constant and new value is unknown")
-    void added1(Parameter diceNodeParam, LevelMember diceNodeValue,
-                PairOrConstant diceLevelPairOrConstant,
-                PairOrConstant diceNodePairOrConstant) {
-        
+    @MethodSource("provideNonEmptyUpdateSetParams")
+    @DisplayName("Values that trigger updates")
+    void withUpdate(Parameter diceNodeParam, LevelMember diceNodeValue,
+                    PairOrConstant diceNodePairOrConstant,
+                    PairOrConstant diceLevelPairOrConstant) {
+
         source = createSource(diceLevelPairOrConstant, diceNodePairOrConstant);
         target = createTarget(diceNodeParam, diceNodeValue, diceLevelPairOrConstant);
         ops = initOperations(diceNodeParam, diceNodeValue);
         opTarget = Utils.evaluateAndFire(source, ops);
         Assertions.assertFalse(Utils.evaluate(source, ops).isEmpty());
+        Assertions.assertEquals(opTarget, target);
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideEmptyUpdateSetParams")
+    @DisplayName("Values that do not trigger updates")
+    void noUpdate(Parameter diceNodeParam, LevelMember diceNodeValue,
+                  PairOrConstant diceNodePairOrConstant,
+                  PairOrConstant diceLevelPairOrConstant) {
+
+        source = createSource(diceLevelPairOrConstant, diceNodePairOrConstant);
+        target = createSource(diceLevelPairOrConstant, diceNodePairOrConstant);
+        ops = initOperations(diceNodeParam, diceNodeValue);
+        opTarget = Utils.evaluateAndFire(source, ops);
+        Assertions.assertTrue(Utils.evaluate(source, ops).isEmpty());
         Assertions.assertEquals(opTarget, target);
     }
 

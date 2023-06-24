@@ -24,11 +24,11 @@ public class DiceUtils {
                 || m.isUnknown();
     }
 
-    public static boolean isLegalDiceLevelPair(AnalysisSituation q, Dimension d, LevelMember m) {
+    public static boolean isLegalDiceLevelPair(AnalysisSituation q, Dimension d, Level m) {
         return true;
     }
 
-    public static boolean isLegalDiceLevelPair(AnalysisSituation q, Dimension d, Parameter p, LevelMember m) {
+    public static boolean isLegalDiceLevelPair(AnalysisSituation q, Dimension d, Parameter p, Level m) {
         return true;
     }
 }
