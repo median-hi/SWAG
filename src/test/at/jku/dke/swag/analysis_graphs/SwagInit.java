@@ -132,11 +132,9 @@ public class SwagInit {
 
     }
 
-
     public static List<AnalysisSituation> initAg() {
 
         List<Parameter> params = new ArrayList<>();
-
 
         AnalysisSituation situation1 = new AnalysisSituation(mdGraph);
 
@@ -168,7 +166,6 @@ public class SwagInit {
         situations.add(situation5);
 
         return situations;
-
     }
 
     public static AnalysisSituation createAs1() {
@@ -296,7 +293,6 @@ public class SwagInit {
         return Set.of(op1, op2);
     }
 
-
     public static Set<Operation> initOperations3_4() {
 
         Operation op1 = new Operation(DrillDownTo.getInstance(),
@@ -308,5 +304,51 @@ public class SwagInit {
                         ConstantOrUnknown.unknown));
 
         return Set.of(op1, op2);
+    }
+
+    public static SWAG initSwag() {
+        List<Parameter> params = new ArrayList<>();
+
+        AnalysisSituation situation1 = new AnalysisSituation(mdGraph);
+
+        BindableSet measures = new BindableSet();
+        measures.union(mdGraph.getM().stream().findAny().get());
+        situation1.setMeasures(measures);
+
+        situation1.setGran(AppConstants.DESTINATION_DIM, AppConstants.CONTINENT);
+        situation1.setDiceLevel(AppConstants.DESTINATION_DIM, AppConstants.CONTINENT);
+        situation1.setDiceNode(AppConstants.DESTINATION_DIM, new Pair(AppConstants.CONTINENT_NODE, LevelMember.unknown()));
+
+        Set<Operation> operations1_2 = initOperations1_2();
+        AnalysisSituation situation2 = Utils.evaluateAndFire(situation1, operations1_2);
+        Step step1_2 = new Step(situation1, situation2, operations1_2);
+
+        Set<Operation> operations2_3 = initOperations2_3();
+        AnalysisSituation situation3 = Utils.evaluateAndFire(situation2, operations2_3);
+        Step step2_3 = new Step(situation2, situation3, operations2_3);
+
+        Set<Operation> operations3_4 = initOperations3_4();
+        AnalysisSituation situation4 = Utils.evaluateAndFire(situation3, operations3_4);
+        Step step3_4 = new Step(situation3, situation4, operations3_4);
+
+        Set<Operation> operations2_5 = initOperations2_5();
+        AnalysisSituation situation5 = Utils.evaluateAndFire(situation2, operations2_5);
+        Step step2_5 = new Step(situation2, situation5, operations2_5);
+
+        List<AnalysisSituation> situations = new ArrayList<>();
+        situations.add(situation1);
+        situations.add(situation2);
+        situations.add(situation3);
+        situations.add(situation4);
+        situations.add(situation5);
+
+        List<Step> steps = new ArrayList<>();
+        steps.add(step1_2);
+        steps.add(step2_3);
+        steps.add(step3_4);
+        steps.add(step2_5);
+
+        SWAG swag = new SWAG(mdGraph, situations, steps);
+        return swag;
     }
 }

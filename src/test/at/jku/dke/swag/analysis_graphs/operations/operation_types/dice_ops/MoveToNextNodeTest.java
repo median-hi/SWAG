@@ -72,12 +72,12 @@ public class MoveToNextNodeTest {
         @Test
         @DisplayName("When actual dice node is constant and not last but not a member of dice level")
         void added1() {
-            source = createSource();
-            target = createSource();
-            ops = initOperations();
-            opTarget = Utils.evaluateAndFire(source, ops);
-            Assertions.assertTrue(Utils.evaluate(source, ops).isEmpty());
-            Assertions.assertEquals(opTarget, target);
+            Assertions.assertThrows(Exception.class, () -> {
+                source = createSource();
+                target = createSource();
+                ops = initOperations();
+                opTarget = Utils.evaluateAndFire(source, ops);
+            });
         }
 
         public Set<Operation> initOperations() {
@@ -248,7 +248,7 @@ public class MoveToNextNodeTest {
         public AnalysisSituation createSource() {
             AnalysisSituation as = new AnalysisSituation(mdGraph);
             as.setDiceLevel(AppConstants.DESTINATION_DIM, new Pair(AppConstants.GRAN_PARAM, Level.unknown()));
-            as.setDiceNode(AppConstants.DESTINATION_DIM, AppConstants.AUSTRIA);
+            as.setDiceNode(AppConstants.DESTINATION_DIM, new Pair(AppConstants.DICE_PARAM, LevelMember.unknown()));
             return as;
         }
     }

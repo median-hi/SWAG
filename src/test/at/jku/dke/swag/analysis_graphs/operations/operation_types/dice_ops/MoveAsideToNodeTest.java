@@ -153,7 +153,6 @@ public class MoveAsideToNodeTest {
         public AnalysisSituation createSource() {
             AnalysisSituation as = new AnalysisSituation(mdGraph);
             as.setDiceLevel(AppConstants.DESTINATION_DIM, new Pair(AppConstants.GRAN_PARAM, Level.unknown()));
-            as.setDiceNode(AppConstants.DESTINATION_DIM, AppConstants.AUSTRIA);
             return as;
         }
     }
@@ -283,7 +282,6 @@ public class MoveAsideToNodeTest {
         public AnalysisSituation createSource() {
             AnalysisSituation as = new AnalysisSituation(mdGraph);
             as.setDiceLevel(AppConstants.DESTINATION_DIM, new Pair(AppConstants.GRAN_PARAM, Level.unknown()));
-            as.setDiceNode(AppConstants.DESTINATION_DIM, new Pair(AppConstants.DICE_PARAM, AppConstants.AUSTRIA));
             return as;
         }
     }

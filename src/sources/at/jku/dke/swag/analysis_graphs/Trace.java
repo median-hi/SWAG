@@ -1,12 +1,13 @@
 package at.jku.dke.swag.analysis_graphs;
 
-import at.jku.dke.swag.analysis_graphs.asm_elements.Update;
 import at.jku.dke.swag.analysis_graphs.basic_elements.OperationBinding;
 import at.jku.dke.swag.analysis_graphs.basic_elements.SituationBinding;
 import at.jku.dke.swag.analysis_graphs.operations.Operation;
-import at.jku.dke.swag.analysis_graphs.utils.Utils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class Trace {
 
@@ -15,7 +16,10 @@ public class Trace {
     List<Step> steps = new LinkedList<>();
     List<Map<Operation, OperationBinding>> stepBindings = new ArrayList<>();
 
-    public Trace(AnalysisSituation initialAs, SituationBinding initialAsBindings, List<Step> steps, List<Map<Operation, OperationBinding>> stepBindings) {
+    public Trace(AnalysisSituation initialAs,
+                 SituationBinding initialAsBindings,
+                 List<Step> steps,
+                 List<Map<Operation, OperationBinding>> stepBindings) {
         this.initialAs = initialAs;
         this.initialAsBindings = initialAsBindings;
         this.steps = steps;
@@ -52,6 +56,10 @@ public class Trace {
 
     public void setStepBindings(List<Map<Operation, OperationBinding>> stepBindings) {
         this.stepBindings = stepBindings;
+    }
+
+    private void assertValidTrace() {
+
     }
 
 }

@@ -187,7 +187,6 @@ public class MDGraph {
     }
 
     public boolean isMemberOf(LevelMember member, Level level) {
-        System.out.println(level);
         return members.get(level).contains(member);
     }
 

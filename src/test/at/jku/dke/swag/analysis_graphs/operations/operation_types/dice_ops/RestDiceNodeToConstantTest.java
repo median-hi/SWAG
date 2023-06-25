@@ -20,7 +20,6 @@ public class RestDiceNodeToConstantTest {
     MDGraph mdGraph;
     AnalysisSituation source;
     AnalysisSituation target;
-
     AnalysisSituation opTarget;
     Set<Operation> ops;
 
@@ -260,12 +259,12 @@ public class RestDiceNodeToConstantTest {
         @Test
         @DisplayName("When actual dice node is a bound value of a parameter but dice level is unbound")
         void added1() {
-            source = createSource();
-            target = createSource();
-            ops = initOperations();
-            opTarget = Utils.evaluateAndFire(source, ops);
-            Assertions.assertTrue(Utils.evaluate(source, ops).isEmpty());
-            Assertions.assertEquals(opTarget, target);
+            Assertions.assertThrows(Exception.class, () -> {
+                source = createSource();
+                target = createSource();
+                ops = initOperations();
+                opTarget = Utils.evaluateAndFire(source, ops);
+            });
         }
 
         public Set<Operation> initOperations() {

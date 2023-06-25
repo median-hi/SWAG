@@ -53,7 +53,6 @@ public class Utils {
         for (Update update : updateSet) {
             resultSituation = fire(resultSituation, update);
         }
-
         return resultSituation;
     }
 

@@ -42,6 +42,8 @@ public class AppConstants {
     public static final Level REF_PERIOD = new Level("refPeriod");
     public static final Parameter CONTINENT_NODE = new Parameter("continentNode");
 
+    public static final LevelMember EU = new LevelMember("EU");
+
     public static final Parameter GEO_NODE = new Parameter("geoNode");
 
     public static final Parameter GEO_NODE_1 = new Parameter("geoNode1");
@@ -51,6 +53,10 @@ public class AppConstants {
     public static final Constant YEAR_AFTER_2015 = new Constant("yearAfter2015");
 
     public static final Constant YEAR_AFTER_2013 = new Constant("yearAfter2013");
+
+    public static final Constant YEAR_AFTER_2010 = new Constant("yearAfter2010");
+
+    public static final Constant INTENSITY_GT_30K = new Constant("intensityGreaterThan30K");
 
     public static final Parameter D_PRED_1 = new Parameter("dPred1");
 

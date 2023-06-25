@@ -109,11 +109,6 @@ public class RestDiceNodeToPairTest {
 
 
                 //  Dice Node bound parameter
-                //      new value constant
-                Arguments.of(AppConstants.DICE_PARAM, LevelMember.unknown(),
-                        new Pair(AppConstants.DICE_PARAM, AppConstants.AUSTRIA),
-                        new Pair(AppConstants.GRAN_PARAM, Level.unknown())),
-
                 //      new value unknown
                 Arguments.of(AppConstants.DICE_PARAM, LevelMember.unknown(),
                         new Pair(AppConstants.DICE_PARAM, LevelMember.unknown()),
@@ -123,24 +118,28 @@ public class RestDiceNodeToPairTest {
 
     private static Stream<Arguments> provideEmptyUpdateSetParams() {
         return Stream.of(
-                Arguments.of(AppConstants.DICE_PARAM, AppConstants.AUSTRIA,
-                        new Pair(AppConstants.GRAN_PARAM, Level.unknown()),
-                        new Pair(AppConstants.DICE_PARAM, LevelMember.unknown())),
+                //      new value constant
+                Arguments.of(AppConstants.DICE_PARAM, AppConstants.FAKE,
+                        AppConstants.AUSTRIA,
+                        AppConstants.GEO),
 
                 //  Dice Node unbound parameter
                 //      new value constant
                 Arguments.of(AppConstants.DICE_PARAM, AppConstants.GERMANY,
                         new Pair(AppConstants.DICE_PARAM, LevelMember.unknown()),
                         new Pair(AppConstants.GRAN_PARAM, Level.unknown())),
+                
+                Arguments.of(AppConstants.DICE_PARAM, AppConstants.AUSTRIA,
+                        new Pair(AppConstants.DICE_PARAM, LevelMember.unknown()),
+                        new Pair(AppConstants.GRAN_PARAM, Level.unknown()))
+        );
+    }
 
+    private static Stream<Arguments> provideThrowsExceptionParams() {
+        return Stream.of(
                 Arguments.of(AppConstants.DICE_PARAM, AppConstants.GERMANY,
                         new Pair(AppConstants.DICE_PARAM, AppConstants.AUSTRIA),
-                        new Pair(AppConstants.GRAN_PARAM, Level.unknown())),
-
-                //      new value constant
-                Arguments.of(AppConstants.DICE_PARAM, AppConstants.FAKE,
-                        AppConstants.AUSTRIA,
-                        AppConstants.GEO)
+                        new Pair(AppConstants.GRAN_PARAM, Level.unknown()))
         );
     }
 
@@ -179,6 +178,21 @@ public class RestDiceNodeToPairTest {
         Assertions.assertEquals(opTarget, target);
     }
 
+    @ParameterizedTest
+    @MethodSource("provideThrowsExceptionParams")
+    @DisplayName("Values that cause exceptions")
+    void throwsException(Parameter diceNodeParam,
+                         LevelMember diceNodeValue,
+                         PairOrConstant diceNodePairOrConstant,
+                         PairOrConstant diceLevelPairOrConstant) {
+        Assertions.assertThrows(Exception.class, () -> {
+            source = createSource(diceLevelPairOrConstant, diceNodePairOrConstant);
+            target = createSource(diceLevelPairOrConstant, diceNodePairOrConstant);
+            ops = initOperations(diceNodeParam, diceNodeValue);
+            opTarget = Utils.evaluateAndFire(source, ops);
+        });
+    }
+
     public Set<Operation> initOperations(Parameter diceNodeParam, LevelMember diceNodeValue) {
         Operation op3 = new Operation(ResetDiceNodeToPair.getInstance(),
                 List.of(AppConstants.DESTINATION_DIM,
@@ -195,12 +209,12 @@ public class RestDiceNodeToPairTest {
         return as;
     }
 
-    public AnalysisSituation createTarget(Parameter diceNodeParam, LevelMember diceNodeValue,
+    public AnalysisSituation createTarget(Parameter diceNodeParam,
+                                          LevelMember diceNodeValue,
                                           PairOrConstant diceLevelPairOrConstant) {
         AnalysisSituation as = new AnalysisSituation(mdGraph);
         as.setDiceLevel(AppConstants.DESTINATION_DIM, diceLevelPairOrConstant);
-        as.setDiceNode(AppConstants.DESTINATION_DIM, new Pair(diceNodeParam,
-                diceNodeValue));
+        as.setDiceNode(AppConstants.DESTINATION_DIM, new Pair(diceNodeParam, diceNodeValue));
         return as;
     }
 }

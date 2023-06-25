@@ -1,11 +1,9 @@
 package at.jku.dke.swag.analysis_graphs;
 
+import at.jku.dke.swag.analysis_graphs.utils.Utils;
 import at.jku.dke.swag.md_elements.MDGraph;
-import at.jku.dke.swag.analysis_graphs.basic_elements.ConstantOrUnknown;
-import at.jku.dke.swag.analysis_graphs.basic_elements.Parameter;
 
 import java.util.List;
-import java.util.Set;
 
 public class SWAG {
     MDGraph mdGraph;
@@ -17,6 +15,7 @@ public class SWAG {
         this.mdGraph = mdGraph;
         this.situations = situations;
         this.steps = steps;
+        assertValidSwag();
     }
 
     public MDGraph getMdGraph() {
@@ -33,6 +32,7 @@ public class SWAG {
 
     public void setSituations(List<AnalysisSituation> situations) {
         this.situations = situations;
+        assertValidSwag();
     }
 
     public List<Step> getSteps() {
@@ -41,6 +41,15 @@ public class SWAG {
 
     public void setSteps(List<Step> steps) {
         this.steps = steps;
+        assertValidSwag();
+    }
+
+    private void assertValidSwag() {
+        for (Step s : getSteps()) {
+            if (Utils.evaluate(s.getSource(), s.getOperations()).isEmpty()) {
+                throw new RuntimeException("Operation creates an empty update set.");
+            }
+        }
     }
 }
 

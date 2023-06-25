@@ -55,7 +55,15 @@ public class AnalysisSituation implements Copiable {
         return this;
     }
 
+    /**
+     * Disabled checking the validity of the situation since it can lead to problems when the dice level is set before the dice node
+     */
     public AnalysisSituation setDiceLevel(Dimension d, PairOrConstant level) {
+        diceLevels.put(d, level);
+        return this;
+    }
+
+    public AnalysisSituation setDiceLevelAssert(Dimension d, PairOrConstant level) {
         diceLevels.put(d, level);
         AssertValidSituation();
         return this;
@@ -81,7 +89,6 @@ public class AnalysisSituation implements Copiable {
             newSituation.diceLevels.put(d, this.diceLevels.get(d));
             newSituation.diceNodes.put(d, this.diceNodes.get(d));
         }
-        AssertValidSituation();
         return newSituation;
     }
 
@@ -173,12 +180,12 @@ public class AnalysisSituation implements Copiable {
 
             if (level.isUnknown()) {
                 if (!member.isUnknown()) {
-                    throw new RuntimeException("Invalid Dice level / node");
+                    throw new RuntimeException("Invalid Dice level / node. Level is unknown but node is not.");
                 }
             } else {
                 if (!member.isUnknown()) {
                     if (!mdGraph.isMemberOf(member, level)) {
-                        throw new RuntimeException("Invalid Dice level / node");
+                        throw new RuntimeException("Invalid Dice level / node. Dice node is not a member of dice level.");
                     }
                 }
             }

@@ -31,7 +31,8 @@ public class ResetDiceNodeToConstant extends OperationTypes {
         Dimension param0 = (Dimension) params.get(0);
         LevelMember member = (LevelMember) params.get(1);
 
-        if (DiceUtils.isLegalDiceNode(situation, param0, member)) {
+        if (DiceUtils.isLegalDiceNode(situation, param0, member)
+                && !member.equals(situation.getDiceNodes().get(param0))) {
             updates.add(new Update(
                     Location.diceNodeOf(param0),
                     member)
