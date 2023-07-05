@@ -3,6 +3,7 @@ package at.jku.dke.swag.analysis_graphs;
 import at.jku.dke.swag.analysis_graphs.basic_elements.OperationBinding;
 import at.jku.dke.swag.analysis_graphs.basic_elements.SituationBinding;
 import at.jku.dke.swag.analysis_graphs.operations.Operation;
+import at.jku.dke.swag.analysis_graphs.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -24,13 +25,14 @@ public class Trace {
         this.initialAsBindings = initialAsBindings;
         this.steps = steps;
         this.stepBindings = stepBindings;
+        assertValidTrace();
     }
 
     public AnalysisSituation getInitialAs() {
         return initialAs;
     }
 
-    public void setInitialAs(AnalysisSituation initialAs) {
+    private void setInitialAs(AnalysisSituation initialAs) {
         this.initialAs = initialAs;
     }
 
@@ -38,7 +40,7 @@ public class Trace {
         return initialAsBindings;
     }
 
-    public void setInitialAsBindings(SituationBinding initialAsBindings) {
+    private void setInitialAsBindings(SituationBinding initialAsBindings) {
         this.initialAsBindings = initialAsBindings;
     }
 
@@ -46,7 +48,7 @@ public class Trace {
         return steps;
     }
 
-    public void setSteps(List<Step> steps) {
+    private void setSteps(List<Step> steps) {
         this.steps = steps;
     }
 
@@ -54,12 +56,17 @@ public class Trace {
         return stepBindings;
     }
 
-    public void setStepBindings(List<Map<Operation, OperationBinding>> stepBindings) {
+    private void setStepBindings(List<Map<Operation, OperationBinding>> stepBindings) {
         this.stepBindings = stepBindings;
     }
 
     private void assertValidTrace() {
+        AnalysisSituation initialAsPrime = Utils.bind(this.getInitialAs(), this.getInitialAsBindings());
 
+        for (int i = 0; i < this.getSteps().size(); i++) {
+            Step stepPrime = Utils.bind(this.getSteps().get(i), this.getStepBindings().get(i));
+            Utils.evaluateAndCheck(initialAsPrime, stepPrime.getOperations());
+        }
     }
 
 }

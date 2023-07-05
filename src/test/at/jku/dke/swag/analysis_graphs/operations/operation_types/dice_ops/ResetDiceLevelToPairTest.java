@@ -35,7 +35,9 @@ public class ResetDiceLevelToPairTest {
             source = createSource();
             target = createTarget();
             ops = initOperations();
-            opTarget = Utils.evaluateAndFire(source, ops);
+            AnalysisSituation sourceCopy = source.copy();
+            sourceCopy.setDiceNode(AppConstants.DESTINATION_DIM, AppConstants.EU);
+            opTarget = Utils.evaluateAndFire(sourceCopy, ops);
             Assertions.assertFalse(Utils.evaluate(source, ops).isEmpty());
             Assertions.assertEquals(opTarget, target);
         }
@@ -49,12 +51,14 @@ public class ResetDiceLevelToPairTest {
         public AnalysisSituation createSource() {
             AnalysisSituation as = new AnalysisSituation(mdGraph);
             as.setDiceLevel(AppConstants.DESTINATION_DIM, AppConstants.GEO);
+            as.setDiceNode(AppConstants.DESTINATION_DIM, AppConstants.AUSTRIA);
             return as;
         }
 
         public AnalysisSituation createTarget() {
             AnalysisSituation as = new AnalysisSituation(mdGraph);
             as.setDiceLevel(AppConstants.DESTINATION_DIM, new Pair(AppConstants.GRAN_PARAM, AppConstants.CONTINENT));
+            as.setDiceNode(AppConstants.DESTINATION_DIM, AppConstants.EU);
             return as;
         }
     }
@@ -83,12 +87,14 @@ public class ResetDiceLevelToPairTest {
         public AnalysisSituation createSource() {
             AnalysisSituation as = new AnalysisSituation(mdGraph);
             as.setDiceLevel(AppConstants.DESTINATION_DIM, AppConstants.CONTINENT);
+            as.setDiceNode(AppConstants.DESTINATION_DIM, AppConstants.EU);
             return as;
         }
 
         public AnalysisSituation createTarget() {
             AnalysisSituation as = new AnalysisSituation(mdGraph);
             as.setDiceLevel(AppConstants.DESTINATION_DIM, new Pair(AppConstants.GRAN_PARAM, AppConstants.CONTINENT));
+            as.setDiceNode(AppConstants.DESTINATION_DIM, AppConstants.EU);
             return as;
         }
     }
@@ -117,12 +123,14 @@ public class ResetDiceLevelToPairTest {
         public AnalysisSituation createSource() {
             AnalysisSituation as = new AnalysisSituation(mdGraph);
             as.setDiceLevel(AppConstants.DESTINATION_DIM, new Pair(AppConstants.GRAN_PARAM, AppConstants.CONTINENT));
+            as.setDiceNode(AppConstants.DESTINATION_DIM, AppConstants.EU);
             return as;
         }
 
         public AnalysisSituation createTarget() {
             AnalysisSituation as = new AnalysisSituation(mdGraph);
             as.setDiceLevel(AppConstants.DESTINATION_DIM, new Pair(AppConstants.GRAN_PARAM_1, AppConstants.CONTINENT));
+            as.setDiceNode(AppConstants.DESTINATION_DIM, AppConstants.EU);
             return as;
         }
     }
@@ -137,7 +145,9 @@ public class ResetDiceLevelToPairTest {
             source = createSource();
             target = createTarget();
             ops = initOperations();
-            opTarget = Utils.evaluateAndFire(source, ops);
+            AnalysisSituation sourceCopy = source.copy();
+            sourceCopy.setDiceNode(AppConstants.DESTINATION_DIM, AppConstants.EU);
+            opTarget = Utils.evaluateAndFire(sourceCopy, ops);
             Assertions.assertFalse(Utils.evaluate(source, ops).isEmpty());
             Assertions.assertEquals(opTarget, target);
         }
@@ -151,12 +161,14 @@ public class ResetDiceLevelToPairTest {
         public AnalysisSituation createSource() {
             AnalysisSituation as = new AnalysisSituation(mdGraph);
             as.setDiceLevel(AppConstants.DESTINATION_DIM, new Pair(AppConstants.GRAN_PARAM, AppConstants.GEO));
+            as.setDiceNode(AppConstants.DESTINATION_DIM, AppConstants.AUSTRIA);
             return as;
         }
 
         public AnalysisSituation createTarget() {
             AnalysisSituation as = new AnalysisSituation(mdGraph);
             as.setDiceLevel(AppConstants.DESTINATION_DIM, new Pair(AppConstants.GRAN_PARAM, AppConstants.CONTINENT));
+            as.setDiceNode(AppConstants.DESTINATION_DIM, AppConstants.EU);
             return as;
         }
     }
@@ -185,12 +197,14 @@ public class ResetDiceLevelToPairTest {
         public AnalysisSituation createSource() {
             AnalysisSituation as = new AnalysisSituation(mdGraph);
             as.setDiceLevel(AppConstants.DESTINATION_DIM, new Pair(AppConstants.GRAN_PARAM, AppConstants.CONTINENT));
+            as.setDiceNode(AppConstants.DESTINATION_DIM, AppConstants.EU);
             return as;
         }
 
         public AnalysisSituation createTarget() {
             AnalysisSituation as = new AnalysisSituation(mdGraph);
             as.setDiceLevel(AppConstants.DESTINATION_DIM, new Pair(AppConstants.GRAN_PARAM, AppConstants.CONTINENT));
+            as.setDiceNode(AppConstants.DESTINATION_DIM, AppConstants.EU);
             return as;
         }
     }

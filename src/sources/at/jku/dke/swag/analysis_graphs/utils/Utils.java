@@ -22,7 +22,35 @@ public class Utils {
         return updateSet;
     }
 
+    /**
+     * Evaluate a set of operations in analysis situation.
+     * If any operations produces an empty update set, a RunTimeException is thrown
+     *
+     * @param source     source situation to evaluate operations in
+     * @param operations set of operations to evaluate
+     * @return a set of updates
+     */
+    public static Set<Update> evaluateAndCheck(AnalysisSituation source, Set<Operation> operations) {
+        Set<Update> updateSet = new HashSet<>();
+
+        for (Operation op : operations) {
+            Set<Update> updates = op.evaluate(source);
+            if (updates.isEmpty()) {
+                throw new RuntimeException("Empty update sets not allowed in traces");
+            }
+            updateSet.addAll(op.evaluate(source));
+        }
+
+        return updateSet;
+    }
+
     public static AnalysisSituation evaluateAndFire(AnalysisSituation source, Set<Operation> operations) {
+        AnalysisSituation situation = fire(source, evaluate(source, operations));
+        situation.AssertValidSituation();
+        return situation;
+    }
+
+    public static AnalysisSituation evaluateAndFireNoCheck(AnalysisSituation source, Set<Operation> operations) {
         return fire(source, evaluate(source, operations));
     }
 
@@ -31,7 +59,7 @@ public class Utils {
     }
 
     public static Set<Update> conditionalUnion(AnalysisSituation source, Set<Operation> operations1, Set<Operation> operations2) {
-        AnalysisSituation intermediate = evaluateAndFire(source, operations1);
+        AnalysisSituation intermediate = Utils.evaluateAndFireNoCheck(source, operations1);
 
         Set<Update> updates1 = evaluate(source, operations1);
         Set<Update> updates2 = evaluate(intermediate, operations2);
@@ -46,7 +74,7 @@ public class Utils {
         return updatesUnion;
     }
 
-    public static AnalysisSituation fire(AnalysisSituation source, Set<Update> updateSet) {
+    private static AnalysisSituation fire(AnalysisSituation source, Set<Update> updateSet) {
 
         AnalysisSituation resultSituation = source.copy();
 
@@ -117,12 +145,14 @@ public class Utils {
     }
 
     public static AnalysisSituation bind(AnalysisSituation source, Set<SituationBinding> bindings) {
+
         AnalysisSituation resultSituation = source.copy();
 
         for (SituationBinding binding : bindings) {
             resultSituation = bind(resultSituation, binding);
         }
 
+        resultSituation.AssertValidSituation();
         return resultSituation;
     }
 
@@ -162,12 +192,18 @@ public class Utils {
     }
 
     private static void applyBindingTo(BindableSet set, SituationBinding binding) {
+
         for (Parameter param : binding.getBindings().keySet()) {
-
             Optional<Pair> pairOfParameter = set.getPairOfParameter(param);
-
-            if (set.paras().contains(param) && pairOfParameter.isPresent() && pairOfParameter.get().getConstant().isUnknown()) {
-                pairOfParameter.ifPresent(x -> x.setConstant(binding.getBindings().get(param)));
+            if (set.paras().contains(param) &&
+                    pairOfParameter.isPresent() &&
+                    pairOfParameter.get().getConstant().isUnknown()) {
+                pairOfParameter.ifPresent(x -> {
+                    set.setDifference(x);
+                    Pair newPair = x.copy();
+                    newPair.setConstant(binding.getBindings().get(param));
+                    set.union(newPair);
+                });
             }
         }
     }
@@ -192,15 +228,18 @@ public class Utils {
     }
 
     public static List<AnalysisSituation> executeTrace(Trace trace) {
+
         List<AnalysisSituation> situations = new ArrayList<>();
 
         AnalysisSituation initialAsPrime = Utils.bind(trace.getInitialAs(), trace.getInitialAsBindings());
+        initialAsPrime.AssertValidSituation();
         situations.add(initialAsPrime);
 
         for (int i = 0; i < trace.getSteps().size(); i++) {
             Step stepPrime = Utils.bind(trace.getSteps().get(i), trace.getStepBindings().get(i));
-            Set<Update> updates = Utils.evaluate(initialAsPrime, stepPrime.getOperations());
+            Set<Update> updates = Utils.evaluateAndCheck(initialAsPrime, stepPrime.getOperations());
             initialAsPrime = Utils.fire(initialAsPrime, updates);
+            initialAsPrime.AssertValidSituation();
             situations.add(initialAsPrime);
         }
 

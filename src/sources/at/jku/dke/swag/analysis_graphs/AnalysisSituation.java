@@ -24,6 +24,7 @@ public class AnalysisSituation implements Copiable {
     private MDGraph mdGraph;
 
     public AnalysisSituation(MDGraph mdGraph) {
+
         this.mdGraph = mdGraph;
 
         for (Dimension d : mdGraph.getD()) {
@@ -32,26 +33,20 @@ public class AnalysisSituation implements Copiable {
             this.getDiceNodes().put(d, new LevelMember("all_" + d.getUri()));
             this.getDimensionSelection().put(d, BindableSet.empty());
         }
-
-        AssertValidSituation();
-
     }
 
     public AnalysisSituation setResultFilter(BindableSet resultFilters) {
         this.resultFilters = resultFilters;
-        AssertValidSituation();
         return this;
     }
 
     public AnalysisSituation setDimensionSelection(Dimension d, BindableSet conds) {
         dimensionSelection.put(d, conds);
-        AssertValidSituation();
         return this;
     }
 
     public AnalysisSituation setGran(Dimension d, PairOrConstant gran) {
         granularities.put(d, gran);
-        AssertValidSituation();
         return this;
     }
 
@@ -63,15 +58,8 @@ public class AnalysisSituation implements Copiable {
         return this;
     }
 
-    public AnalysisSituation setDiceLevelAssert(Dimension d, PairOrConstant level) {
-        diceLevels.put(d, level);
-        AssertValidSituation();
-        return this;
-    }
-
     public AnalysisSituation setDiceNode(Dimension d, PairOrConstant node) {
         diceNodes.put(d, node);
-        AssertValidSituation();
         return this;
     }
 
@@ -89,6 +77,7 @@ public class AnalysisSituation implements Copiable {
             newSituation.diceLevels.put(d, this.diceLevels.get(d));
             newSituation.diceNodes.put(d, this.diceNodes.get(d));
         }
+
         return newSituation;
     }
 
@@ -106,7 +95,6 @@ public class AnalysisSituation implements Copiable {
 
     public AnalysisSituation setMeasures(BindableSet measures) {
         this.measures = measures;
-        AssertValidSituation();
         return this;
     }
 
@@ -116,7 +104,6 @@ public class AnalysisSituation implements Copiable {
 
     public void setResultFilters(BindableSet resultFilters) {
         this.resultFilters = resultFilters;
-        AssertValidSituation();
     }
 
     public Map<Dimension, BindableSet> getDimensionSelection() {
@@ -125,7 +112,6 @@ public class AnalysisSituation implements Copiable {
 
     public void setDimensionSelection(Map<Dimension, BindableSet> dimensionSelection) {
         this.dimensionSelection = dimensionSelection;
-        AssertValidSituation();
     }
 
     public Map<Dimension, PairOrConstant> getGranularities() {
@@ -134,7 +120,6 @@ public class AnalysisSituation implements Copiable {
 
     public void setGranularities(Map<Dimension, PairOrConstant> granularities) {
         this.granularities = granularities;
-        AssertValidSituation();
     }
 
     public Map<Dimension, PairOrConstant> getDiceLevels() {
@@ -143,7 +128,6 @@ public class AnalysisSituation implements Copiable {
 
     public void setDiceLevels(Map<Dimension, PairOrConstant> diceLevels) {
         this.diceLevels = diceLevels;
-        AssertValidSituation();
     }
 
     public Map<Dimension, PairOrConstant> getDiceNodes() {
@@ -152,7 +136,6 @@ public class AnalysisSituation implements Copiable {
 
     public void setDiceNodes(Map<Dimension, PairOrConstant> diceNodes) {
         this.diceNodes = diceNodes;
-        AssertValidSituation();
     }
 
     @Override
@@ -168,7 +151,7 @@ public class AnalysisSituation implements Copiable {
                 && Objects.equals(diceNodes, that.diceNodes);
     }
 
-    private void AssertValidSituation() {
+    public void AssertValidSituation() {
 
         measures.throwInValidExceptionIfInvalid();
         resultFilters.throwInValidExceptionIfInvalid();
@@ -185,7 +168,7 @@ public class AnalysisSituation implements Copiable {
             } else {
                 if (!member.isUnknown()) {
                     if (!mdGraph.isMemberOf(member, level)) {
-                        throw new RuntimeException("Invalid Dice level / node. Dice node is not a member of dice level.");
+                        throw new RuntimeException("Invalid Dice level / node. Dice node is not a member of dice level: " + member + "/" + level);
                     }
                 }
             }

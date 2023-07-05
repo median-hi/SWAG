@@ -43,10 +43,10 @@ public class TestDice {
                     boundSItuation = Utils.bind(boundSItuation, bindingsOuter);
                     boundSItuation = Utils.bind(boundSItuation, bindingsInner);
 
-                    boundSItuation = Utils.fire(boundSItuation, Utils.evaluate(boundSItuation, initOperations2_3()));
+                    boundSItuation = Utils.evaluateAndFire(boundSItuation, initOperations2_3());
 
                     AnalysisSituation targetSituation = situation.copy();
-                    targetSituation = Utils.fire(targetSituation, Utils.evaluate(targetSituation, initOperations2_3()));
+                    targetSituation = Utils.evaluateAndFire(targetSituation, initOperations2_3());
 
                     System.out.println("getDiceLevelOnDimInSituation:" + getDiceLevelOnDimInSituation(boundSItuation, new Dimension("destinationDim")));
                     System.out.println("getDiceLevelOnDimInSituation:" + getDiceNodeOnDimInSituation(boundSItuation, new Dimension("destinationDim")));

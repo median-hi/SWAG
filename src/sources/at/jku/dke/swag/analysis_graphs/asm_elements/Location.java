@@ -12,28 +12,28 @@ public class Location {
         this.location = location;
     }
 
-    public Location measure(){
-        return new Location("measure");
-    }
-
-    public static Location resultMeasure(){
+    public static Location resultFilter() {
         return new Location("filter");
     }
 
-    public static Location granularityOf(Dimension dimension){
-        return new Location("gran_"+dimension.getUri());
+    public static Location granularityOf(Dimension dimension) {
+        return new Location("gran_" + dimension.getUri());
     }
 
-    public static Location diceLevelOf(Dimension dimension){
-        return new Location("level_"+dimension.getUri());
+    public static Location diceLevelOf(Dimension dimension) {
+        return new Location("level_" + dimension.getUri());
     }
 
-    public static Location diceNodeOf(Dimension dimension){
-        return new Location("node_"+dimension.getUri());
+    public static Location diceNodeOf(Dimension dimension) {
+        return new Location("node_" + dimension.getUri());
     }
 
-    public static Location selectoinOf(Dimension dimension){
-        return new Location("selection_"+dimension.getUri());
+    public static Location selectoinOf(Dimension dimension) {
+        return new Location("selection_" + dimension.getUri());
+    }
+
+    public Location measure() {
+        return new Location("measure");
     }
 
     public String getLocation() {
@@ -44,40 +44,40 @@ public class Location {
         this.location = location;
     }
 
-    public boolean isGranLocation(){
+    public boolean isGranLocation() {
         return this.getLocation().startsWith("gran");
     }
 
-    public boolean isDiceLevelLocation(){
+    public boolean isDiceLevelLocation() {
         return this.getLocation().startsWith("level");
     }
 
-    public boolean isDiceNodeLocation(){
+    public boolean isDiceNodeLocation() {
         return this.getLocation().startsWith("node");
     }
 
-    public boolean isDimensionSelectionLocation(){
+    public boolean isDimensionSelectionLocation() {
         return this.getLocation().startsWith("selection");
     }
 
-    public boolean isMeasureLocation(){
+    public boolean isMeasureLocation() {
         return this.getLocation().startsWith("measure");
     }
 
-    public boolean isResultFilterLocation(){
+    public boolean isResultFilterLocation() {
         return this.getLocation().startsWith("filter");
     }
 
-    public boolean isDimensionUpdate(){
+    public boolean isDimensionUpdate() {
         return this.isGranLocation()
                 || this.isDiceLevelLocation()
                 || this.isDiceNodeLocation()
                 || this.isDimensionSelectionLocation();
     }
 
-    public String getDimensionOfUpdate(){
+    public String getDimensionOfUpdate() {
         String dim = "";
-        if(this.isDimensionUpdate()){
+        if (this.isDimensionUpdate()) {
             dim = this.location.split("_")[1];
         }
         return dim;

@@ -2,18 +2,18 @@ package at.jku.dke.swag.analysis_graphs;
 
 import java.util.Objects;
 
-public class ElementWithUri {
+public class ElementWithUri implements Comparable {
     private String uri;
 
     public ElementWithUri(String uri) {
         this.uri = uri;
     }
 
-    public String getUri(){
+    public String getUri() {
         return uri;
     }
 
-    public void setUri(String uri){
+    public void setUri(String uri) {
         this.uri = uri;
     }
 
@@ -27,10 +27,15 @@ public class ElementWithUri {
 
     @Override
     public int hashCode() {
-        return Objects.hash(uri);
+        return uri.hashCode();
     }
 
-    public String toString(){
+    public String toString() {
         return this.getUri();
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return this.getUri().compareTo(((ElementWithUri) o).getUri());
     }
 }

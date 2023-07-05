@@ -139,9 +139,11 @@ public class MoveAsideToNodeTest {
             source = createSource();
             target = createSource();
             ops = initOperations();
-            opTarget = Utils.evaluateAndFire(source, ops);
-            Assertions.assertTrue(Utils.evaluate(source, ops).isEmpty());
-            Assertions.assertEquals(opTarget, target);
+            Assertions.assertThrows(Exception.class, () -> {
+                opTarget = Utils.evaluateAndFire(source, ops);
+                Assertions.assertTrue(Utils.evaluate(source, ops).isEmpty());
+                Assertions.assertEquals(opTarget, target);
+            });
         }
 
         public Set<Operation> initOperations() {
@@ -268,9 +270,11 @@ public class MoveAsideToNodeTest {
             source = createSource();
             target = createSource();
             ops = initOperations();
-            opTarget = Utils.evaluateAndFire(source, ops);
-            Assertions.assertTrue(Utils.evaluate(source, ops).isEmpty());
-            Assertions.assertEquals(opTarget, target);
+            Assertions.assertThrows(Exception.class, () -> {
+                opTarget = Utils.evaluateAndFire(source, ops);
+                Assertions.assertTrue(Utils.evaluate(source, ops).isEmpty());
+                Assertions.assertEquals(opTarget, target);
+            });
         }
 
         public Set<Operation> initOperations() {

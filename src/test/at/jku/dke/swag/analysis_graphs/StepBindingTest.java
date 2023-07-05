@@ -15,6 +15,7 @@ import at.jku.dke.swag.md_elements.Dimension;
 import at.jku.dke.swag.md_elements.Level;
 import at.jku.dke.swag.md_elements.MDGraph;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -62,7 +63,8 @@ public class StepBindingTest {
     }
 
     @Test
-    void test() {
+    @DisplayName("When a navigation step is bound, the resulting step (or set of operations) is as expected")
+    void bindingStepResultsExpectedResults() {
 
         AnalysisSituation initialSituation = situations.get(1);
         SituationBinding initialAsBindings = SituationBinding
@@ -86,4 +88,5 @@ public class StepBindingTest {
         Assertions.assertEquals(initOperations2_3Prime(), step2_3Prime.getOperations());
         Assertions.assertEquals(initOperations3_4Prime(), step3_4Prime.getOperations());
     }
+
 }

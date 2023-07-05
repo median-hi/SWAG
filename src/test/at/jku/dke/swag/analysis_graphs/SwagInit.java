@@ -38,17 +38,17 @@ public class SwagInit {
         situation1.setDiceNode(AppConstants.DESTINATION_DIM, new Pair(AppConstants.CONTINENT_NODE, LevelMember.unknown()));
 
         Set<Operation> operations1_2 = initOperations1_2();
-        AnalysisSituation situation2 = Utils.fire(situation1, Utils.evaluate(situation1, operations1_2));
+        AnalysisSituation situation2 = Utils.evaluateAndFire(situation1, operations1_2);
         Step step1_2 = new Step(situation1, situation2, operations1_2);
 
         Set<Operation> operations2_3 = initOperations2_3();
-        AnalysisSituation situation3 = Utils.fire(situation2, Utils.evaluate(situation1, operations2_3));
+        AnalysisSituation situation3 = Utils.evaluateAndFire(situation2, operations2_3);
 
         Set<Operation> operations3_4 = initOperations3_4();
-        AnalysisSituation situation4 = Utils.fire(situation3, Utils.evaluate(situation1, operations3_4));
+        AnalysisSituation situation4 = Utils.evaluateAndFire(situation3, operations3_4);
 
         Set<Operation> operations2_5 = initOperations2_5();
-        AnalysisSituation situation5 = Utils.fire(situation2, Utils.evaluate(situation1, operations2_5));
+        AnalysisSituation situation5 = Utils.evaluateAndFire(situation2, operations2_5);
         Step step2_5 = new Step(situation2, situation5, operations2_5);
 
         Set<SituationBinding> bindings2 = Set.of(SituationBinding
@@ -87,7 +87,7 @@ public class SwagInit {
         );
 
         Step step2_3_prime = Utils.bind(step2_3, stepBindings2_3);
-        AnalysisSituation situation3_prime = Utils.fire(situation2_prime, Utils.evaluate(situation2_prime, step2_3_prime.getOperations()));
+        AnalysisSituation situation3_prime = Utils.evaluateAndFire(situation2_prime, step2_3_prime.getOperations());
 
 
         Step step3_4 = new Step(situation3, situation4, operations3_4);
@@ -109,7 +109,7 @@ public class SwagInit {
         );
 
         Step step3_4_prime = Utils.bind(step3_4, stepBindings3_4);
-        AnalysisSituation situation4_prime = Utils.fire(situation3_prime, Utils.evaluate(situation3_prime, step3_4_prime.getOperations()));
+        AnalysisSituation situation4_prime = Utils.evaluateAndFire(situation3_prime, step3_4_prime.getOperations());
 
         List<AnalysisSituation> situations = new ArrayList<>();
         situations.add(situation1);

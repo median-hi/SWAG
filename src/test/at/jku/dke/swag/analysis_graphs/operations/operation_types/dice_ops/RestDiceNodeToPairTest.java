@@ -128,7 +128,7 @@ public class RestDiceNodeToPairTest {
                 Arguments.of(AppConstants.DICE_PARAM, AppConstants.GERMANY,
                         new Pair(AppConstants.DICE_PARAM, LevelMember.unknown()),
                         new Pair(AppConstants.GRAN_PARAM, Level.unknown())),
-                
+
                 Arguments.of(AppConstants.DICE_PARAM, AppConstants.AUSTRIA,
                         new Pair(AppConstants.DICE_PARAM, LevelMember.unknown()),
                         new Pair(AppConstants.GRAN_PARAM, Level.unknown()))
@@ -190,6 +190,7 @@ public class RestDiceNodeToPairTest {
             target = createSource(diceLevelPairOrConstant, diceNodePairOrConstant);
             ops = initOperations(diceNodeParam, diceNodeValue);
             opTarget = Utils.evaluateAndFire(source, ops);
+            opTarget.AssertValidSituation();
         });
     }
 

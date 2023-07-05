@@ -4,7 +4,7 @@ import at.jku.dke.swag.analysis_graphs.Copiable;
 
 import java.util.Objects;
 
-public class Pair implements PairOrConstant, Copiable {
+public class Pair implements PairOrConstant, Copiable, Comparable {
 
     private Parameter parameter;
 
@@ -79,5 +79,9 @@ public class Pair implements PairOrConstant, Copiable {
     @Override
     public Pair copy() {
         return new Pair(this.getParameter(), this.getConstant());
+    }
+
+    public int compareTo(Object o) {
+        return this.getParameter().compareTo((((Pair) o).getParameter()));
     }
 }

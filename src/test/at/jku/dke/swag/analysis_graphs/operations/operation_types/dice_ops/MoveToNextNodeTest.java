@@ -77,6 +77,7 @@ public class MoveToNextNodeTest {
                 target = createSource();
                 ops = initOperations();
                 opTarget = Utils.evaluateAndFire(source, ops);
+                opTarget.AssertValidSituation();
             });
         }
 

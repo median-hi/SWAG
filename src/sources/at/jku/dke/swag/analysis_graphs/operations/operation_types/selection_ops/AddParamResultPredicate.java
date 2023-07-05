@@ -42,7 +42,7 @@ public class AddParamResultPredicate extends OperationTypes {
 
             updates.add(
                     new Update(
-                            Location.resultMeasure(), newSelection));
+                            Location.resultFilter(), newSelection));
         }
 
         return updates;
