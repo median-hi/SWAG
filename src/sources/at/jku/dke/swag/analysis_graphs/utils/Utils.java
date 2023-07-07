@@ -7,8 +7,10 @@ import at.jku.dke.swag.analysis_graphs.asm_elements.Update;
 import at.jku.dke.swag.analysis_graphs.basic_elements.*;
 import at.jku.dke.swag.analysis_graphs.operations.Operation;
 import at.jku.dke.swag.md_elements.Dimension;
+import com.google.common.collect.Sets;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Utils {
 
@@ -124,6 +126,70 @@ public class Utils {
             return ((ConstantOrUnknown) elem);
         }
         return ((Pair) elem).getConstant();
+    }
+
+    public static Set<Parameter> unbound(BindableSet set) {
+        return set.getElements().stream()
+                .filter(e -> e.isPair() && ((Pair) e).getConstantOrUnknown().isUnknown())
+                .map(e -> ((Pair) e).getParameter())
+                .collect(Collectors.toSet());
+    }
+
+    public static Set<Pair> getAllPairsOver(Set<Parameter> params, Set<Constant> consts) {
+
+        Set<Constant> constsNew = new HashSet<>(consts);
+        constsNew.add(Constant.unknown());
+
+        Set<Pair> pairs = new HashSet<>();
+        for (Parameter par : params) {
+            for (Constant con : constsNew) {
+                pairs.add(new Pair(par, con));
+            }
+        }
+        return pairs;
+    }
+
+    public static Set<BindableSet> getAllBindableSetsOver(Set<Parameter> params, Set<Constant> consts) {
+
+        Set<BindableSet> S = new HashSet<>();
+
+        Set<Pair> pairs = getAllPairsOver(params, consts);
+        Set<PairOrConstant> all = new HashSet<>(pairs);
+        all.addAll(new HashSet<>(consts));
+
+        Set<Set<PairOrConstant>> sets = Sets.powerSet(all);
+
+        for (Set<PairOrConstant> set : sets) {
+            BindableSet s = new BindableSet(set);
+            if (s.verifyValid()) {
+                S.add(s);
+            }
+        }
+
+        return S;
+    }
+
+    public static Set<Parameter> restrictParamsTo(
+            Set<Parameter> params,
+            Set<Constant> consts,
+            Map<Parameter, Set<Constant>> domain) {
+        return params.stream()
+                .filter(p -> consts.containsAll(domain.get(p)))
+                .collect(Collectors.toSet());
+    }
+
+    public static Set<BindableSet> restrictBindableSetsTo(
+            Set<BindableSet> sets,
+            Set<Parameter> paras,
+            Set<Constant> consts,
+            Map<Parameter, Set<Constant>> domain) {
+        
+        return sets.stream()
+                .filter(s -> getAllBindableSetsOver(
+                        restrictParamsTo(paras, consts, domain), consts)
+                        .contains(s)
+                )
+                .collect(Collectors.toSet());
     }
 
     public static Step bind(Step step, Map<Operation, OperationBinding> bindings) {

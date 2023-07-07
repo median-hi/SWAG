@@ -29,6 +29,9 @@ dependencies {
     implementation 'org.junit.jupiter:junit-jupiter-params:5.9.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
     implementation("com.google.guava:guava:31.1-jre")
+    // https://mvnrepository.com/artifact/com.google.guava/guava
+    implementation 'com.google.guava:guava:11.0.2'
+
 }
 
 test {

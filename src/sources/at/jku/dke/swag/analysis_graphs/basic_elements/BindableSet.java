@@ -86,7 +86,7 @@ public class BindableSet implements LocationValue, Copiable {
     }
 
     public boolean verifyValid() {
-        return !hasDuplicates(constsList()) && !hasDuplicates(parasList());
+        return !hasDuplicates(parasList());
     }
 
     public void throwInValidExceptionIfInvalid() {
