@@ -34,6 +34,20 @@ public class BindableSet implements LocationValue, Copiable {
                 .collect(Collectors.toSet());
     }
 
+    public Set<Constant> consts() {
+        Set<Constant> res = (elements.stream()
+                .filter(elem -> elem instanceof Constant)
+                .map(elem -> (Constant) elem)
+                .collect(Collectors.toSet()));
+        res.addAll(
+                (elements.stream()
+                        .filter(elem -> elem instanceof Pair && !((Pair) elem).getConstantOrUnknown().isUnknown())
+                        .map(elem -> (Constant) ((Pair) elem).getConstant())
+                        .collect(Collectors.toSet()))
+        );
+        return res;
+    }
+
     public List<Constant> constsList() {
         return elements.stream()
                 .filter(elem -> elem instanceof Constant)

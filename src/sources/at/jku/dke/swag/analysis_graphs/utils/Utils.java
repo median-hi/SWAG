@@ -143,7 +143,11 @@ public class Utils {
         Set<Pair> pairs = new HashSet<>();
         for (Parameter par : params) {
             for (Constant con : constsNew) {
-                pairs.add(new Pair(par, con));
+                try {
+                    pairs.add(new Pair(par, con));
+                } catch (Exception ex) {
+                    // DO nothing
+                }
             }
         }
         return pairs;
@@ -169,6 +173,13 @@ public class Utils {
         return S;
     }
 
+    public static Set<PairOrConstant> getAllPairsAndConstantsOver(Set<Parameter> params, Set<Constant> consts) {
+        Set<Pair> pairs = getAllPairsOver(params, consts);
+        Set<PairOrConstant> all = new HashSet<>(pairs);
+        all.addAll(new HashSet<>(consts));
+        return all;
+    }
+
     public static Set<Parameter> restrictParamsTo(
             Set<Parameter> params,
             Set<Constant> consts,
@@ -179,14 +190,14 @@ public class Utils {
     }
 
     public static Set<BindableSet> restrictBindableSetsTo(
-            Set<BindableSet> sets,
-            Set<Parameter> paras,
-            Set<Constant> consts,
+            Set<BindableSet> S,
+            Set<Parameter> allParas,
+            Set<Constant> constsToRestrictTo,
             Map<Parameter, Set<Constant>> domain) {
-        
-        return sets.stream()
+
+        return S.stream()
                 .filter(s -> getAllBindableSetsOver(
-                        restrictParamsTo(paras, consts, domain), consts)
+                        restrictParamsTo(allParas, constsToRestrictTo, domain), constsToRestrictTo)
                         .contains(s)
                 )
                 .collect(Collectors.toSet());

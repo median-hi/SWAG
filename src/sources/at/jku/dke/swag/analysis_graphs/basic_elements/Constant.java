@@ -8,15 +8,5 @@ public class Constant extends ConstantOrUnknown {
     public static Constant unknown() {
         return new Constant(ConstantOrUnknown.unknown.getUri());
     }
-
-    @Override
-    public boolean isConstant() {
-        return true;
-    }
-
-    @Override
-    public boolean isUnknown() {
-        return this.getUri().equals(ConstantOrUnknown.unknown.getUri());
-    }
-
+    
 }

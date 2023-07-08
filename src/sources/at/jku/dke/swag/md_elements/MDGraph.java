@@ -1,9 +1,18 @@
 package at.jku.dke.swag.md_elements;
 
+import at.jku.dke.swag.analysis_graphs.basic_elements.Constant;
+import at.jku.dke.swag.analysis_graphs.basic_elements.Parameter;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class MDGraph {
+
+    Set<Parameter> P = new HashSet<>();
+
+    Set<Constant> C = new HashSet<>();
+
+    Map<Parameter, Set<Constant>> DOM = new HashMap<>();
 
     Set<Measure> M = new HashSet<>();
     Set<RollUpPair> LL = new HashSet<>();
@@ -280,5 +289,30 @@ public class MDGraph {
     public void setMembers(Map<Level, TreeSet<LevelMember>> members) {
         this.members = members;
     }
+
+    public Set<Parameter> getP() {
+        return P;
+    }
+
+    public void setP(Set<Parameter> p) {
+        P = p;
+    }
+
+    public Set<Constant> getC() {
+        return C;
+    }
+
+    public void setC(Set<Constant> c) {
+        C = c;
+    }
+
+    public Map<Parameter, Set<Constant>> getDOM() {
+        return DOM;
+    }
+
+    public void setDOM(Map<Parameter, Set<Constant>> DOM) {
+        this.DOM = DOM;
+    }
+
 
 }

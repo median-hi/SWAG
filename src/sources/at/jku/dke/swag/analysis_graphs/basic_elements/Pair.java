@@ -1,18 +1,26 @@
 package at.jku.dke.swag.analysis_graphs.basic_elements;
 
 import at.jku.dke.swag.analysis_graphs.Copiable;
+import at.jku.dke.swag.md_elements.MDGraph;
+import at.jku.dke.swag.md_elements.init.MDGraphInit;
 
 import java.util.Objects;
 
 public class Pair implements PairOrConstant, Copiable, Comparable {
 
+    MDGraph graph = MDGraphInit.initMDGraph();
     private Parameter parameter;
 
     private ConstantOrUnknown constantOrUnknown;
 
-    public Pair(Parameter parameter, ConstantOrUnknown contant) {
-        this.parameter = parameter;
-        this.constantOrUnknown = contant;
+    public Pair(Parameter parameter, ConstantOrUnknown constant) {
+        if (constant.isUnknown() ||
+                (constant.isConstant() && graph.getDOM().get(parameter).contains((Constant) constant))) {
+            this.parameter = parameter;
+            this.constantOrUnknown = constant;
+        } else {
+            throw new RuntimeException("Cannot create pair");
+        }
     }
 
     public Parameter getParameter() {
@@ -84,4 +92,5 @@ public class Pair implements PairOrConstant, Copiable, Comparable {
     public int compareTo(Object o) {
         return this.getParameter().compareTo((((Pair) o).getParameter()));
     }
+    
 }

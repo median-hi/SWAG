@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class AnalysisSituaitonTests {
 
@@ -67,7 +68,7 @@ public class AnalysisSituaitonTests {
         Set<BindableSet> S = Set.of(set1, set2, set3, set4, set5, set6);
 
         @Test
-        void testCorrectGeneration() {
+        void testCorrectBindableSetGeneration() {
 
             Set<BindableSet> allGenerated = Utils.getAllBindableSetsOver(
                     Set.of(AppConstants.D_PRED),
@@ -77,8 +78,7 @@ public class AnalysisSituaitonTests {
         }
 
         @Test
-        void testCorrectRestriction() {
-
+        void testCorrectBindableSetRestriction1() {
             Set<BindableSet> allGenerated = Utils.restrictBindableSetsTo(
                     Utils.getAllBindableSetsOver(P_TEST, C_TEST),
                     P_TEST,
@@ -86,6 +86,74 @@ public class AnalysisSituaitonTests {
                     domain);
 
             Assertions.assertEquals(S, allGenerated);
+        }
+
+        @Test
+        void testCorrectBindableSetRestriction2() {
+
+            Set<Constant> constsToRestrictTo = Set.of(
+                    AppConstants.AUSTRIA,
+                    AppConstants.GERMANY,
+                    AppConstants.UK,
+                    AppConstants.EU,
+                    AppConstants.GEO
+            );
+
+            Set<Constant> reducedConstants = Set.of(
+                    AppConstants.AUSTRIA,
+                    AppConstants.GERMANY,
+                    AppConstants.UK,
+                    AppConstants.EU,
+                    AppConstants.GEO
+            );
+
+            Set<Parameter> reducedParameters = Set.of(
+                    AppConstants.GEO_NODE,
+                    AppConstants.DICE_PARAM,
+                    AppConstants.CONTINENT_NODE,
+                    AppConstants.GRAN_PARAM
+            );
+
+            Set<BindableSet> allGenerated = Utils.restrictBindableSetsTo(
+                    Utils.getAllBindableSetsOver(reducedParameters, reducedConstants),
+                    reducedParameters,
+                    constsToRestrictTo,
+                    mdGraph.getDOM());
+
+            allGenerated.forEach(x -> {
+                Set.of(AppConstants.CONTINENT_NODE,
+                        AppConstants.GRAN_PARAM).forEach(p -> {
+                    Assertions.assertFalse(x.paras().contains(p));
+                });
+                Set.of(AppConstants.EU,
+                        AppConstants.GEO).forEach(c -> {
+                    Assertions.assertFalse(x.consts().contains(c));
+                });
+            });
+        }
+
+
+        @Test
+        void testCorrectParameterRestriction1() {
+            Set<Constant> constants = mdGraph.getMembersOf(
+                            AppConstants.GEO)
+                    .stream()
+                    .map(m -> (Constant) m)
+                    .collect(Collectors.toSet());
+            Set<Parameter> parasRestricted = Utils.restrictParamsTo(mdGraph.getP(), constants, mdGraph.getDOM());
+            Set<Parameter> paras = Set.of(
+                    AppConstants.GEO_NODE_1,
+                    AppConstants.GEO_NODE,
+                    AppConstants.DICE_PARAM,
+                    AppConstants.DICE_PARAM_1
+            );
+            Assertions.assertEquals(paras, parasRestricted);
+        }
+
+        @Test
+        void testCorrectParameterRestriction2() {
+            Set<Parameter> parasRestricted = Utils.restrictParamsTo(mdGraph.getP(), mdGraph.getC(), mdGraph.getDOM());
+            Assertions.assertEquals(mdGraph.getP(), parasRestricted);
         }
     }
 }
