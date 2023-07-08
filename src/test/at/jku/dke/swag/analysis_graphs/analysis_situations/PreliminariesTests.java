@@ -1,14 +1,12 @@
 package at.jku.dke.swag.analysis_graphs.analysis_situations;
 
 import at.jku.dke.swag.AppConstants;
-import at.jku.dke.swag.analysis_graphs.basic_elements.BindableSet;
-import at.jku.dke.swag.analysis_graphs.basic_elements.Constant;
-import at.jku.dke.swag.analysis_graphs.basic_elements.Pair;
-import at.jku.dke.swag.analysis_graphs.basic_elements.Parameter;
+import at.jku.dke.swag.analysis_graphs.basic_elements.*;
 import at.jku.dke.swag.analysis_graphs.utils.Utils;
 import at.jku.dke.swag.md_elements.MDGraph;
 import at.jku.dke.swag.md_elements.init.MDGraphInit;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -16,27 +14,29 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class AnalysisSituaitonTests {
+public class PreliminariesTests {
 
     MDGraph mdGraph = MDGraphInit.initMDGraph();
 
     @Nested
+    @DisplayName("When auxiliary functions are called")
     class AuxiliaryFunctionsTest {
 
         BindableSet set = new BindableSet(
                 Set.of(new Pair(AppConstants.D_PRED, Constant.unknown())));
 
         @Test
+        @DisplayName("Unbound function works as expected")
         void testUnbound() {
             Assertions.assertEquals(Set.of(AppConstants.D_PRED), Utils.unbound(set));
         }
 
         @Test
+        @DisplayName("Actual function works as expected")
         void testActual() {
             Assertions.assertEquals(Constant.unknown(),
                     Utils.actual(new Pair(AppConstants.D_PRED, Constant.unknown())));
         }
-
     }
 
     @Nested
@@ -68,8 +68,8 @@ public class AnalysisSituaitonTests {
         Set<BindableSet> S = Set.of(set1, set2, set3, set4, set5, set6);
 
         @Test
+        @DisplayName("Bindable set generation from parameters and constants works as expected")
         void testCorrectBindableSetGeneration() {
-
             Set<BindableSet> allGenerated = Utils.getAllBindableSetsOver(
                     Set.of(AppConstants.D_PRED),
                     Set.of(AppConstants.YEAR_AFTER_2010));
@@ -78,27 +78,24 @@ public class AnalysisSituaitonTests {
         }
 
         @Test
+        @DisplayName("Bindable set restriction using a set of constants works as expected")
         void testCorrectBindableSetRestriction1() {
             Set<BindableSet> allGenerated = Utils.restrictBindableSetsTo(
                     Utils.getAllBindableSetsOver(P_TEST, C_TEST),
                     P_TEST,
                     Set.of(AppConstants.YEAR_AFTER_2010),
                     domain);
-
             Assertions.assertEquals(S, allGenerated);
         }
 
         @Test
-        void testCorrectBindableSetRestriction2() {
-
+        @DisplayName("Bindable set restriction using a set of constants works as expected")
+        void testCorrectParameterOrConstantRestriction1() {
             Set<Constant> constsToRestrictTo = Set.of(
                     AppConstants.AUSTRIA,
                     AppConstants.GERMANY,
-                    AppConstants.UK,
-                    AppConstants.EU,
-                    AppConstants.GEO
+                    AppConstants.UK
             );
-
             Set<Constant> reducedConstants = Set.of(
                     AppConstants.AUSTRIA,
                     AppConstants.GERMANY,
@@ -106,14 +103,59 @@ public class AnalysisSituaitonTests {
                     AppConstants.EU,
                     AppConstants.GEO
             );
-
             Set<Parameter> reducedParameters = Set.of(
                     AppConstants.GEO_NODE,
                     AppConstants.DICE_PARAM,
                     AppConstants.CONTINENT_NODE,
                     AppConstants.GRAN_PARAM
             );
+            Set<PairOrConstant> allGenerated = Utils.restrictPairsAndConstantsTo(
+                    reducedParameters,
+                    reducedConstants,
+                    constsToRestrictTo,
+                    mdGraph.getDOM());
 
+            allGenerated.forEach(x -> {
+                Set.of(AppConstants.CONTINENT_NODE,
+                        AppConstants.GRAN_PARAM).forEach(p -> {
+                    if (x.isPair()) {
+                        Assertions.assertNotEquals(((Pair) x).getParameter(), p);
+                    }
+                });
+                Set.of(AppConstants.EU,
+                        AppConstants.GEO).forEach(c -> {
+                    if (x.isPair()) {
+                        Assertions.assertNotEquals(((Pair) x).getConstant(), c);
+                    } else {
+                        Assertions.assertNotEquals(((Constant) x), c);
+                    }
+                });
+            });
+        }
+
+        @Test
+        @DisplayName("Bindable set restriction using a set of constants works as expected")
+        void testCorrectBindableSetRestriction2() {
+            Set<Constant> constsToRestrictTo = Set.of(
+                    AppConstants.AUSTRIA,
+                    AppConstants.GERMANY,
+                    AppConstants.UK,
+                    AppConstants.EU,
+                    AppConstants.GEO
+            );
+            Set<Constant> reducedConstants = Set.of(
+                    AppConstants.AUSTRIA,
+                    AppConstants.GERMANY,
+                    AppConstants.UK,
+                    AppConstants.EU,
+                    AppConstants.GEO
+            );
+            Set<Parameter> reducedParameters = Set.of(
+                    AppConstants.GEO_NODE,
+                    AppConstants.DICE_PARAM,
+                    AppConstants.CONTINENT_NODE,
+                    AppConstants.GRAN_PARAM
+            );
             Set<BindableSet> allGenerated = Utils.restrictBindableSetsTo(
                     Utils.getAllBindableSetsOver(reducedParameters, reducedConstants),
                     reducedParameters,
@@ -132,8 +174,8 @@ public class AnalysisSituaitonTests {
             });
         }
 
-
         @Test
+        @DisplayName("Parameter restriction using a set of constants works as expected")
         void testCorrectParameterRestriction1() {
             Set<Constant> constants = mdGraph.getMembersOf(
                             AppConstants.GEO)
@@ -151,6 +193,7 @@ public class AnalysisSituaitonTests {
         }
 
         @Test
+        @DisplayName("Parameter restriction using a set of constants works as expected")
         void testCorrectParameterRestriction2() {
             Set<Parameter> parasRestricted = Utils.restrictParamsTo(mdGraph.getP(), mdGraph.getC(), mdGraph.getDOM());
             Assertions.assertEquals(mdGraph.getP(), parasRestricted);

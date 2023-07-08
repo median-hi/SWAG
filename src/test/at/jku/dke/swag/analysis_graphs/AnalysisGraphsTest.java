@@ -13,7 +13,6 @@ public class AnalysisGraphsTest {
 
     MDGraph mdGraph = MDGraphInit.initMDGraph();
 
-
     @Test
     @DisplayName("The execution of a SWAG at the schema level results in the expected outcome.")
     public void testDissertationRunningExample() {

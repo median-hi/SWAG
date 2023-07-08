@@ -203,6 +203,18 @@ public class Utils {
                 .collect(Collectors.toSet());
     }
 
+    public static Set<PairOrConstant> restrictPairsAndConstantsTo(
+            Set<Parameter> allParas,
+            Set<Constant> allConsts,
+            Set<Constant> constsToRestrictTo,
+            Map<Parameter, Set<Constant>> domain) {
+
+        Set<PairOrConstant> allPairsOrConstants = getAllPairsAndConstantsOver(allParas, allConsts);
+        Set<PairOrConstant> res = new HashSet<>();
+        Set<Parameter> restrictedParas = restrictParamsTo(allParas, constsToRestrictTo, domain);
+        return getAllPairsAndConstantsOver(restrictedParas, constsToRestrictTo);
+    }
+
     public static Step bind(Step step, Map<Operation, OperationBinding> bindings) {
 
         Step newStep = new Step(null, null, new HashSet<>());
@@ -275,6 +287,7 @@ public class Utils {
             if (set.paras().contains(param) &&
                     pairOfParameter.isPresent() &&
                     pairOfParameter.get().getConstant().isUnknown()) {
+                
                 pairOfParameter.ifPresent(x -> {
                     set.setDifference(x);
                     Pair newPair = x.copy();
