@@ -7,11 +7,10 @@ import com.google.common.collect.Sets;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class MDGraphUtils {
 
-    public static List<MDElement> makePath(MDGraph mdGraph, Level level){
+    public static List<MDElement> makePath(MDGraph mdGraph, Level level) {
 
         List<MDElement> path = new LinkedList<>();
 
@@ -20,7 +19,7 @@ public class MDGraphUtils {
 
         for (Hierarchy hier : hiers) {
 
-            if(mdGraph.getHL().get(hier).contains(level)) {
+            if (mdGraph.getHL().get(hier).contains(level)) {
 
                 path.add(mdGraph.getFact());
 
@@ -35,7 +34,7 @@ public class MDGraphUtils {
                     Level next = mdGraph.getNextRollUpLevel(curLevel, hier);
                     if (curLevel != null) {
                         path.add(curLevel);
-                        if(curLevel.equals(level)){
+                        if (curLevel.equals(level)) {
                             return path;
                         }
                         curLevel = next;
@@ -48,11 +47,36 @@ public class MDGraphUtils {
         return null;
     }
 
-    public static Set<List<String>> getFactAndCoordinates(MDData data, MDGraph graph, List<Level> groupBy){
+    public static List<RollUpPair> getRollUpPath(MDGraph mdGraph, Dimension dim, Level level1, Level level2) {
+
+        List<RollUpPair> path = new LinkedList<>();
+
+        if (level2.equals(mdGraph.bot(dim))) {
+            return path;
+        }
+
+        Set<Hierarchy> hiers = mdGraph.getDH().get(dim);
+        for (Hierarchy hier : hiers) {
+            if (mdGraph.getHL().get(hier).contains(level2)) {
+                Level curLevel = level1;
+                while (curLevel != null) {
+                    Level next = mdGraph.getNextRollUpLevel(curLevel, hier);
+                    path.add(new RollUpPair(curLevel, next));
+                    if (next.equals(level2)) {
+                        return path;
+                    }
+                    curLevel = next;
+                }
+            }
+        }
+        return path;
+    }
+
+    public static Set<List<String>> getFactAndCoordinates(MDData data, MDGraph graph, List<Level> groupBy) {
         Set<List<String>> all = new HashSet<>();
 
-        for (List<String> coordinate : getCoordinatesOfGroupBy(data, groupBy)){
-            for (String factInstance : getFactsInCoordinate(data, graph, groupBy, coordinate)){
+        for (List<String> coordinate : getCoordinatesOfGroupBy(data, groupBy)) {
+            for (String factInstance : getFactsInCoordinate(data, graph, groupBy, coordinate)) {
                 List<String> l = new ArrayList<>();
                 l.add(factInstance);
                 l.addAll(coordinate);
@@ -63,21 +87,21 @@ public class MDGraphUtils {
         return all;
     }
 
-    public static Multiset getMultiSetOfMeasureVals(MDGraph graph, MDData data, String fact, Measure measure){
+    public static Multiset getMultiSetOfMeasureVals(MDGraph graph, MDData data, String fact, Measure measure) {
         Multiset multiset = HashMultiset.create();
 
         Set<String[]> instances = data.get(graph.getFact(), measure);
         Set<String[]> newInstances = new HashSet<>();
 
-        for (String [] array : instances){
-            if (array[0].equals(fact)){
+        for (String[] array : instances) {
+            if (array[0].equals(fact)) {
                 multiset.add(array[1]);
             }
         }
         return multiset;
     }
 
-    public static Multiset getMultiSetOfMeasureValsForMultipleFacts(MDGraph graph, MDData data, Set<String> facts, Measure measure){
+    public static Multiset getMultiSetOfMeasureValsForMultipleFacts(MDGraph graph, MDData data, Set<String> facts, Measure measure) {
         Multiset multiset = HashMultiset.create();
 
         for (String fact : facts) {
@@ -87,13 +111,13 @@ public class MDGraphUtils {
         return multiset;
     }
 
-    public static Map<List<String>, Set<String>> getFactAndCoordinatesAsSet(MDData data, MDGraph graph, List<Level> groupBy){
+    public static Map<List<String>, Set<String>> getFactAndCoordinatesAsSet(MDData data, MDGraph graph, List<Level> groupBy) {
         Map<List<String>, Set<String>> all = new HashMap<>();
 
-        for (List<String> coordinate : getCoordinatesOfGroupBy(data, groupBy)){
+        for (List<String> coordinate : getCoordinatesOfGroupBy(data, groupBy)) {
             all.put(coordinate, new HashSet<>());
-            for (String factInstance : getFactsInCoordinate(data, graph, groupBy, coordinate)){
-               all.get(coordinate).add(factInstance);
+            for (String factInstance : getFactsInCoordinate(data, graph, groupBy, coordinate)) {
+                all.get(coordinate).add(factInstance);
             }
         }
         return all;
@@ -101,23 +125,23 @@ public class MDGraphUtils {
 
     public static Map<List<String>, Set<String>> getFactAndCoordinatesAsSetDefaultValue(MDData data,
                                                                                         MDGraph graph,
-                                                                                        List<Level> groupBy){
+                                                                                        List<Level> groupBy) {
         Map<List<String>, Set<String>> all = new HashMap<>();
 
-        for (List<String> coordinate : getCoordinatesOfGroupBy(data, groupBy)){
+        for (List<String> coordinate : getCoordinatesOfGroupBy(data, groupBy)) {
             all.put(coordinate, new HashSet<>());
-            for (String factInstance : getFactsInCoordinate(data, graph, groupBy, coordinate)){
+            for (String factInstance : getFactsInCoordinate(data, graph, groupBy, coordinate)) {
                 all.get(coordinate).add(factInstance);
             }
         }
 
-        Set<String> allConsideredFacts =  all.values().stream().flatMap(Set::stream).collect(Collectors.toSet());
-        Set<String> allFacts =  data.get(graph.getFact());
+        Set<String> allConsideredFacts = all.values().stream().flatMap(Set::stream).collect(Collectors.toSet());
+        Set<String> allFacts = data.get(graph.getFact());
 
         all.put(List.of("Default"), new HashSet<>());
 
-        for(String fact : allFacts){
-            if(!allConsideredFacts.contains(fact)){
+        for (String fact : allFacts) {
+            if (!allConsideredFacts.contains(fact)) {
                 all.get(List.of("Default")).add(fact);
             }
         }
@@ -125,12 +149,12 @@ public class MDGraphUtils {
     }
 
 
-    public static void eliminate(Map<List<String>, Set<String>> map){
+    public static void eliminate(Map<List<String>, Set<String>> map) {
 
         List<List<String>> list = new ArrayList<>();
         list = new ArrayList<>(map.keySet());
 
-        List<List<String>> sortedList = list.stream().sorted((o1,o2) -> {
+        List<List<String>> sortedList = list.stream().sorted((o1, o2) -> {
             for (int i = 0; i < Math.min(o1.size(), o2.size()); i++) {
                 int c = o1.get(i).compareTo(o2.get(i));
                 if (c != 0) {
@@ -142,19 +166,21 @@ public class MDGraphUtils {
 
         List<String> vals = map.values().stream().flatMap(set -> set.stream()).collect(Collectors.toList());
 
-        for (String fact : vals){
+        for (String fact : vals) {
             List<List<String>> coordsOfFact = new ArrayList<>();
-            for (Map.Entry<List<String>, Set<String>> entry : map.entrySet()){
-                if(entry.getValue().contains(fact)){
+            for (Map.Entry<List<String>, Set<String>> entry : map.entrySet()) {
+                if (entry.getValue().contains(fact)) {
                     coordsOfFact.add(entry.getKey());
                 }
             }
-            if(coordsOfFact.size() > 1){
+            if (coordsOfFact.size() > 1) {
                 List<Integer> indices = new ArrayList<>();
                 sortedList.stream().filter(lst -> coordsOfFact.contains(lst))
-                        .forEach(x -> {indices.add(sortedList.indexOf(x));});
+                        .forEach(x -> {
+                            indices.add(sortedList.indexOf(x));
+                        });
                 indices.remove(0);
-                for (int i : indices){
+                for (int i : indices) {
                     map.get(sortedList.get(i)).remove(fact);
                 }
             }
@@ -163,14 +189,13 @@ public class MDGraphUtils {
     }
 
 
-
-    public static Map<List<String>, Set<String>> getFactAndCoordinatesAsSetTakeOne(MDData data, MDGraph graph, List<Level> groupBy){
+    public static Map<List<String>, Set<String>> getFactAndCoordinatesAsSetTakeOne(MDData data, MDGraph graph, List<Level> groupBy) {
         Map<List<String>, Set<String>> all = new HashMap<>();
 
-        for (List<String> coordinate : getCoordinatesOfGroupBy(data, groupBy)){
+        for (List<String> coordinate : getCoordinatesOfGroupBy(data, groupBy)) {
             all.put(coordinate, new HashSet<>());
-            for (String factInstance : getFactsInCoordinate(data, graph, groupBy, coordinate)){
-                    all.get(coordinate).add(factInstance);
+            for (String factInstance : getFactsInCoordinate(data, graph, groupBy, coordinate)) {
+                all.get(coordinate).add(factInstance);
             }
         }
         eliminate(all);
@@ -178,37 +203,37 @@ public class MDGraphUtils {
     }
 
 
-    public static Set<List<String>> getCoordinatesOfGroupBy(MDData data, List<Level> groupBy){
+    public static Set<List<String>> getCoordinatesOfGroupBy(MDData data, List<Level> groupBy) {
 
         List<Set<String>> storage = new ArrayList<>();
-        for (Level l : groupBy){
+        for (Level l : groupBy) {
             storage.add(data.get(l));
         }
         return Sets.cartesianProduct(storage);
     }
 
-    public static Set<String> getFactsInCoordinate(MDData data, MDGraph graph, List<Level> groupBy, List<String> coordinate){
+    public static Set<String> getFactsInCoordinate(MDData data, MDGraph graph, List<Level> groupBy, List<String> coordinate) {
 
         Set<String> facts = new HashSet<>();
 
-        for (String factInstance : data.get(graph.getFact())){
+        for (String factInstance : data.get(graph.getFact())) {
             boolean isFactIn = true;
 
-            for (int i = 0 ; i < groupBy.size() & isFactIn ; i++) {
+            for (int i = 0; i < groupBy.size() & isFactIn; i++) {
                 List<MDElement> path = makePath(graph, groupBy.get(i));
-                    if(!isConnected(factInstance, coordinate.get(i), graph, data, path)){
-                        isFactIn = false;
-                    }
+                if (!isConnected(factInstance, coordinate.get(i), graph, data, path)) {
+                    isFactIn = false;
+                }
             }
 
-            if(isFactIn){
+            if (isFactIn) {
                 facts.add(factInstance);
             }
         }
         return facts;
     }
 
-    public static boolean isConnected_ (String start, String end, MDGraph graph, MDData data, List<MDElement> path){
+    public static boolean isConnected_(String start, String end, MDGraph graph, MDData data, List<MDElement> path) {
 
         String currentNode = start;
         String[] currentEdge;
@@ -217,17 +242,17 @@ public class MDGraphUtils {
 
         MDElement prevElm = null;
 
-        for (MDElement e : path){
-            if (prevElm != null){
-                for(String [] instance : data.get(prevElm, e)){
-                    if(instance[0].equals(currentNode)){
+        for (MDElement e : path) {
+            if (prevElm != null) {
+                for (String[] instance : data.get(prevElm, e)) {
+                    if (instance[0].equals(currentNode)) {
                         connection.add(currentNode);
                         connection.add(instance[1]);
                     }
                 }
             }
-            for(String instance : data.get(e)){
-                if(instance.equals(currentNode)){
+            for (String instance : data.get(e)) {
+                if (instance.equals(currentNode)) {
                     connection.add(currentNode);
                 }
             }
@@ -236,25 +261,25 @@ public class MDGraphUtils {
         return false;
     }
 
-    public static Set<List<String>> getAllPaths (String start, String end, MDGraph graph, MDData data, List<MDElement> path){
+    public static Set<List<String>> getAllPaths(String start, String end, MDGraph graph, MDData data, List<MDElement> path) {
 
         List<Set<String>> allSetsToMultiply = new ArrayList<>();
         allSetsToMultiply.add(Set.of(start));
 
-        for (int i = 1; i < path.size() - 1; i++){
+        for (int i = 1; i < path.size() - 1; i++) {
             allSetsToMultiply.add(data.get(path.get(i)));
         }
 
         allSetsToMultiply.add(Set.of(end));
 
-        Set<List<String>> all =  Sets.cartesianProduct(allSetsToMultiply);
+        Set<List<String>> all = Sets.cartesianProduct(allSetsToMultiply);
 
         Set<List<String>> toRemove = new HashSet<>();
 
-        for (int i = 0; i < path.size() -1; i++){
-            for(List<String> list : all){
-                String [] conn = new String [] {list.get(i), list.get(i+1)};
-                if(!islistOfArrayContinas(data.get(path.get(i), path.get(i+1)),conn)){
+        for (int i = 0; i < path.size() - 1; i++) {
+            for (List<String> list : all) {
+                String[] conn = new String[]{list.get(i), list.get(i + 1)};
+                if (!islistOfArrayContinas(data.get(path.get(i), path.get(i + 1)), conn)) {
                     toRemove.add(list);
                 }
             }
@@ -262,8 +287,8 @@ public class MDGraphUtils {
 
 
         Set<List<String>> newSet = new HashSet<>();
-        for (List<String> list : all){
-            if (!toRemove.contains(list)){
+        for (List<String> list : all) {
+            if (!toRemove.contains(list)) {
                 newSet.add(list);
             }
         }
@@ -271,10 +296,10 @@ public class MDGraphUtils {
         return newSet;
     }
 
-    public static boolean islistOfArrayContinas(Set<String []> list, String [] array){
+    public static boolean islistOfArrayContinas(Set<String[]> list, String[] array) {
 
         boolean notFound = false;
-        for (String [] tempArray : list){
+        for (String[] tempArray : list) {
             notFound = false;
 
             if (tempArray.length != array.length) {
@@ -293,7 +318,11 @@ public class MDGraphUtils {
         return false;
     }
 
-    public static boolean isConnected (String start, String end, MDGraph graph, MDData data, List<MDElement> path){
+    public static String getRollUpProperty(MDGraph md, Dimension i, RollUpPair p) {
+        return md.getRollUpProperties().get(new AbstractMap.SimpleEntry<Dimension, RollUpPair>(i, p));
+    }
+
+    public static boolean isConnected(String start, String end, MDGraph graph, MDData data, List<MDElement> path) {
         return !getAllPaths(start, end, graph, data, path).isEmpty();
     }
 }

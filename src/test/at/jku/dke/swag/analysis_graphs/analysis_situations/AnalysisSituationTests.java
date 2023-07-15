@@ -10,6 +10,7 @@ import at.jku.dke.swag.analysis_graphs.basic_elements.SituationBinding;
 import at.jku.dke.swag.analysis_graphs.utils.Utils;
 import at.jku.dke.swag.md_elements.MDGraph;
 import at.jku.dke.swag.md_elements.init.MDGraphInit;
+import at.jku.dke.swag.sparql.AsSparqlGenerator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -158,6 +159,17 @@ public class AnalysisSituationTests {
         @DisplayName("Binding situations with wrong values results in errors")
         void wrongBindingsGenerateErrors() {
             Assertions.assertThrows(Exception.class, AnalysisSituationTests.this::createAs4PrimeWithWrongBindings);
+        }
+    }
+
+    @Nested
+    @DisplayName("Query generation")
+    class QueryGenerationTest {
+        @Test
+        void testQueryGeneration() {
+            AnalysisSituation as3P = createAs3PrimeByBinding();
+            AsSparqlGenerator sparqlGenerator = new AsSparqlGenerator(mdGraph, as3P);
+            sparqlGenerator.generateQuery();
         }
     }
 }

@@ -26,6 +26,7 @@ public class AnalysisGraphsTest {
         expectedSituations.add(SwagInit.createAs4());
         expectedSituations.add(SwagInit.createAs5());
 
+
         for (int i = 0; i < 5; i++) {
             System.out.println("i= " + i);
             Assertions.assertEquals(situations.get(i), expectedSituations.get(i));

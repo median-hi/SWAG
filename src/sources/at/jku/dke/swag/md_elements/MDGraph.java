@@ -17,6 +17,8 @@ public class MDGraph {
     Set<Measure> M = new HashSet<>();
     Set<RollUpPair> LL = new HashSet<>();
     Set<Level> L = new HashSet<>();
+
+    Set<LevelAttribute> A = new HashSet<>();
     Set<Fact> F = new HashSet<>();
     Set<Dimension> D = new HashSet<>();
     Set<Hierarchy> H = new HashSet<>();
@@ -25,10 +27,24 @@ public class MDGraph {
 
     Map<Hierarchy, Set<RollUpPair>> HLL = new HashMap<>();
 
-
     Map<Hierarchy, Set<Level>> HL = new HashMap<>();
 
+    Map<Level, Set<LevelAttribute>> LA = new HashMap<>();
+
+
     Map<Level, TreeSet<LevelMember>> members = new HashMap<>();
+
+    /**
+     * Map condition/measure/filter to its MD elements
+     */
+    Map<Constant, MDElement> mdElemes = new HashMap<>();
+
+    /**
+     * Map condition/measure/filter to its expression
+     */
+    Map<Constant, String> expressions = new HashMap<>();
+
+    Map<Map.Entry<Dimension, RollUpPair>, String> rollUpProperties = new HashMap<>();
 
     public Set<Level> getLevelsOfDimension(Dimension d) {
         return DH.get(d).stream().flatMap(h -> HL.get(h).stream()).collect(Collectors.toSet());
@@ -195,6 +211,12 @@ public class MDGraph {
         return null;
     }
 
+    public Level getFirstLevelOfAttribute(Dimension i, LevelAttribute l) {
+        return LA.entrySet().stream().filter(e -> {
+            return e.getValue().contains(l);
+        }).findAny().get().getKey();
+    }
+
     public boolean isMemberOf(LevelMember member, Level level) {
         return members.get(level).contains(member);
     }
@@ -314,5 +336,45 @@ public class MDGraph {
         this.DOM = DOM;
     }
 
+
+    public Map<Constant, MDElement> getMdElemes() {
+        return mdElemes;
+    }
+
+    public void setMdElemes(Map<Constant, MDElement> mdElemes) {
+        this.mdElemes = mdElemes;
+    }
+
+    public Map<Constant, String> getExpressions() {
+        return expressions;
+    }
+
+    public void setExpressions(Map<Constant, String> expressions) {
+        this.expressions = expressions;
+    }
+
+    public Set<LevelAttribute> getA() {
+        return A;
+    }
+
+    public void setA(Set<LevelAttribute> a) {
+        A = a;
+    }
+
+    public Map<Level, Set<LevelAttribute>> getLA() {
+        return LA;
+    }
+
+    public void setLA(Map<Level, Set<LevelAttribute>> LA) {
+        this.LA = LA;
+    }
+
+    public Map<Map.Entry<Dimension, RollUpPair>, String> getRollUpProperties() {
+        return rollUpProperties;
+    }
+
+    public void setRollUpProperties(Map<Map.Entry<Dimension, RollUpPair>, String> rollUpProperties) {
+        this.rollUpProperties = rollUpProperties;
+    }
 
 }

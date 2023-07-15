@@ -2,10 +2,7 @@ package at.jku.dke.swag;
 
 import at.jku.dke.swag.analysis_graphs.basic_elements.Constant;
 import at.jku.dke.swag.analysis_graphs.basic_elements.Parameter;
-import at.jku.dke.swag.md_elements.Dimension;
-import at.jku.dke.swag.md_elements.Hierarchy;
-import at.jku.dke.swag.md_elements.Level;
-import at.jku.dke.swag.md_elements.LevelMember;
+import at.jku.dke.swag.md_elements.*;
 
 public class AppConstants {
 
@@ -63,5 +60,29 @@ public class AppConstants {
     public static final Parameter D_PRED_2 = new Parameter("dPred2");
 
     public static final Parameter M_PRED = new Parameter("mPred");
+
+    public static final LevelAttribute YEAR_NUM = new LevelAttribute("yearNum");
+
+    public static final Level geo = new Level("geo");
+    public static final Level continent = new Level("continent");
+    public static final Level govType = new Level("govType");
+    public static final Level destinationTop = new Level("destinationTop");
+    public static final Level citizen = new Level("citizen");
+    public static final Level citizenshipTop = new Level("citizenshipTop");
+    public static final Level refPeriod = new Level("refPeriod");
+    public static final Level year = new Level("year");
+    public static final Level timeTop = new Level("timeTop");
+
+
+    public static final RollUpPair GEO_CONTINENT = new RollUpPair(geo, continent);
+    public static final RollUpPair GEO_GOV_TYPE = new RollUpPair(geo, govType);
+    public static final RollUpPair CONTINENT_DESTINATION_TOP = new RollUpPair(continent, destinationTop);
+    public static final RollUpPair GOV_TYPE_DESTINATION_TOP = new RollUpPair(govType, destinationTop);
+    public static final RollUpPair CITIZEN_CONTINENT = new RollUpPair(citizen, continent);
+    public static final RollUpPair CITIZEN_GOV_TYPE = new RollUpPair(citizen, govType);
+    public static final RollUpPair CONTINENT_CITIZENSHIP_TOP = new RollUpPair(continent, citizenshipTop);
+    public static final RollUpPair GOV_TYPE_CITIZENSHIP_TOP = new RollUpPair(govType, citizenshipTop);
+    public static final RollUpPair REF_PERIOD_YEAR = new RollUpPair(refPeriod, year);
+    public static final RollUpPair YEAR_TIME_TOP = new RollUpPair(year, timeTop);
 
 }
