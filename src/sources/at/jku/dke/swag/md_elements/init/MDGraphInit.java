@@ -5,6 +5,7 @@ import at.jku.dke.swag.analysis_graphs.basic_elements.Constant;
 import at.jku.dke.swag.analysis_graphs.basic_elements.Parameter;
 import at.jku.dke.swag.md_elements.*;
 
+import java.util.AbstractMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
@@ -43,6 +44,7 @@ public class MDGraphInit {
         Level timeTop = new Level("timeTop");
 
         Measure numOfApps = new Measure("numOfApps");
+        Measure sumOfNumOfApps = new Measure("sumOfNumOfApps");
 
         LevelMember uk = new LevelMember("UK");
         LevelMember germany = new LevelMember("DE");
@@ -95,7 +97,10 @@ public class MDGraphInit {
         mdGraph.getHLL().merge(timeHierarchy, Set.of(new RollUpPair(refPeriod, year)), f);
         mdGraph.getHLL().merge(timeHierarchy, Set.of(new RollUpPair(year, timeTop)), f);
 
-        mdGraph.getM().add(numOfApps);
+        mdGraph.getA().add(AppConstants.YEAR_NUM);
+        mdGraph.getLA().put(year, Set.of(AppConstants.YEAR_NUM));
+
+        mdGraph.getM().add(sumOfNumOfApps);
         mdGraph.getMembers().put(geo, new TreeSet<>(Set.of(germany, austria, uk)));
         mdGraph.getMembers().put(continent, new TreeSet<>(Set.of(asia, europe)));
         mdGraph.getMembers().put(destinationTop, new TreeSet<>(Set.of(all_destinationDim)));
@@ -159,6 +164,39 @@ public class MDGraphInit {
         mdGraph.getDOM().put(AppConstants.GEO_NODE_1, geos);
         mdGraph.getDOM().put(AppConstants.DICE_PARAM, geos);
         mdGraph.getDOM().put(AppConstants.DICE_PARAM_1, geos);
+
+        mdGraph.getMdElemes().put(AppConstants.YEAR_AFTER_2010, year);
+        mdGraph.getMdElemes().put(AppConstants.YEAR_AFTER_2013, year);
+        mdGraph.getMdElemes().put(AppConstants.YEAR_AFTER_2015, year);
+
+        mdGraph.getMdElemes().put(AppConstants.INTENSITY_GT_30K, sumOfNumOfApps);
+        mdGraph.getMdElemes().put(sumOfNumOfApps, numOfApps);
+
+        mdGraph.getExpressions().put(sumOfNumOfApps, "SUM(:1)");
+        mdGraph.getExpressions().put(AppConstants.YEAR_AFTER_2010, ":1 > 2010");
+        mdGraph.getExpressions().put(AppConstants.YEAR_AFTER_2013, ":1 > 2013");
+        mdGraph.getExpressions().put(AppConstants.YEAR_AFTER_2015, ":1 > 2015");
+
+        mdGraph.getRollUpProperties().put(
+                new AbstractMap.SimpleEntry<Dimension, RollUpPair>(
+                        AppConstants.DESTINATION_DIM,
+                        AppConstants.GEO_CONTINENT),
+                "inContinent"
+        );
+
+        mdGraph.getRollUpProperties().put(
+                new AbstractMap.SimpleEntry<Dimension, RollUpPair>(
+                        AppConstants.CITIZENSHIP_DIM,
+                        AppConstants.CITIZEN_CONTINENT),
+                "inContinent"
+        );
+
+        mdGraph.getRollUpProperties().put(
+                new AbstractMap.SimpleEntry<Dimension, RollUpPair>(
+                        AppConstants.TIME_DIM,
+                        AppConstants.REF_PERIOD_YEAR),
+                "inYear"
+        );
 
         return mdGraph;
     }
