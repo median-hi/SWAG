@@ -14,6 +14,10 @@ import java.util.stream.Collectors;
 
 public class Utils {
 
+    public static AnalysisSituation fireUpdates(AnalysisSituation source, Set<Update> updateSet) {
+        return fire(source, updateSet);
+    }
+
     public static Set<Update> evaluate(AnalysisSituation source, Set<Operation> operations) {
         Set<Update> updateSet = new HashSet<>();
 
@@ -79,6 +83,8 @@ public class Utils {
     private static AnalysisSituation fire(AnalysisSituation source, Set<Update> updateSet) {
 
         AnalysisSituation resultSituation = source.copy();
+
+        assertValidUpdateSet(updateSet);
 
         for (Update update : updateSet) {
             resultSituation = fire(resultSituation, update);
@@ -287,7 +293,7 @@ public class Utils {
             if (set.paras().contains(param) &&
                     pairOfParameter.isPresent() &&
                     pairOfParameter.get().getConstant().isUnknown()) {
-                
+
                 pairOfParameter.ifPresent(x -> {
                     set.setDifference(x);
                     Pair newPair = x.copy();
@@ -334,5 +340,11 @@ public class Utils {
         }
 
         return situations;
+    }
+
+    private static void assertValidUpdateSet(Set<Update> upds) {
+        if (upds.stream().map(upd -> upd.getLocation()).collect(Collectors.toSet()).size() != upds.size()) {
+            throw new RuntimeException("Inconsistent update set");
+        }
     }
 }

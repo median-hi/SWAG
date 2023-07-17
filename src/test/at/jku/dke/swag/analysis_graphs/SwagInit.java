@@ -278,6 +278,13 @@ public class SwagInit {
         return Set.of(op1, op2, op3);
     }
 
+    public static Operation createOperation2_3_a() {
+        return new Operation(AddParamDimPredicate.getInstance(),
+                List.of(new Dimension("timeDim"),
+                        new Parameter("dPred"),
+                        ConstantOrUnknown.unknown));
+    }
+
     public static Set<Operation> initOperations2_5() {
 
         Operation op1 = new Operation(DrillDownTo.getInstance(),

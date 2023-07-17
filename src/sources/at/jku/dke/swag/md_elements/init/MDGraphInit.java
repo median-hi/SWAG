@@ -43,7 +43,7 @@ public class MDGraphInit {
         Level year = new Level("year");
         Level timeTop = new Level("timeTop");
 
-        Measure numOfApps = new Measure("numOfApps");
+        Measure numOfApps = new Measure("obsValue");
         Measure sumOfNumOfApps = new Measure("sumOfNumOfApps");
 
         LevelMember uk = new LevelMember("UK");
@@ -165,9 +165,9 @@ public class MDGraphInit {
         mdGraph.getDOM().put(AppConstants.DICE_PARAM, geos);
         mdGraph.getDOM().put(AppConstants.DICE_PARAM_1, geos);
 
-        mdGraph.getMdElemes().put(AppConstants.YEAR_AFTER_2010, year);
-        mdGraph.getMdElemes().put(AppConstants.YEAR_AFTER_2013, year);
-        mdGraph.getMdElemes().put(AppConstants.YEAR_AFTER_2015, year);
+        mdGraph.getMdElemes().put(AppConstants.YEAR_AFTER_2010, AppConstants.YEAR_NUM);
+        mdGraph.getMdElemes().put(AppConstants.YEAR_AFTER_2013, AppConstants.YEAR_NUM);
+        mdGraph.getMdElemes().put(AppConstants.YEAR_AFTER_2015, AppConstants.YEAR_NUM);
 
         mdGraph.getMdElemes().put(AppConstants.INTENSITY_GT_30K, sumOfNumOfApps);
         mdGraph.getMdElemes().put(sumOfNumOfApps, numOfApps);

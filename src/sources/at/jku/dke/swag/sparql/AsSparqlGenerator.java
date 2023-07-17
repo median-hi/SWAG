@@ -69,11 +69,11 @@ public class AsSparqlGenerator {
                 Constant c = (Constant) Utils.actual(pc);
                 MDElement elm = getMd().getMdElemes().get(c);
 
-                if (c instanceof Level) {
-                    SetBasedBGP.addBgpToBgp(bgp, getUtils().getTriplesOfLevel(entry.getKey(), (Level) c));
+                if (elm instanceof Level) {
+                    SetBasedBGP.addBgpToBgp(bgp, getUtils().getTriplesOfLevel(entry.getKey(), (Level) elm));
                     conds.add(getUtils().getSelectionExpression(entry.getKey(), c));
                 } else {
-                    if (c instanceof LevelAttribute) {
+                    if (elm instanceof LevelAttribute) {
                         SetBasedBGP.addBgpToBgp(
                                 bgp,
                                 getUtils()
@@ -82,8 +82,8 @@ public class AsSparqlGenerator {
                                                 getMd()
                                                         .getFirstLevelOfAttribute(
                                                                 entry.getKey(),
-                                                                (LevelAttribute) c),
-                                                (LevelAttribute) c)
+                                                                (LevelAttribute) elm),
+                                                (LevelAttribute) elm)
                         );
                         conds.add(getUtils().getSelectionExpression(entry.getKey(), c));
                     }
