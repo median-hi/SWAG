@@ -1,16 +1,14 @@
 package at.jku.dke.swag;
 
-import at.jku.dke.swag.analysis_graphs.basic_elements.Parameter;
 import at.jku.dke.swag.md_data.MDData;
 import at.jku.dke.swag.md_elements.*;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public class MDGraphInit {
 
 
-    public static MDGraphAndMap initMDGraphAndMap(){
+    public static MDGraphAndMap initMDGraphAndMap() {
         MDGraph mdGraph = new MDGraph();
 
         Fact fact = new Fact("film");
@@ -20,30 +18,34 @@ public class MDGraphInit {
         Hierarchy directionHier = new Hierarchy("directionHier");
         Level director = new Level("director");
         Level gender = new Level("gender");
+        Level topDirection = new Level("top_direction");
 
         Dimension contenttDim = new Dimension("contentDim");
         Hierarchy contentHier = new Hierarchy("contentHier");
         Level genre = new Level("genre");
+        Level topContent = new Level("top_content");
 
         Dimension origintDim = new Dimension("origintDim");
         Hierarchy originHier = new Hierarchy("originHier");
         Level country = new Level("country");
         Level continent = new Level("continent");
+        Level topOrigin = new Level("top_origin");
 
         Dimension timeDim = new Dimension("timeDim");
         Hierarchy timeHierarchy = new Hierarchy("timeHierarchy");
         Level date = new Level("date");
         Level year = new Level("year");
+        Level topTime = new Level("top_time");
 
         Measure boxOffice = new Measure("boxOffice");
 
-        mdGraph.getL().addAll(Set.of(country, continent, director, gender, date, year, genre));
+        mdGraph.getL().addAll(Set.of(country, continent, director, gender, date, year, genre, topTime, topOrigin, topContent, topDirection));
         mdGraph.getD().addAll(Set.of(directiontDim, timeDim, origintDim, contenttDim));
         mdGraph.getH().addAll(Set.of(directionHier, contentHier, originHier, timeHierarchy));
-        mdGraph.getHL().put(directionHier, Set.of(director, gender));
-        mdGraph.getHL().put(contentHier, Set.of(genre));
-        mdGraph.getHL().put(originHier, Set.of(country, continent));
-        mdGraph.getHL().put(timeHierarchy, Set.of(date, year));
+        mdGraph.getHL().put(directionHier, Set.of(director, gender, topDirection));
+        mdGraph.getHL().put(contentHier, Set.of(genre, topContent));
+        mdGraph.getHL().put(originHier, Set.of(country, continent, topOrigin));
+        mdGraph.getHL().put(timeHierarchy, Set.of(date, year, topTime));
 
         mdGraph.getDH().put(directiontDim, Set.of(directionHier));
         mdGraph.getDH().put(contenttDim, Set.of(contentHier));
@@ -51,8 +53,14 @@ public class MDGraphInit {
         mdGraph.getDH().put(origintDim, Set.of(originHier));
 
         mdGraph.getLL().add(new RollUpPair(country, continent));
+        mdGraph.getLL().add(new RollUpPair(continent, topOrigin));
         mdGraph.getLL().add(new RollUpPair(director, gender));
+        mdGraph.getLL().add(new RollUpPair(gender, topDirection));
         mdGraph.getLL().add(new RollUpPair(date, year));
+        mdGraph.getLL().add(new RollUpPair(year, topTime));
+        mdGraph.getLL().add(new RollUpPair(genre, topContent));
+
+        mdGraph.getFL().put(fact, Set.of(country, director, genre, date));
 
         mdGraph.getHLL().put(originHier, Set.of(new RollUpPair(country, continent)));
         mdGraph.getHLL().put(directionHier, Set.of(new RollUpPair(director, gender)));
@@ -146,33 +154,33 @@ public class MDGraphInit {
         data.get(genre).add("literature");
         data.get(genre).add("martialArts");
 
-        data.get(fact, boxOffice).add(new String [] {"fastAndFurious6", "789"});
-        data.get(fact, boxOffice).add(new String [] {"rushHour", "244"});
-        data.get(fact, boxOffice).add(new String [] {"rushHour", "245"});
-        data.get(fact, boxOffice).add(new String [] {"taken", "227"});
+        data.get(fact, boxOffice).add(new String[]{"fastAndFurious6", "789"});
+        data.get(fact, boxOffice).add(new String[]{"rushHour", "244"});
+        data.get(fact, boxOffice).add(new String[]{"rushHour", "245"});
+        data.get(fact, boxOffice).add(new String[]{"taken", "227"});
 
-        data.get(fact, date).add(new String [] {"fastAndFurious6", "22-05-2013"});
-        data.get(fact, date).add(new String [] {"rushHour", "18-09-1998"});
-        data.get(fact, date).add(new String [] {"theWolfOfWallStreet", "17-12-2013"});
+        data.get(fact, date).add(new String[]{"fastAndFurious6", "22-05-2013"});
+        data.get(fact, date).add(new String[]{"rushHour", "18-09-1998"});
+        data.get(fact, date).add(new String[]{"theWolfOfWallStreet", "17-12-2013"});
 
         data.get(date).add("22-05-2013");
         data.get(date).add("18-09-1998");
         data.get(date).add("17-12-2013");
 
-        data.get(fact, genre).add(new String [] {"fastAndFurious6", "heist"});
-        data.get(fact, genre).add(new String [] {"fastAndFurious6", "action"});
-        data.get(fact, genre).add(new String [] {"fastAndFurious6", "thriller"});
+        data.get(fact, genre).add(new String[]{"fastAndFurious6", "heist"});
+        data.get(fact, genre).add(new String[]{"fastAndFurious6", "action"});
+        data.get(fact, genre).add(new String[]{"fastAndFurious6", "thriller"});
 
-        data.get(fact, genre).add(new String [] {"theWolfOfWallStreet", "comedy"});
-        data.get(fact, genre).add(new String [] {"theWolfOfWallStreet", "biographical"});
-        data.get(fact, genre).add(new String [] {"theWolfOfWallStreet", "drama"});
-        data.get(fact, genre).add(new String [] {"theWolfOfWallStreet", "crime"});
-        data.get(fact, genre).add(new String [] {"theWolfOfWallStreet", "literature"});
+        data.get(fact, genre).add(new String[]{"theWolfOfWallStreet", "comedy"});
+        data.get(fact, genre).add(new String[]{"theWolfOfWallStreet", "biographical"});
+        data.get(fact, genre).add(new String[]{"theWolfOfWallStreet", "drama"});
+        data.get(fact, genre).add(new String[]{"theWolfOfWallStreet", "crime"});
+        data.get(fact, genre).add(new String[]{"theWolfOfWallStreet", "literature"});
 
-        data.get(fact, genre).add(new String [] {"rushHour", "martialArts"});
-        data.get(fact, genre).add(new String [] {"rushHour", "action"});
+        data.get(fact, genre).add(new String[]{"rushHour", "martialArts"});
+        data.get(fact, genre).add(new String[]{"rushHour", "action"});
 
-        data.get(fact, genre).add(new String [] {"taken", "action"});
+        data.get(fact, genre).add(new String[]{"taken", "action"});
 
         return new MDGraphAndMap(mdGraph, graph, data);
     }

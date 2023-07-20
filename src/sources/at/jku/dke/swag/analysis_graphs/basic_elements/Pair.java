@@ -92,5 +92,5 @@ public class Pair implements PairOrConstant, Copiable, Comparable {
     public int compareTo(Object o) {
         return this.getParameter().compareTo((((Pair) o).getParameter()));
     }
-    
+
 }

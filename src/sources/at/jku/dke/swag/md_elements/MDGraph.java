@@ -31,20 +31,18 @@ public class MDGraph {
 
     Map<Level, Set<LevelAttribute>> LA = new HashMap<>();
 
-
+    Map<Fact, Set<Level>> FL = new HashMap<>();
     Map<Level, TreeSet<LevelMember>> members = new HashMap<>();
-
     /**
      * Map condition/measure/filter to its MD elements
      */
     Map<Constant, MDElement> mdElemes = new HashMap<>();
-
     /**
      * Map condition/measure/filter to its expression
      */
     Map<Constant, String> expressions = new HashMap<>();
-
     Map<Map.Entry<Dimension, RollUpPair>, String> rollUpProperties = new HashMap<>();
+
 
     public Set<Level> getLevelsOfDimension(Dimension d) {
         return DH.get(d).stream().flatMap(h -> HL.get(h).stream()).collect(Collectors.toSet());
@@ -367,6 +365,14 @@ public class MDGraph {
 
     public void setLA(Map<Level, Set<LevelAttribute>> LA) {
         this.LA = LA;
+    }
+
+    public Map<Fact, Set<Level>> getFL() {
+        return FL;
+    }
+
+    public void setFL(Map<Fact, Set<Level>> FL) {
+        this.FL = FL;
     }
 
     public Map<Map.Entry<Dimension, RollUpPair>, String> getRollUpProperties() {

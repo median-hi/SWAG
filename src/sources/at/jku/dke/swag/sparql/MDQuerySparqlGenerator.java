@@ -6,9 +6,7 @@ import org.apache.jena.query.QueryFactory;
 import org.apache.jena.sparql.syntax.Element;
 import org.apache.jena.sparql.syntax.ElementGroup;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 public class MDQuerySparqlGenerator {
 
@@ -37,20 +35,20 @@ public class MDQuerySparqlGenerator {
         return null;
     }
 
-    public static Query querifyString(String queryString){
+    public static Query querifyString(String queryString) {
         return QueryFactory.create(queryString);
     }
 
 
-    public String makeQuery(List<MDElement> path){
+    public String makeQuery(List<MDElement> path) {
         StringBuilder builder = new StringBuilder();
 
         String factQuery = "{" + mappedMDGraph.get(mdGraph.getF().stream().findFirst().orElseThrow()) + "}";
         builder.append(factQuery);
 
         MDElement prevElm = mdGraph.getF().stream().findFirst().orElseThrow();
-        for (MDElement elm : path){
-            if (!elm.equals(mdGraph.getF().stream().findFirst().orElseThrow())){
+        for (MDElement elm : path) {
+            if (!elm.equals(mdGraph.getF().stream().findFirst().orElseThrow())) {
                 String tmpLink = mappedMDGraph.get(prevElm, elm);
                 String tmp = mappedMDGraph.get(elm);
                 builder.append("{" + tmpLink + "}");
@@ -58,15 +56,15 @@ public class MDQuerySparqlGenerator {
                 prevElm = elm;
             }
         }
-        return "{SELECT ?" + path.get(0).getUri() + " ?" + path.get(path.size()-1) + " WHERE{" + builder.toString() + "}}";
+        return "{SELECT ?" + path.get(0).getUri() + " ?" + path.get(path.size() - 1) + " WHERE{" + builder.toString() + "}}";
     }
 
-    public String makeGroupByQuery(List<Level> groupBy){
+    public String makeGroupByQuery(List<Level> groupBy) {
 
         String finalQuery = "";
 
 
-        for (Level level : groupBy){
+        for (Level level : groupBy) {
             String q = makeQuery(MDGraphUtils.makePath(mdGraph, level));
             finalQuery = finalQuery + "\n" + q;
         }
@@ -77,22 +75,22 @@ public class MDQuerySparqlGenerator {
         return finalQuery;
     }
 
-    public String makeAggregationQuery(Fact fact, Measure m, List<Level> groupBy){
+    public String makeAggregationQuery(Fact fact, Measure m, List<Level> groupBy) {
 
-            String finalQuery = "{" + makeMsrQuery(fact, m) + "}" + "{" + makeDimensionsQuery(fact, groupBy) + "}" ;
+        String finalQuery = "{" + makeMsrQuery(fact, m) + "}" + "{" + makeDimensionsQuery(fact, groupBy) + "}";
 
-            finalQuery = "SELECT %s %s WHERE{" + finalQuery + "} GROUP BY %s";
-            finalQuery = String.format(finalQuery, String.format("(SUM(%s) AS ?sum) ", getElmVarName(m)),
-                    getSelectString(groupBy), getSelectString(groupBy));
+        finalQuery = "SELECT %s %s WHERE{" + finalQuery + "} GROUP BY %s";
+        finalQuery = String.format(finalQuery, String.format("(SUM(%s) AS ?sum) ", getElmVarName(m)),
+                getSelectString(groupBy), getSelectString(groupBy));
 
-            return finalQuery;
+        return finalQuery;
     }
 
-    public String makeDimensionsQuery(Fact fact, List<Level> groupBy){
+    public String makeDimensionsQuery(Fact fact, List<Level> groupBy) {
 
         String finalQuery = "";
 
-        for (Level level : groupBy){
+        for (Level level : groupBy) {
             String q = makeQuery(MDGraphUtils.makePath(mdGraph, level));
             finalQuery = finalQuery + "\n" + q;
         }
@@ -104,7 +102,7 @@ public class MDQuerySparqlGenerator {
         return finalQuery;
     }
 
-    public String makeMsrQuery(Fact fact, Measure m){
+    public String makeMsrQuery(Fact fact, Measure m) {
 
         String finalQuery = "{" + mappedMDGraph.get(fact) + "} \n";
         finalQuery += "{" + mappedMDGraph.get(fact, m) + "}";
@@ -115,35 +113,35 @@ public class MDQuerySparqlGenerator {
         return finalQuery;
     }
 
-    private String getSelectString(List<Level> elms){
+    private String getSelectString(List<Level> elms) {
         String res = "";
 
-        for (Level elm: elms){
+        for (Level elm : elms) {
             res += getElmVarName(elm) + " ";
         }
         return res;
     }
 
-    private String getSelectStringOfDimensionQuery(Fact fact, List<Level> elms){
+    private String getSelectStringOfDimensionQuery(Fact fact, List<Level> elms) {
         String res = "";
 
         res += getElmVarName(fact) + " ";
 
-        for (Level elm: elms){
+        for (Level elm : elms) {
             res += getElmVarName(elm) + " ";
         }
         return res;
     }
 
-    private String getSelectStringOfMeasureQuery(Fact fact, Measure m){
+    private String getSelectStringOfMeasureQuery(Fact fact, Measure m) {
         String res = "";
         res += getElmVarName(fact) + " ";
         res += getElmVarName(m) + " ";
         return res;
     }
 
-    private String getElmVarName(MDElement elm){
-        return "?" + elm.getUri().substring(elm.getUri().lastIndexOf("/") +1, elm.getUri().length());
+    private String getElmVarName(MDElement elm) {
+        return "?" + elm.getUri().substring(elm.getUri().lastIndexOf("/") + 1, elm.getUri().length());
     }
 
 }

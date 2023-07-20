@@ -5,12 +5,37 @@ import at.jku.dke.swag.md_elements.*;
 import at.jku.dke.swag.sparql.MDQuerySparqlGenerator;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class Test {
+public class SmdTest {
+
+    Fact fact = new Fact("film");
+    Dimension directiontDim = new Dimension("directionDim");
+    Hierarchy directionHier = new Hierarchy("directionHier");
+    Level director = new Level("director");
+    Level gender = new Level("gender");
+    Level topDirection = new Level("top_direction");
+    Dimension contenttDim = new Dimension("contentDim");
+    Hierarchy contentHier = new Hierarchy("contentHier");
+    Level genre = new Level("genre");
+    Level topContent = new Level("top_content");
+    Dimension origintDim = new Dimension("origintDim");
+    Hierarchy originHier = new Hierarchy("originHier");
+    Level country = new Level("country");
+    Level continent = new Level("continent");
+    Level topOrigin = new Level("top_origin");
+    Dimension timeDim = new Dimension("timeDim");
+    Hierarchy timeHierarchy = new Hierarchy("timeHierarchy");
+    Level date = new Level("date");
+    Level year = new Level("year");
+    Level topTime = new Level("top_time");
+    Measure boxOffice = new Measure("boxOffice");
 
     @org.junit.jupiter.api.Test
     public void test1() {
@@ -156,4 +181,21 @@ public class Test {
         PrintUtils.printMapAndMultiSet(factsAndCoordinates, mdGraph, data, new Measure("boxOffice"));
     }
 
+    @Test
+    void checkSetsOfMdSchema() {
+
+        MDGraphAndMap md = MDGraphInit.initMDGraphAndMap();
+        md.excludeTops();
+
+        Assertions.assertEquals(Set.of(country, continent, director, gender, date, year, genre), md.getGraph().getL());
+
+        Set<RollUpPair> rolls = new HashSet<>();
+        rolls.add(new RollUpPair(country, continent));
+        rolls.add(new RollUpPair(director, gender));
+        rolls.add(new RollUpPair(date, year));
+
+        MdGraphSMD gSmd = md.createGraph();
+
+        Assertions.assertEquals(rolls, md.getGraph().getLL());
+    }
 }
