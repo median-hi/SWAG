@@ -5,7 +5,7 @@ import at.jku.dke.swag.md_elements.*;
 
 import java.util.Set;
 
-public class MDGraphInit {
+public class MDGraphInitSMD {
 
 
     public static MDGraphAndMap initMDGraphAndMap() {
@@ -142,7 +142,6 @@ public class MDGraphInit {
         data.get(fact).add("theWolfOfWallStreet");
         data.get(fact).add("fastAndFurious6");
         data.get(fact).add("rushHour");
-        data.get(fact).add("taken");
 
         data.get(genre).add("heist");
         data.get(genre).add("action");
@@ -157,11 +156,37 @@ public class MDGraphInit {
         data.get(fact, boxOffice).add(new String[]{"fastAndFurious6", "789"});
         data.get(fact, boxOffice).add(new String[]{"rushHour", "244"});
         data.get(fact, boxOffice).add(new String[]{"rushHour", "245"});
-        data.get(fact, boxOffice).add(new String[]{"taken", "227"});
 
         data.get(fact, date).add(new String[]{"fastAndFurious6", "22-05-2013"});
         data.get(fact, date).add(new String[]{"rushHour", "18-09-1998"});
         data.get(fact, date).add(new String[]{"theWolfOfWallStreet", "17-12-2013"});
+
+        data.get(fact, director).add(new String[]{"fastAndFurious6", "justinLin"});
+        data.get(fact, director).add(new String[]{"rushHour", "brettRatner"});
+        data.get(fact, director).add(new String[]{"theWolfOfWallStreet", "martinScorsese"});
+
+        data.get(director).add("justinLin");
+        data.get(director).add("brettRatner");
+        data.get(director).add("martinScorsese");
+
+        data.get(fact, country).add(new String[]{"fastAndFurious6", "japan"});
+        data.get(fact, country).add(new String[]{"fastAndFurious6", "usa"});
+        data.get(fact, country).add(new String[]{"rushHour", "china"});
+        data.get(fact, country).add(new String[]{"rushHour", "usa"});
+        data.get(fact, country).add(new String[]{"theWolfOfWallStreet", "usa"});
+
+        data.get(country).add("japan");
+        data.get(country).add("usa");
+        data.get(country).add("china");
+
+        data.get(continent).add("oceania");
+        data.get(continent).add("northAmerica");
+        data.get(continent).add("asia");
+
+        data.get(country, continent).add(new String[]{"usa", "oceania"});
+        data.get(country, continent).add(new String[]{"usa", "northAmerica"});
+        data.get(country, continent).add(new String[]{"china", "asia"});
+        data.get(country, continent).add(new String[]{"japan", "asia"});
 
         data.get(date).add("22-05-2013");
         data.get(date).add("18-09-1998");

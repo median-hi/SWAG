@@ -23,7 +23,7 @@ sourceSets {
 }
 dependencies {
     implementation("org.apache.jena:jena-core:4.7.0")
-    implementation("org.apache.jena:jena-arq:4.7.0")
+    implementation("org.apache.jena:jena-arq:4.9.0")
     //implementation("junit:junit:4.13.2")
     implementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     implementation 'org.junit.jupiter:junit-jupiter-params:5.9.2'

@@ -148,6 +148,48 @@ public class MDGraphUtils {
         return all;
     }
 
+    public static Map<List<String>, Set<String>> getNonEmptyFactAndCoordinatesAsSet(MDData data,
+                                                                                    MDGraph graph,
+                                                                                    List<Level> groupBy) {
+        Set<List<String>> keysToRemove = new HashSet<>();
+        Map<List<String>, Set<String>> res = getFactAndCoordinatesAsSet(data, graph, groupBy);
+        for (Map.Entry<List<String>, Set<String>> entry : res.entrySet()) {
+            if (entry.getValue().isEmpty()) {
+                keysToRemove.add(entry.getKey());
+            }
+        }
+        keysToRemove.forEach(res::remove);
+        return res;
+    }
+
+    public static Set<List<String>> getBaseSetOfAggregation(MDData data,
+                                                            MDGraph graph,
+                                                            List<Level> groupBy,
+                                                            Measure m) {
+
+        Map<List<String>, Set<String>> baseData = getNonEmptyFactAndCoordinatesAsSet(data,
+                graph,
+                groupBy);
+        Set<List<String>> all = new HashSet<>();
+
+        for (Map.Entry<List<String>, Set<String>> entry : baseData.entrySet()) {
+
+            for (String fact : entry.getValue()) {
+
+                for (String[] msrVal : data.get(graph.getFact(), m)) {
+                    if (msrVal[0].equals(fact)) {
+                        List<String> newEntry = new ArrayList<String>(entry.getKey());
+                        newEntry.add(fact);
+                        newEntry.add(msrVal[1]);
+                        all.add(newEntry);
+                    }
+                }
+            }
+        }
+
+        return all;
+    }
+
 
     public static void eliminate(Map<List<String>, Set<String>> map) {
 
@@ -265,13 +307,10 @@ public class MDGraphUtils {
 
         List<Set<String>> allSetsToMultiply = new ArrayList<>();
         allSetsToMultiply.add(Set.of(start));
-
         for (int i = 1; i < path.size() - 1; i++) {
             allSetsToMultiply.add(data.get(path.get(i)));
         }
-
         allSetsToMultiply.add(Set.of(end));
-
         Set<List<String>> all = Sets.cartesianProduct(allSetsToMultiply);
 
         Set<List<String>> toRemove = new HashSet<>();
@@ -284,7 +323,6 @@ public class MDGraphUtils {
                 }
             }
         }
-
 
         Set<List<String>> newSet = new HashSet<>();
         for (List<String> list : all) {

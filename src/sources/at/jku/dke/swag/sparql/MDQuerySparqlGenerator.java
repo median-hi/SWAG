@@ -39,7 +39,6 @@ public class MDQuerySparqlGenerator {
         return QueryFactory.create(queryString);
     }
 
-
     public String makeQuery(List<MDElement> path) {
         StringBuilder builder = new StringBuilder();
 
@@ -57,6 +56,40 @@ public class MDQuerySparqlGenerator {
             }
         }
         return "{SELECT ?" + path.get(0).getUri() + " ?" + path.get(path.size() - 1) + " WHERE{" + builder.toString() + "}}";
+    }
+
+    public String makeDistinctQuery(List<MDElement> path) {
+        StringBuilder builder = new StringBuilder();
+
+        String factQuery = "{" + mappedMDGraph.get(mdGraph.getF().stream().findFirst().orElseThrow()) + "}";
+        builder.append(factQuery);
+
+        MDElement prevElm = mdGraph.getF().stream().findFirst().orElseThrow();
+        for (MDElement elm : path) {
+            if (!elm.equals(mdGraph.getF().stream().findFirst().orElseThrow())) {
+                String tmpLink = mappedMDGraph.get(prevElm, elm);
+                String tmp = mappedMDGraph.get(elm);
+                builder.append("{" + tmpLink + "}");
+                builder.append("{" + tmp + "}");
+                prevElm = elm;
+            }
+        }
+        return "SELECT DISTINCT ?" + path.get(0).getUri() + " ?" + path.get(path.size() - 1) + " WHERE{" + builder.toString() + "}";
+    }
+
+    public String makeBaseSetOfGroupingQuery(List<Level> groupBy) {
+
+        String finalQuery = "";
+
+        for (Level level : groupBy) {
+            String q = makeQuery(MDGraphUtils.makePath(mdGraph, level));
+            finalQuery = finalQuery + "\n" + q;
+        }
+
+        finalQuery = "SELECT DISTINCT %s WHERE{" + finalQuery + "} ";
+        finalQuery = String.format(finalQuery, "?" + mdGraph.getF().stream().findFirst().orElseThrow().getUri() + " " + getSelectString(groupBy));
+
+        return finalQuery;
     }
 
     public String makeGroupByQuery(List<Level> groupBy) {
@@ -100,6 +133,15 @@ public class MDQuerySparqlGenerator {
 
 
         return finalQuery;
+    }
+
+    public String makeMdPathQuery(Fact fact, Level level) {
+
+        String finalQuery = "";
+
+        String q = makeDistinctQuery(MDGraphUtils.makePath(mdGraph, level));
+
+        return q;
     }
 
     public String makeMsrQuery(Fact fact, Measure m) {
