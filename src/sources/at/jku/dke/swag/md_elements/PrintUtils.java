@@ -28,11 +28,41 @@ public class PrintUtils {
     public static void printMapAndMultiSet(Map<List<String>, Set<String>> toPrint,
                                            MDGraph graph, MDData data, Measure measure) {
 
+        System.out.println("Printing...");
+
         for (List<String> key : toPrint.keySet()) {
             printCollectionInOneRow(key);
             System.out.print(" FACTS: ");
             printCollectionInOneRow(toPrint.get(key));
             printCollectionInOneRow(MDGraphUtils.getMultiSetOfMeasureValsForMultipleFacts(graph, data, toPrint.get(key), measure));
+            System.out.println();
+        }
+    }
+
+    public static void printMapAndMultiSetAggMsrsOfFact(Map<List<String>, Set<String>> toPrint,
+                                                        MDGraph graph, MDData data, Measure measure) {
+
+        System.out.println("Printing...");
+
+        for (List<String> key : toPrint.keySet()) {
+            printCollectionInOneRow(key);
+            System.out.print(" FACTS: ");
+            printCollectionInOneRow(toPrint.get(key));
+            printCollectionInOneRow(MDGraphUtils.getMultiSetOfMeasureValsForMultipleFactsAggregate(graph, data, toPrint.get(key), measure));
+            System.out.println();
+        }
+    }
+
+    public static void printMapAndMultiSetDefaultMsrsOfFact(Map<List<String>, Set<String>> toPrint,
+                                                            MDGraph graph, MDData data, Measure measure) {
+
+        System.out.println("Printing...");
+
+        for (List<String> key : toPrint.keySet()) {
+            printCollectionInOneRow(key);
+            System.out.print(" FACTS: ");
+            printCollectionInOneRow(toPrint.get(key));
+            printCollectionInOneRow(MDGraphUtils.getMultiSetOfMeasureValsForMultipleFactsMissingMeasureDefault(graph, data, toPrint.get(key), measure));
             System.out.println();
         }
     }

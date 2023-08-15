@@ -5,6 +5,7 @@ import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Sets;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -111,6 +112,36 @@ public class MDGraphUtils {
         return multiset;
     }
 
+    public static Multiset getMultiSetOfMeasureValsForMultipleFactsAggregate(MDGraph graph, MDData data, Set<String> facts, Measure measure) {
+        Multiset multiset = HashMultiset.create();
+
+        for (String fact : facts) {
+            BigDecimal sum = BigDecimal.ZERO;
+            int count = 0;
+            for (String s : (Set<String>) getMultiSetOfMeasureVals(graph, data, fact, measure).elementSet()) {
+                sum = sum.add(new BigDecimal(s));
+                count++;
+            }
+            multiset.add(count != 0 ? sum.divide(BigDecimal.valueOf(count)).toString() : "0");
+        }
+
+        return multiset;
+    }
+
+    public static Multiset getMultiSetOfMeasureValsForMultipleFactsMissingMeasureDefault(MDGraph graph, MDData data, Set<String> facts, Measure measure) {
+        Multiset multiset = HashMultiset.create();
+
+        for (String fact : facts) {
+            Multiset ms = getMultiSetOfMeasureVals(graph, data, fact, measure);
+            if (ms.isEmpty()) {
+                ms.add("300");
+            }
+            multiset.addAll(ms);
+        }
+
+        return multiset;
+    }
+
     public static Map<List<String>, Set<String>> getFactAndCoordinatesAsSet(MDData data, MDGraph graph, List<Level> groupBy) {
         Map<List<String>, Set<String>> all = new HashMap<>();
 
@@ -128,6 +159,36 @@ public class MDGraphUtils {
                                                                                         List<Level> groupBy) {
         Map<List<String>, Set<String>> all = new HashMap<>();
 
+        for (List<String> coordinate : getCoordinatesOfGroupByExtendedByNulls(data, groupBy)) {
+            all.put(coordinate, new HashSet<>());
+            for (String factInstance : getFactsInCoordinateConsiderNonConnected(data, graph, groupBy, coordinate)) {
+                all.get(coordinate).add(factInstance);
+            }
+        }
+
+        return all;
+
+        /*
+        Set<String> allConsideredFacts = all.values().stream().flatMap(Set::stream).collect(Collectors.toSet());
+        Set<String> allFacts = data.get(graph.getFact());
+
+        all.put(List.of("Default"), new HashSet<>());
+
+        for (String fact : allFacts) {
+            if (!allConsideredFacts.contains(fact)) {
+
+                all.get(List.of("Default")).add(fact);
+            }
+        }
+        return all;
+         */
+    }
+
+    public static Map<List<String>, Set<String>> getFactAndCoordinatesAsSetSubMember(MDData data,
+                                                                                     MDGraph graph,
+                                                                                     List<Level> groupBy) {
+        Map<List<String>, Set<String>> all = new HashMap<>();
+
         for (List<String> coordinate : getCoordinatesOfGroupBy(data, groupBy)) {
             all.put(coordinate, new HashSet<>());
             for (String factInstance : getFactsInCoordinate(data, graph, groupBy, coordinate)) {
@@ -138,10 +199,12 @@ public class MDGraphUtils {
         Set<String> allConsideredFacts = all.values().stream().flatMap(Set::stream).collect(Collectors.toSet());
         Set<String> allFacts = data.get(graph.getFact());
 
-        all.put(List.of("Default"), new HashSet<>());
-
         for (String fact : allFacts) {
             if (!allConsideredFacts.contains(fact)) {
+
+                String granVal;
+
+
                 all.get(List.of("Default")).add(fact);
             }
         }
@@ -254,6 +317,17 @@ public class MDGraphUtils {
         return Sets.cartesianProduct(storage);
     }
 
+    public static Set<List<String>> getCoordinatesOfGroupByExtendedByNulls(MDData data, List<Level> groupBy) {
+
+        List<Set<String>> storage = new ArrayList<>();
+        for (Level l : groupBy) {
+            Set<String> newSet = data.get(l);
+            newSet.add("NULL");
+            storage.add(newSet);
+        }
+        return Sets.cartesianProduct(storage);
+    }
+
     public static Set<String> getFactsInCoordinate(MDData data, MDGraph graph, List<Level> groupBy, List<String> coordinate) {
 
         Set<String> facts = new HashSet<>();
@@ -265,6 +339,37 @@ public class MDGraphUtils {
                 List<MDElement> path = makePath(graph, groupBy.get(i));
                 if (!isConnected(factInstance, coordinate.get(i), graph, data, path)) {
                     isFactIn = false;
+                }
+            }
+
+            if (isFactIn) {
+                facts.add(factInstance);
+            }
+        }
+        return facts;
+    }
+
+    public static Set<String> getFactsInCoordinateConsiderNonConnected(MDData data, MDGraph graph, List<Level> groupBy, List<String> coordinate) {
+
+        Set<String> facts = new HashSet<>();
+
+        for (String factInstance : data.get(graph.getFact())) {
+            boolean isFactIn = true;
+
+            for (int i = 0; i < groupBy.size() & isFactIn; i++) {
+                List<MDElement> path = makePath(graph, groupBy.get(i));
+                if (coordinate.get(i).equals("NULL")) {
+                    boolean isConnectedToOthers = false;
+                    for (String member : data.get(groupBy.get(i))) {
+                        if (isConnected(factInstance, member, graph, data, path)) {
+                            isFactIn = false;
+                            break;
+                        }
+                    }
+                } else {
+                    if (!isConnected(factInstance, coordinate.get(i), graph, data, path)) {
+                        isFactIn = false;
+                    }
                 }
             }
 

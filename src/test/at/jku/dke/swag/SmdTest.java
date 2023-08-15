@@ -6,6 +6,7 @@ import at.jku.dke.swag.sparql.MDQuerySparqlGenerator;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
@@ -84,8 +85,9 @@ public class SmdTest {
 
     }
 
+    @DisplayName("Count Doubly")
     @org.junit.jupiter.api.Test
-    public void test4() {
+    public void summarizability_testExample4() {
 
         MDGraphAndMap mappedGraph = MDGraphInit.initMDGraphAndMap();
         MDGraph mdGraph = mappedGraph.getGraph();
@@ -100,8 +102,9 @@ public class SmdTest {
 
     }
 
+    @DisplayName("Split equally - fact weight")
     @org.junit.jupiter.api.Test
-    public void test5() {
+    public void summarizability_testExample5_A() {
 
         MDGraphAndMap mappedGraph = MDGraphInit.initMDGraphAndMap();
         MDGraph mdGraph = mappedGraph.getGraph();
@@ -117,8 +120,9 @@ public class SmdTest {
         PrintUtils.printMap1(factsAndWeights);
     }
 
+    @DisplayName("Split equally - measures")
     @org.junit.jupiter.api.Test
-    public void test6() {
+    public void summarizability_testExample5_B() {
 
         MDGraphAndMap mappedGraph = MDGraphInit.initMDGraphAndMap();
         MDGraph mdGraph = mappedGraph.getGraph();
@@ -138,8 +142,9 @@ public class SmdTest {
         PrintUtils.printMap2(aggs);
     }
 
+    @DisplayName("Aggregate")
     @org.junit.jupiter.api.Test
-    public void test7() {
+    public void summarizability_testExamples6() {
 
         MDGraphAndMap mappedGraph = MDGraphInit.initMDGraphAndMap();
         MDGraph mdGraph = mappedGraph.getGraph();
@@ -153,8 +158,9 @@ public class SmdTest {
         PrintUtils.printMapAndMultiSet(factsAndCoordinates, mdGraph, data, new Measure("boxOffice"));
     }
 
+    @DisplayName("Discard facts with Missing level members")
     @org.junit.jupiter.api.Test
-    public void testDimDiscardMissing() {
+    public void summarizability_testExample7() {
 
         MDGraphAndMap mappedGraph = MDGraphInit.initMDGraphAndMap();
         MDGraph mdGraph = mappedGraph.getGraph();
@@ -168,8 +174,9 @@ public class SmdTest {
         PrintUtils.printMapAndMultiSet(factsAndCoordinates, mdGraph, data, new Measure("boxOffice"));
     }
 
+    @DisplayName("Static Default value for dimension incompleteness")
     @org.junit.jupiter.api.Test
-    public void testDimDefaultValue() {
+    public void summarizability_testExample8() {
 
         MDGraphAndMap mappedGraph = MDGraphInit.initMDGraphAndMap();
         MDGraph mdGraph = mappedGraph.getGraph();
@@ -181,6 +188,38 @@ public class SmdTest {
                 List.of(new Level("date")));
 
         PrintUtils.printMapAndMultiSet(factsAndCoordinates, mdGraph, data, new Measure("boxOffice"));
+    }
+
+    @DisplayName("Aggregate facts with Missing measure value")
+    @org.junit.jupiter.api.Test
+    public void summarizability_testExample11() {
+
+        MDGraphAndMap mappedGraph = MDGraphInit.initMDGraphAndMap();
+        MDGraph mdGraph = mappedGraph.getGraph();
+        MappedMDGraph mdMap = mappedGraph.getMap();
+        MDData data = mappedGraph.getData();
+
+        Map<List<String>, Set<String>> factsAndCoordinates = MDGraphUtils.getFactAndCoordinatesAsSet(
+                data, mdGraph,
+                List.of(new Level("genre")));
+
+        PrintUtils.printMapAndMultiSetAggMsrsOfFact(factsAndCoordinates, mdGraph, data, new Measure("boxOffice"));
+    }
+
+    @DisplayName("Default value for mesaure incompleteness")
+    @org.junit.jupiter.api.Test
+    public void summarizability_testExample13() {
+
+        MDGraphAndMap mappedGraph = MDGraphInit.initMDGraphAndMap();
+        MDGraph mdGraph = mappedGraph.getGraph();
+        MappedMDGraph mdMap = mappedGraph.getMap();
+        MDData data = mappedGraph.getData();
+
+        Map<List<String>, Set<String>> factsAndCoordinates = MDGraphUtils.getFactAndCoordinatesAsSet(
+                data, mdGraph,
+                List.of(new Level("genre")));
+
+        PrintUtils.printMapAndMultiSetDefaultMsrsOfFact(factsAndCoordinates, mdGraph, data, new Measure("boxOffice"));
     }
 
     @Test
