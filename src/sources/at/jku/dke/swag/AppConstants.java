@@ -30,6 +30,8 @@ public class AppConstants {
 
     public static final Dimension TIME_DIM = new Dimension("timeDim");
 
+    public static final Hierarchy TIME_HIER = new Hierarchy("timeHierarchy");
+
     public static final Dimension CITIZENSHIP_DIM = new Dimension("citizenshipDim");
 
     public static final Level CITIZEN = new Level("citizen");
