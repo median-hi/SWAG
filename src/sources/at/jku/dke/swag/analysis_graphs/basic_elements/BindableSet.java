@@ -113,6 +113,31 @@ public class BindableSet implements LocationValue, Copiable {
         return false;
     }
 
+    @Override
+    public boolean isInstanceOf(LocationValue otherValue) {
+        if (!(otherValue instanceof BindableSet)) {
+            return false;
+        }
+        return this.equals(otherValue) ||
+                isStrictlyInstanceOf((BindableSet) otherValue);
+    }
+
+    private boolean isStrictlyInstanceOf(BindableSet otherValue) {
+
+        if (this.nbConsts().equals(otherValue.nbConsts())
+                && this.paras().equals(otherValue.paras())) {
+            for (Parameter p : this.paras()) {
+                ConstantOrUnknown thisBinding = getBindingOfParameter(p);
+                ConstantOrUnknown otherBinding = otherValue.getBindingOfParameter(p);
+                if (!(thisBinding.equals(otherBinding) || otherBinding.isUnknown())) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
     public boolean isBindableSet() {
         return true;
     }
@@ -131,6 +156,10 @@ public class BindableSet implements LocationValue, Copiable {
         }
 
         return newSet;
+    }
+
+    public ConstantOrUnknown getBindingOfParameter(Parameter p) {
+        return this.getPairOfParameter(p).orElseThrow().getConstant();
     }
 
     public Set<PairOrConstant> getElements() {
@@ -153,5 +182,6 @@ public class BindableSet implements LocationValue, Copiable {
     public int hashCode() {
         return Objects.hash(elements);
     }
+
 
 }

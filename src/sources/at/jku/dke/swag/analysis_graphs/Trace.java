@@ -66,6 +66,7 @@ public class Trace {
         for (int i = 0; i < this.getSteps().size(); i++) {
             Step stepPrime = Utils.bind(this.getSteps().get(i), this.getStepBindings().get(i));
             Utils.evaluateAndCheck(initialAsPrime, stepPrime.getOperations());
+            initialAsPrime = Utils.evaluateAndFire(initialAsPrime, stepPrime.getOperations());
         }
     }
 

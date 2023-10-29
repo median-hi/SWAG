@@ -1,6 +1,7 @@
 package at.jku.dke.swag.analysis_graphs.basic_elements;
 
 import at.jku.dke.swag.analysis_graphs.Copiable;
+import at.jku.dke.swag.analysis_graphs.asm_elements.LocationValue;
 import at.jku.dke.swag.md_elements.MDGraph;
 import at.jku.dke.swag.md_elements.init.MDGraphInit;
 
@@ -93,4 +94,27 @@ public class Pair implements PairOrConstant, Copiable, Comparable {
         return this.getParameter().compareTo((((Pair) o).getParameter()));
     }
 
+    @Override
+    public boolean isInstanceOf(LocationValue otherValue) {
+
+        if (!(otherValue instanceof Pair)) {
+            return false;
+        }
+
+        Pair otherValueAsPair = (Pair) otherValue;
+
+        if (this.equals(otherValueAsPair)) {
+            return true;
+        }
+
+        if (this.getParameter().equals(otherValueAsPair.getParameter())) {
+
+            ConstantOrUnknown thisBinding = this.getConstantOrUnknown();
+            ConstantOrUnknown otherBinding = otherValueAsPair.getConstantOrUnknown();
+
+            return (thisBinding.equals(otherBinding) || otherBinding.isUnknown());
+        }
+
+        return false;
+    }
 }

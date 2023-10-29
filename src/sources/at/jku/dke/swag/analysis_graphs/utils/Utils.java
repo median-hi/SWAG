@@ -342,6 +342,11 @@ public class Utils {
         return situations;
     }
 
+    public static boolean assertSemanticsPreservingStep(AnalysisSituation schema, AnalysisSituation instance) {
+
+        return false;
+    }
+
     private static void assertValidUpdateSet(Set<Update> upds) {
         if (upds.stream().map(upd -> upd.getLocation()).collect(Collectors.toSet()).size() != upds.size()) {
             throw new RuntimeException("Inconsistent update set");

@@ -4,4 +4,6 @@ public interface LocationValue {
     public boolean isBindableSet();
 
     public boolean isPairOrConstant();
+
+    public boolean isInstanceOf(LocationValue otherValue);
 }
