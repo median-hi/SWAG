@@ -5,5 +5,7 @@ public interface LocationValue {
 
     public boolean isPairOrConstant();
 
-    public boolean isInstanceOf(LocationValue otherValue);
+    public default boolean isInstanceOf(LocationValue otherValue) {
+        return true;
+    }
 }

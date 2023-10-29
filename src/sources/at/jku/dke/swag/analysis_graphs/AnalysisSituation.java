@@ -179,5 +179,29 @@ public class AnalysisSituation implements Copiable {
     public int hashCode() {
         return Objects.hash(measures, resultFilters, dimensionSelection, granularities, diceLevels, diceNodes);
     }
+
+    public boolean instanceOf(AnalysisSituation otherSituation) {
+        if (!this.getMeasures().isInstanceOf(otherSituation.getMeasures()) ||
+                !this.getResultFilters().isInstanceOf(otherSituation.getResultFilters())) {
+            return false;
+        }
+
+        for (Dimension dim : this.granularities.keySet()) {
+            if (!this.getGranularities().get(dim).isInstanceOf(otherSituation.getGranularities().get(dim))) {
+                return false;
+            }
+            if (!this.getDiceLevels().get(dim).isInstanceOf(otherSituation.getDiceLevels().get(dim))) {
+                return false;
+            }
+            if (!this.getDiceNodes().get(dim).isInstanceOf(otherSituation.getDiceNodes().get(dim))) {
+                return false;
+            }
+            if (!this.getDimensionSelection().get(dim).isInstanceOf(otherSituation.getDimensionSelection().get(dim))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
 

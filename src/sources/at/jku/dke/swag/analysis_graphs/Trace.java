@@ -67,6 +67,7 @@ public class Trace {
             Step stepPrime = Utils.bind(this.getSteps().get(i), this.getStepBindings().get(i));
             Utils.evaluateAndCheck(initialAsPrime, stepPrime.getOperations());
             initialAsPrime = Utils.evaluateAndFire(initialAsPrime, stepPrime.getOperations());
+            Utils.assertSemanticsPreservingStep(initialAsPrime, this.getSteps().get(i).getTarget());
         }
     }
 

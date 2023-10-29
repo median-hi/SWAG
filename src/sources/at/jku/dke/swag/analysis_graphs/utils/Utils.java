@@ -336,15 +336,19 @@ public class Utils {
             Set<Update> updates = Utils.evaluateAndCheck(initialAsPrime, stepPrime.getOperations());
             initialAsPrime = Utils.fire(initialAsPrime, updates);
             initialAsPrime.AssertValidSituation();
+            assertSemanticsPreservingStep(initialAsPrime, trace.getSteps().get(i).getTarget());
             situations.add(initialAsPrime);
         }
 
         return situations;
     }
 
-    public static boolean assertSemanticsPreservingStep(AnalysisSituation schema, AnalysisSituation instance) {
-
-        return false;
+    public static boolean assertSemanticsPreservingStep(AnalysisSituation instance, AnalysisSituation schema) {
+        boolean res = instance.instanceOf(schema);
+        if (!res) {
+            throw new RuntimeException("Instance situation is not an instance of schema situation");
+        }
+        return res;
     }
 
     private static void assertValidUpdateSet(Set<Update> upds) {

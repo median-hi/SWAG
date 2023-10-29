@@ -2,15 +2,17 @@ package at.jku.dke.swag.analysis_graphs;
 
 import at.jku.dke.swag.AppConstants;
 import at.jku.dke.swag.analysis_graphs.asm_elements.Location;
-import at.jku.dke.swag.analysis_graphs.basic_elements.BindableSet;
-import at.jku.dke.swag.analysis_graphs.basic_elements.OperationBinding;
-import at.jku.dke.swag.analysis_graphs.basic_elements.Pair;
-import at.jku.dke.swag.analysis_graphs.basic_elements.SituationBinding;
+import at.jku.dke.swag.analysis_graphs.basic_elements.*;
+import at.jku.dke.swag.analysis_graphs.operations.AddParamDimPredicateNonSemanticsPreserving;
+import at.jku.dke.swag.analysis_graphs.operations.Operation;
 import at.jku.dke.swag.analysis_graphs.operations.operation_types.dice_ops.MoveToLevelAndNode_1;
 import at.jku.dke.swag.analysis_graphs.operations.operation_types.gran_ops.DrillDownTo;
 import at.jku.dke.swag.analysis_graphs.operations.operation_types.selection_ops.AddParamDimPredicate;
 import at.jku.dke.swag.analysis_graphs.operations.operation_types.selection_ops.AddParamResultPredicate;
 import at.jku.dke.swag.analysis_graphs.utils.Utils;
+import at.jku.dke.swag.md_elements.Dimension;
+import at.jku.dke.swag.md_elements.Level;
+import at.jku.dke.swag.md_elements.LevelMember;
 import at.jku.dke.swag.md_elements.MDGraph;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -26,6 +28,26 @@ public class TraceTest {
     MDGraph mdGraph = swag.getMdGraph();
     List<AnalysisSituation> situations = swag.getSituations();
     List<Step> steps = swag.getSteps();
+
+    public static Set<Operation> initOperations2_3Altered() {
+
+        Operation op1 = new Operation(DrillDownTo.getInstance(),
+                List.of(new Dimension("timeDim"),
+                        new Level("year")));
+
+        Operation op2 = new Operation(MoveToLevelAndNode_1.getInstance(),
+                List.of(new Dimension("destinationDim"),
+                        new Level("geo"),
+                        new Parameter("geoNode"),
+                        LevelMember.unknown()));
+
+        Operation op3 = new Operation(AddParamDimPredicateNonSemanticsPreserving.getInstance(),
+                List.of(new Dimension("timeDim"),
+                        new Parameter("dPred"),
+                        ConstantOrUnknown.unknown));
+
+        return Set.of(op1, op2, op3);
+    }
 
     @Test
     @DisplayName("When a trace is executed, the results match the expected ones. Chapter#7 Example#3.")
@@ -56,7 +78,7 @@ public class TraceTest {
         );
 
         List<AnalysisSituation> res = Utils.executeTrace(trace);
-        
+
         Assertions.assertEquals(createAs2Prime(), res.get(0));
         Assertions.assertEquals(createAs3Prime(), res.get(1));
         Assertions.assertEquals(createAs4Prime(), res.get(2));
@@ -93,6 +115,41 @@ public class TraceTest {
         List<AnalysisSituation> res = Utils.executeTrace(trace);
         Assertions.assertEquals(createAs3Prime(), res.get(1));
         Assertions.assertEquals(createAs4Prime(), res.get(2));
+    }
+
+    @Test
+    @DisplayName("When a trace that is not semantic-preserving is executed, it fails.")
+    void nonSemanticsPreservingTraceFails() {
+
+        Set<Operation> operations2_3 = initOperations2_3Altered();
+        Step step2_3 = new Step(situations.get(1), situations.get(2), operations2_3);
+        steps.set(1, step2_3);
+
+        AnalysisSituation initialSituation = situations.get(1);
+        SituationBinding initialAsBindings = SituationBinding
+                .create(Location.diceNodeOf(AppConstants.DESTINATION_DIM))
+                .setBindings(Map.of(AppConstants.CONTINENT_NODE, AppConstants.EU));
+
+        OperationBinding bindings2_3a = OperationBinding.create().setBindings(Map.of(4, AppConstants.GERMANY));
+        OperationBinding bindings2_3b = OperationBinding.create().setBindings(Map.of());
+        OperationBinding bindings2_3c = OperationBinding.create().setBindings(Map.of(3, AppConstants.YEAR_AFTER_2010));
+
+        OperationBinding bindings3_4a = OperationBinding.create().setBindings(Map.of());
+        OperationBinding bindings3_4b = OperationBinding.create().setBindings(Map.of(2, AppConstants.INTENSITY_GT_30K));
+
+        Assertions.assertThrows(RuntimeException.class, () -> {
+            Trace trace = new Trace(initialSituation,
+                    initialAsBindings,
+                    List.of(steps.get(1), steps.get(2)),
+                    List.of(
+                            Map.of(steps.get(1).getOperationOfType(MoveToLevelAndNode_1.class), bindings2_3a,
+                                    steps.get(1).getOperationOfType(DrillDownTo.class), bindings2_3b,
+                                    steps.get(1).getOperationOfType(AddParamDimPredicateNonSemanticsPreserving.class), bindings2_3c),
+                            Map.of(steps.get(2).getOperationOfType(DrillDownTo.class), bindings3_4a,
+                                    steps.get(2).getOperationOfType(AddParamResultPredicate.class), bindings3_4b)
+                    )
+            );
+        });
     }
 
     @Test
