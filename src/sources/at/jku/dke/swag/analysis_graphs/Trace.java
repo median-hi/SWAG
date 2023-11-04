@@ -28,6 +28,47 @@ public class Trace {
         assertValidTrace();
     }
 
+    private Trace(AnalysisSituation initialAs,
+                  SituationBinding initialAsBindings,
+                  List<Step> steps) {
+        this.initialAs = initialAs;
+        this.initialAsBindings = initialAsBindings;
+        this.steps = steps;
+    }
+
+
+    public static Trace initStrategyOneTrace(AnalysisSituation initialAs,
+                                             SituationBinding initialAsBindings,
+                                             List<Step> steps) {
+        return new Trace(initialAs, initialAsBindings, steps);
+    }
+
+    public static Trace initStrategyTwoTrace(AnalysisSituation initialAs,
+                                             SituationBinding initialAsBindings) {
+        return new Trace(initialAs, initialAsBindings, new ArrayList<>());
+    }
+
+    public void addStepBinding(Step step, Map<Operation, OperationBinding> binding) {
+        stepBindings.add(steps.indexOf(step), binding);
+        checkTrace();
+    }
+
+    public void addStepAndBinding(Step step, Map<Operation, OperationBinding> binding) {
+        steps.add(step);
+        stepBindings.add(binding);
+        checkTrace();
+    }
+
+    private void checkTrace() {
+        AnalysisSituation initialAsPrime = Utils.bind(this.getInitialAs(), this.getInitialAsBindings());
+        for (int i = 0; i < this.getStepBindings().size(); i++) {
+            Step stepPrime = Utils.bind(this.getSteps().get(i), this.getStepBindings().get(i));
+            Utils.evaluateAndCheck(initialAsPrime, stepPrime.getOperations());
+            initialAsPrime = Utils.evaluateAndFire(initialAsPrime, stepPrime.getOperations());
+            Utils.assertSemanticsPreservingStep(initialAsPrime, this.getSteps().get(i).getTarget());
+        }
+    }
+
     public AnalysisSituation getInitialAs() {
         return initialAs;
     }
@@ -63,7 +104,7 @@ public class Trace {
     private void assertValidTrace() {
         AnalysisSituation initialAsPrime = Utils.bind(this.getInitialAs(), this.getInitialAsBindings());
 
-        for (int i = 0; i < this.getSteps().size(); i++) {
+        for (int i = 0; i < this.getStepBindings().size(); i++) {
             Step stepPrime = Utils.bind(this.getSteps().get(i), this.getStepBindings().get(i));
             Utils.evaluateAndCheck(initialAsPrime, stepPrime.getOperations());
             initialAsPrime = Utils.evaluateAndFire(initialAsPrime, stepPrime.getOperations());

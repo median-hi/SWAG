@@ -213,6 +213,140 @@ public class TraceTest {
         });
     }
 
+    @Test
+    @DisplayName("Test strategy 1 success for semantics preservation during actual analysis")
+    void testTraceStrategy1Success() {
+
+        AnalysisSituation initialSituation = situations.get(1);
+        SituationBinding initialAsBindings = SituationBinding
+                .create(Location.diceNodeOf(AppConstants.DESTINATION_DIM))
+                .setBindings(Map.of(AppConstants.CONTINENT_NODE, AppConstants.EU));
+
+        OperationBinding bindings2_3a = OperationBinding.create().setBindings(Map.of(4, AppConstants.GERMANY));
+        OperationBinding bindings2_3b = OperationBinding.create().setBindings(Map.of());
+        OperationBinding bindings2_3c = OperationBinding.create().setBindings(Map.of(3, AppConstants.YEAR_AFTER_2010));
+
+        OperationBinding bindings3_4a = OperationBinding.create().setBindings(Map.of());
+        OperationBinding bindings3_4b = OperationBinding.create().setBindings(Map.of(2, AppConstants.INTENSITY_GT_30K));
+
+        Assertions.assertDoesNotThrow(() -> {
+            Trace trace = Trace.initStrategyOneTrace(initialSituation,
+                    initialAsBindings,
+                    List.of(steps.get(1), steps.get(2))
+            );
+            trace.addStepBinding(steps.get(1), Map.of(steps.get(1).getOperationOfType(MoveToLevelAndNode_1.class), bindings2_3a,
+                    steps.get(1).getOperationOfType(DrillDownTo.class), bindings2_3b,
+                    steps.get(1).getOperationOfType(AddParamDimPredicate.class), bindings2_3c)
+            );
+            trace.addStepBinding(steps.get(2),
+                    Map.of(steps.get(2).getOperationOfType(DrillDownTo.class), bindings3_4a,
+                            steps.get(2).getOperationOfType(AddParamResultPredicate.class), bindings3_4b)
+            );
+        });
+    }
+
+    @Test
+    @DisplayName("Test strategy 1 fail for semantics preservation during actual analysis")
+    void testTraceStrategy1Fail() {
+
+        Set<Operation> operations2_3 = initOperations2_3Altered();
+        Step step2_3 = new Step(situations.get(1), situations.get(2), operations2_3);
+        steps.set(1, step2_3);
+
+        AnalysisSituation initialSituation = situations.get(1);
+        SituationBinding initialAsBindings = SituationBinding
+                .create(Location.diceNodeOf(AppConstants.DESTINATION_DIM))
+                .setBindings(Map.of(AppConstants.CONTINENT_NODE, AppConstants.EU));
+
+        OperationBinding bindings2_3a = OperationBinding.create().setBindings(Map.of(4, AppConstants.GERMANY));
+        OperationBinding bindings2_3b = OperationBinding.create().setBindings(Map.of());
+        OperationBinding bindings2_3c = OperationBinding.create().setBindings(Map.of(3, AppConstants.YEAR_AFTER_2010));
+
+        OperationBinding bindings3_4a = OperationBinding.create().setBindings(Map.of());
+        OperationBinding bindings3_4b = OperationBinding.create().setBindings(Map.of(2, AppConstants.INTENSITY_GT_30K));
+
+        Assertions.assertThrows(RuntimeException.class, () -> {
+            Trace trace = Trace.initStrategyOneTrace(initialSituation,
+                    initialAsBindings,
+                    List.of(steps.get(1), steps.get(2))
+            );
+            trace.addStepBinding(steps.get(1), Map.of(steps.get(1).getOperationOfType(MoveToLevelAndNode_1.class), bindings2_3a,
+                    steps.get(1).getOperationOfType(DrillDownTo.class), bindings2_3b,
+                    steps.get(1).getOperationOfType(AddParamDimPredicateNonSemanticsPreserving.class), bindings2_3c)
+            );
+            trace.addStepBinding(steps.get(2),
+                    Map.of(steps.get(2).getOperationOfType(DrillDownTo.class), bindings3_4a,
+                            steps.get(2).getOperationOfType(AddParamResultPredicate.class), bindings3_4b)
+            );
+        });
+    }
+
+    @Test
+    @DisplayName("Test strategy 2 success for semantics preservation during actual analysis")
+    void testTraceStrategy2Success() {
+
+        AnalysisSituation initialSituation = situations.get(1);
+        SituationBinding initialAsBindings = SituationBinding
+                .create(Location.diceNodeOf(AppConstants.DESTINATION_DIM))
+                .setBindings(Map.of(AppConstants.CONTINENT_NODE, AppConstants.EU));
+
+        OperationBinding bindings2_3a = OperationBinding.create().setBindings(Map.of(4, AppConstants.GERMANY));
+        OperationBinding bindings2_3b = OperationBinding.create().setBindings(Map.of());
+        OperationBinding bindings2_3c = OperationBinding.create().setBindings(Map.of(3, AppConstants.YEAR_AFTER_2010));
+
+        OperationBinding bindings3_4a = OperationBinding.create().setBindings(Map.of());
+        OperationBinding bindings3_4b = OperationBinding.create().setBindings(Map.of(2, AppConstants.INTENSITY_GT_30K));
+
+        Assertions.assertDoesNotThrow(() -> {
+            Trace trace = Trace.initStrategyTwoTrace(initialSituation,
+                    initialAsBindings
+            );
+            trace.addStepAndBinding(steps.get(1), Map.of(steps.get(1).getOperationOfType(MoveToLevelAndNode_1.class), bindings2_3a,
+                    steps.get(1).getOperationOfType(DrillDownTo.class), bindings2_3b,
+                    steps.get(1).getOperationOfType(AddParamDimPredicate.class), bindings2_3c)
+            );
+            trace.addStepAndBinding(steps.get(2),
+                    Map.of(steps.get(2).getOperationOfType(DrillDownTo.class), bindings3_4a,
+                            steps.get(2).getOperationOfType(AddParamResultPredicate.class), bindings3_4b)
+            );
+        });
+    }
+
+    @Test
+    @DisplayName("Test strategy 2 fail for semantics preservation during actual analysis")
+    void testTraceStrategy2Fail() {
+
+        Set<Operation> operations2_3 = initOperations2_3Altered();
+        Step step2_3 = new Step(situations.get(1), situations.get(2), operations2_3);
+        steps.set(1, step2_3);
+
+        AnalysisSituation initialSituation = situations.get(1);
+        SituationBinding initialAsBindings = SituationBinding
+                .create(Location.diceNodeOf(AppConstants.DESTINATION_DIM))
+                .setBindings(Map.of(AppConstants.CONTINENT_NODE, AppConstants.EU));
+
+        OperationBinding bindings2_3a = OperationBinding.create().setBindings(Map.of(4, AppConstants.GERMANY));
+        OperationBinding bindings2_3b = OperationBinding.create().setBindings(Map.of());
+        OperationBinding bindings2_3c = OperationBinding.create().setBindings(Map.of(3, AppConstants.YEAR_AFTER_2010));
+
+        OperationBinding bindings3_4a = OperationBinding.create().setBindings(Map.of());
+        OperationBinding bindings3_4b = OperationBinding.create().setBindings(Map.of(2, AppConstants.INTENSITY_GT_30K));
+
+        Assertions.assertThrows(RuntimeException.class, () -> {
+            Trace trace = Trace.initStrategyTwoTrace(initialSituation,
+                    initialAsBindings
+            );
+            trace.addStepAndBinding(steps.get(1), Map.of(steps.get(1).getOperationOfType(MoveToLevelAndNode_1.class), bindings2_3a,
+                    steps.get(1).getOperationOfType(DrillDownTo.class), bindings2_3b,
+                    steps.get(1).getOperationOfType(AddParamDimPredicateNonSemanticsPreserving.class), bindings2_3c)
+            );
+            trace.addStepAndBinding(steps.get(2),
+                    Map.of(steps.get(2).getOperationOfType(DrillDownTo.class), bindings3_4a,
+                            steps.get(2).getOperationOfType(AddParamResultPredicate.class), bindings3_4b)
+            );
+        });
+    }
+
     public AnalysisSituation createAs2Prime() {
 
         AnalysisSituation as = new AnalysisSituation(mdGraph);
